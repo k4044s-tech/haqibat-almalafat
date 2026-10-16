@@ -288,7 +288,7 @@ html.dark .okmsg{color:oklch(.792 .209 151.711)}
 .pframe{border:1px solid var(--bd);border-radius:.75rem;background:color-mix(in oklab,var(--mut) 70%,transparent);padding:0 .75rem;overflow:hidden}
 .pages{padding:.5rem 0 2rem;display:flex;flex-direction:column;align-items:center;gap:6px}
 .pwrap{display:flex;flex-direction:column;align-items:center}
-.pbar{display:flex;justify-content:space-between;align-items:center;width:210mm;font-size:12px;color:var(--mut-fg);padding:12px 2px 6px}
+.pbar{display:flex;flex-wrap:wrap;gap:4px 8px;justify-content:space-between;align-items:center;width:210mm;font-size:calc(12px*min(var(--iz,1),2.6));color:var(--mut-fg);padding:12px 2px 6px}
 .pbar label{display:flex;align-items:center;gap:6px;cursor:pointer}
 .pbar input{accent-color:var(--pri)}
 .pwrap.skip .page{opacity:.35}
@@ -1081,7 +1081,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .page td.csel{box-shadow:none!important;outline:0!important}
   .sb,.sb-gap,.sb-ov,.hdr,.vhead,.opts,.ksr,.certc,#vCards,#vStore,#vOrders,.cvv,.ftb,.kd-dlg,.access,.hint,.pbar,.toast,.modal,.auth,.sheet,.dd,.ft,#vDash,#admM,#vAccount,.pwrap.skip{display:none!important}
   .sbw,.sb-inset,.mn,.pframe,#vFile{display:block!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:none!important;max-width:none!important;min-height:0!important;border-radius:0!important;overflow:visible!important}
-  .pages{padding:0;gap:0;zoom:1!important}
+  .pages{padding:0;gap:0;zoom:1!important;transform:none!important;width:auto!important;margin:0!important}
   .page{box-shadow:none;break-after:page;page-break-after:always;opacity:1!important}
   .page [contenteditable]:hover,.page [contenteditable]:focus{background:none}
   .slot .img:not(.has){background:#fff}
@@ -3763,12 +3763,25 @@ $("#fileIn").addEventListener("change",e=>{
 });
 
 /* scaling */
+/* في iOS لا يصغّر zoom الخطوط مع الصفحة فيتداخل النص، لذلك نستخدم transform هناك */
+const IOS_FIT=document.documentElement.classList.contains("ios");
+let fitZ=1;
+function fitH(){if(!IOS_FIT)return;const st=pagesEl.style;if(fitZ<1){st.marginBottom=(-(1-fitZ)*pagesEl.offsetHeight).toFixed(1)+"px"}else st.marginBottom=""}
 function fit(){
   const fr=$("#pframe");if(!fr||!fr.offsetParent)return;
   const w=fr.clientWidth-26, pw=(pagesEl.querySelector(".page.land")?297:210)*96/25.4;if(w<=0)return;
-  pagesEl.style.zoom=Math.min(1,w/pw).toFixed(3);
+  const z=Math.min(1,w/pw);fitZ=z;const st=pagesEl.style;
+  st.setProperty("--iz",(1/z).toFixed(3));
+  if(IOS_FIT){
+    st.zoom="";
+    if(z<1){const W=fr.clientWidth-parseFloat(getComputedStyle(fr).paddingLeft)-parseFloat(getComputedStyle(fr).paddingRight);
+      st.width=pw+"px";st.marginInline=((W-pw)/2).toFixed(1)+"px";st.transform="scale("+z.toFixed(4)+")";st.transformOrigin="top center";}
+    else{st.width="";st.marginInline="";st.transform="";}
+    fitH();
+  }else st.zoom=z.toFixed(3);
 }
 window.addEventListener("resize",fit);
+if(IOS_FIT&&window.ResizeObserver)new ResizeObserver(()=>fitH()).observe(pagesEl);
 
 /* controls */
 $("#gSeg").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;S.gender=b.dataset.g;saveS();render()});
