@@ -1,0 +1,62 @@
+// قواعد مشروع «حقيبة الملفات المدرسية» — الصق هذا الملف كاملًا في Firestore ← Rules ثم Publish.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===== بداية: حقيبة الملفات المدرسية =====
+    function hqSignedIn() { return request.auth != null; }
+    function hqMe() { return get(/databases/$(database)/documents/haqiba_users/$(request.auth.uid)).data; }
+    function hqAdmin() {
+      return hqSignedIn()
+        && exists(/databases/$(database)/documents/haqiba_users/$(request.auth.uid))
+        && hqMe().role == 'admin' && hqMe().status == 'active';
+    }
+    match /haqiba_users/{uid} {
+      allow read: if hqSignedIn() && (request.auth.uid == uid || hqAdmin());
+      allow create: if hqSignedIn() && request.auth.uid == uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.role == 'user'
+        && request.resource.data.perms.size() == 0
+        && request.resource.data.requests.size() == 0;
+      allow update: if hqAdmin()
+        || (hqSignedIn() && request.auth.uid == uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['requests']));
+      allow delete: if hqAdmin();
+    }
+    function hqActive() {
+      return hqSignedIn()
+        && exists(/databases/$(database)/documents/haqiba_users/$(request.auth.uid))
+        && hqMe().status == 'active';
+    }
+    // صور الشواهد التي يُنشأ لها باركود: يفتحها من يمسح الرمز (قراءة مستند بعينه فقط، دون استعراض القائمة)
+    match /haqiba_ev/{id} {
+      allow get: if true;
+      allow list: if hqAdmin();
+      allow create: if hqActive()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.img is string
+        && request.resource.data.img.size() < 1000000;
+      allow delete: if hqSignedIn() && (resource.data.uid == request.auth.uid || hqAdmin());
+    }
+    // بطاقات المعايدة والتهنئة: يفتحها أي زائر بالرابط ليكتب اسمه ويحمّل بطاقته
+    match /haqiba_cards/{id} {
+      allow get: if true;
+      allow list: if hqSignedIn() && (resource.data.uid == request.auth.uid || hqAdmin());
+      allow create: if hqActive()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.fields is list
+        && request.resource.data.fields.size() <= 12
+        && (request.resource.data.bg == null || (request.resource.data.bg is string && request.resource.data.bg.size() < 950000));
+      allow update: if hqActive()
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.fields is list
+        && request.resource.data.fields.size() <= 12
+        && (request.resource.data.bg == null || (request.resource.data.bg is string && request.resource.data.bg.size() < 950000));
+      allow delete: if hqSignedIn() && (resource.data.uid == request.auth.uid || hqAdmin());
+    }
+    // ===== نهاية: حقيبة الملفات المدرسية =====
+
+  }
+}
