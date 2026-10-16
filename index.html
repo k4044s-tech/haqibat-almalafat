@@ -881,6 +881,17 @@ table.t.kx2{border-right:2px solid #111;border-bottom:2px solid #111}
 .or-t td:nth-child(n+2),.or-t th:nth-child(n+2){width:7rem;text-align:center}.or-t .inp{height:2rem;text-align:center}
 .or-save{position:sticky;bottom:0;background:var(--card);padding:.75rem 0 0;margin-top:1rem;display:flex;justify-content:flex-end}
 @media (max-width:900px){.st-wrap{grid-template-columns:1fr}.st-cart{position:static;order:-1}.or-def,.co-bk{grid-template-columns:1fr}}
+.st-old{opacity:.6;font-weight:500;margin-inline-end:.2rem}
+.st-b.sale{background:#fee2e2;color:#991b1b}.st-b em{font-style:normal;background:#dc2626;color:#fff;border-radius:999px;padding:0 .35rem;margin-inline-end:.3rem;font-size:.7rem}
+.st-sale{display:flex;flex-wrap:wrap;gap:.3rem .9rem;align-items:center;background:linear-gradient(90deg,#fef3c7,#fee2e2);border:1px solid #fcd34d;color:#7c2d12;border-radius:.7rem;padding:.6rem .9rem;margin-bottom:.8rem;font-size:.9rem}
+.st-sale[hidden]{display:none}
+.st-tot.sub{margin:.3rem 0;font-size:.85rem;color:var(--mut-fg)}.st-tot.disc{color:#15803d}
+.co-cm{font-size:.8rem;min-height:1em}.co-cm.ok{color:#15803d}.co-cm.no{color:#dc2626}
+.or-sale{border:1px dashed var(--bd);border-radius:.7rem;padding:.8rem;margin-bottom:1rem}.or-sale h4,.or-cp h4{margin:0 0 .3rem;font-size:.9rem}
+.or-cp{border:1px solid var(--bd);border-radius:.7rem;padding:.8rem;margin-bottom:1rem}
+.or-cpf{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:.4rem 0 .75rem}
+.cp-t td,.cp-t th{width:auto!important;text-align:start!important}
+@media (max-width:900px){.or-cpf{grid-template-columns:1fr 1fr}}
 /* card platform */
 .cd-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:.75rem}
 .cd-t{display:flex;flex-direction:column;gap:.4rem;align-items:stretch;padding:.4rem;border:1px solid var(--bd);border-radius:.6rem;background:var(--card);cursor:pointer;font:inherit;font-size:.78rem;color:var(--fg);text-align:center;transition:border-color .15s,box-shadow .15s}
@@ -1159,7 +1170,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <div class="st-wrap">
           <div class="st-main">
             <div class="st-tools"><input id="stSearch" class="inp" placeholder="ابحث عن ملف…" aria-label="بحث في المتجر"><div class="seg" id="stShow"><button type="button" data-show="all" class="on">الكل</button><button type="button" data-show="free">المجانية</button><button type="button" data-show="mine">ملفاتي</button></div></div>
-            <div class="st-cats" id="stCats"></div>
+            <div class="st-sale" id="stSale" hidden></div><div class="st-cats" id="stCats"></div>
             <div class="st-grid" id="stGrid"></div>
           </div>
           <aside class="card st-cart" id="stCart"></aside>
@@ -1167,7 +1178,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       </section>
       <section class="view" data-v="orders" id="vOrders" hidden>
         <div class="vhead"><div><h1>إدارة المتجر</h1><p>راجع إيصالات التحويل واعتمد الطلبات لتُفعَّل الملفات للعميل تلقائيًا، وحدد الأسعار والملفات المجانية وبيانات الحساب البنكي.</p></div></div>
-        <div class="card"><div class="card-h"><div class="seg" id="orTabs"><button type="button" data-ot="orders" class="on">الطلبات</button><button type="button" data-ot="prices">الأسعار</button><button type="button" data-ot="bank">بيانات الدفع</button></div></div><div class="card-c" id="orBody"></div></div>
+        <div class="card"><div class="card-h"><div class="seg" id="orTabs"><button type="button" data-ot="orders" class="on">الطلبات</button><button type="button" data-ot="prices">الأسعار</button><button type="button" data-ot="coupons">أكواد الخصم</button><button type="button" data-ot="bank">بيانات الدفع</button></div></div><div class="card-c" id="orBody"></div></div>
       </section>
       <section class="view" data-v="account" id="vAccount" hidden>
         <div class="vhead"><div><h1>الحساب</h1><p>بيانات حسابك وحالته والملفات المصرّح لك بها.</p></div></div>
@@ -1282,6 +1293,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <div class="dlg-h"><h3 id="coT">إتمام الشراء بتحويل بنكي</h3><p>حوّل المبلغ إلى الحساب التالي، ثم أرفق صورة الإيصال. يُفعَّل الملف في حسابك بعد التحقق من التحويل.</p></div>
     <div id="coSum"></div>
     <div id="coBank"></div>
+    <div class="field" style="margin-top:.9rem"><label for="coCode">كود الخصم (اختياري)</label><div class="row" style="gap:.5rem"><input id="coCode" class="inp" dir="ltr" maxlength="30" style="flex:1;text-transform:uppercase"><button class="btn sm" type="button" id="coCodeGo">تطبيق</button></div><span class="co-cm" id="coCodeMsg"></span></div>
     <div class="field" style="margin-top:.9rem"><span class="lb">صورة إيصال التحويل</span><div class="row" style="gap:.5rem"><button class="btn sm" type="button" id="coPick"><i data-i="image"></i>اختيار صورة</button><span class="muted">لقطة شاشة من تطبيق البنك تكفي</span></div><div class="co-prev" id="coPrev"></div><input type="file" id="coFile" accept="image/*" hidden></div>
     <div class="grid2" style="margin-top:.9rem"><div class="field"><label for="coRef">رقم العملية (اختياري)</label><input id="coRef" class="inp" maxlength="60"></div><div class="field"><label for="coNote">ملاحظة (اختياري)</label><input id="coNote" class="inp" maxlength="200"></div></div>
     <p class="err" id="coErr" style="color:#dc2626;min-height:1.2em;margin:.6rem 0 0"></p>
@@ -4489,7 +4501,10 @@ async function showCardPage(id){
 /* ---------- المتجر ---------- */
 let SHOP={prices:{},store:{def:10,currency:"ر.س"},bank:{}},SHOP_OK=false;
 const CUR=()=>(SHOP.store&&SHOP.store.currency)||"ر.س";
-const shopP=fid=>{const p=SHOP.prices[fid];if(!p)return{price:+((SHOP.store||{}).def)||0,free:false,active:true};return{price:+p.price||0,free:!!p.free,active:p.active!==false}};
+const r2=n=>Math.round(n*100)/100;
+const saleNow=()=>{const st=SHOP.store||{},pc=+st.sale_pct||0;if(pc<=0)return 0;if(st.sale_until){const t=new Date(),d=new Date(st.sale_until+"T23:59:59+03:00");if(t>d)return 0}return Math.min(pc,100)};
+const shopP=fid=>{const p=SHOP.prices[fid],sale=saleNow();if(!p){const b=+((SHOP.store||{}).def)||0;return{base:b,disc:sale,price:r2(b*(1-sale/100)),free:false,active:true}}const b=+p.price||0,d=Math.max(+p.discount||0,sale);return{base:b,disc:d,price:r2(b*(1-d/100)),free:!!p.free,active:p.active!==false}};
+const priceHTML=p=>p.disc>0&&p.base>p.price?`<s class="st-old">${money(p.base)}</s> ${money(p.price)}`:money(p.price);
 const shopFree=fid=>SHOP_OK&&shopP(fid).free;
 const owns=fid=>!!(ME&&(isAdmin()||(ME.perms&&((ME.perms.all&&ME.perms.all.e)||(ME.perms[fid]&&ME.perms[fid].e&&ME.perms[fid].p)))));
 const money=n=>(Math.round(n*100)/100).toLocaleString("ar-SA-u-nu-latn")+" "+CUR();
@@ -4503,6 +4518,7 @@ let STF={q:"",cat:"",show:"all"};
 function renderStore(){
   const v=$("#vStore");if(!v)return;
   if(!SHOP_OK){$("#stGrid").innerHTML=`<div class="card"><div class="card-c"><p class="muted">${BE&&!BE.getShop?"المتجر يعمل مع قاعدة بيانات Supabase أو الوضع التجريبي.":"جارٍ تحميل المتجر…"}</p></div></div>`;return}
+  {const sp=saleNow(),st=SHOP.store||{},bn=$("#stSale");bn.hidden=!sp;if(sp)bn.innerHTML=`<b>خصم ${Math.round(sp)}% على جميع الملفات</b>${st.sale_until?`<span>حتى ${esc(fdate(Date.parse(st.sale_until+"T12:00:00Z")))}</span>`:""}${st.sale_note?`<span>${esc(st.sale_note)}</span>`:""}`}
   const cats=[...new Set(FILES.map(catOf))];
   $("#stCats").innerHTML=[["","الكل"]].concat(cats.map(c=>[c,c])).map(([v,l])=>`<button type="button" data-scat="${esc(v)}" class="${STF.cat===v?"on":""}">${esc(l)}</button>`).join("");
   document.querySelectorAll("#stShow button").forEach(b=>b.classList.toggle("on",b.dataset.show===STF.show));
@@ -4510,20 +4526,25 @@ function renderStore(){
   const L=FILES.filter(f=>{const p=shopP(f.id);if(!p.active&&!owns(f.id))return false;if(STF.cat&&catOf(f)!==STF.cat)return false;if(q&&!(f.name()+" "+catOf(f)).includes(q))return false;
     if(STF.show==="free")return p.free;if(STF.show==="mine")return owns(f.id)||(isActive()&&p.free);return true});
   $("#stGrid").innerHTML=L.length?L.map(f=>{const p=shopP(f.id),own=owns(f.id),inC=cart.includes(f.id);
-    const badge=own?`<span class="st-b own">${ico("check")}متاح لك</span>`:p.free?`<span class="st-b free">مجاني</span>`:`<span class="st-b">${money(p.price)}</span>`;
+    const badge=own?`<span class="st-b own">${ico("check")}متاح لك</span>`:p.free?`<span class="st-b free">مجاني</span>`:`<span class="st-b${p.disc>0?" sale":""}">${p.disc>0?`<em>-${Math.round(p.disc)}%</em>`:""}${priceHTML(p)}</span>`;
     const act=own||(p.free&&isActive())?`<a class="btn sm primary" href="#/f/${f.id}">فتح الملف</a>`:p.free?`<button class="btn sm primary" type="button" data-sauth>سجّل لتستخدمه مجانًا</button>`:inC?`<button class="btn sm" type="button" data-srm="${f.id}">${ico("check")}في السلة</button>`:`<button class="btn sm primary" type="button" data-sadd="${f.id}">${ico("cart")}أضف للسلة</button>`;
     return `<div class="st-c"><div class="st-h"><span class="fic">${ico(fIcon(f))}</span>${badge}</div><b class="st-n">${esc(f.name())}</b><small class="muted">${esc(catOf(f))}</small><div class="st-a"><a class="btn sm ghost" href="#/f/${f.id}">${ico("eye")}معاينة</a>${act}</div></div>`}).join(""):`<p class="muted">لا توجد ملفات مطابقة.</p>`;
   const tot=cartTotal(cart);
-  $("#stCart").innerHTML=`<div class="card-h"><div class="card-t">${ico("cart")} السلة <span class="muted">(${cart.length})</span></div></div><div class="card-c">${cart.length?`<ul class="st-cl">${cart.map(f=>`<li><span>${esc(fileName(f))}</span><b>${money(shopP(f).price)}</b><button type="button" class="x" data-srm="${f}" aria-label="إزالة">×</button></li>`).join("")}</ul><div class="st-tot"><span>الإجمالي</span><b>${money(tot)}</b></div><button class="btn primary" type="button" id="stCheckout" style="width:100%">إتمام الشراء</button>`:`<p class="muted">السلة فارغة. أضف الملفات التي تحتاجها، ثم ادفع بتحويل بنكي.</p>`}</div>`;
+  $("#stCart").innerHTML=`<div class="card-h"><div class="card-t">${ico("cart")} السلة <span class="muted">(${cart.length})</span></div></div><div class="card-c">${cart.length?`<ul class="st-cl">${cart.map(f=>`<li><span>${esc(fileName(f))}</span><b>${priceHTML(shopP(f))}</b><button type="button" class="x" data-srm="${f}" aria-label="إزالة">×</button></li>`).join("")}</ul><div class="st-tot"><span>الإجمالي</span><b>${money(tot)}</b></div><button class="btn primary" type="button" id="stCheckout" style="width:100%">إتمام الشراء</button>`:`<p class="muted">السلة فارغة. أضف الملفات التي تحتاجها، ثم ادفع بتحويل بنكي.</p>`}</div>`;
 }
 function openCheckout(){
   if(!ME)return openAuth("up","أنشئ حسابًا أو سجّل الدخول لإتمام الشراء.");if(!isActive())return needAuth("edit");
   const c=cartGet().filter(f=>!owns(f)&&!shopP(f).free);if(!c.length)return toast("السلة فارغة");const b=SHOP.bank||{};
-  $("#coSum").innerHTML=`<ul class="st-cl">${c.map(f=>`<li><span>${esc(fileName(f))}</span><b>${money(shopP(f).price)}</b></li>`).join("")}</ul><div class="st-tot"><span>المبلغ المطلوب تحويله</span><b>${money(cartTotal(c))}</b></div>`;
+  coCoupon=null;$("#coCode").value="";$("#coCodeMsg").textContent="";coSum();
   $("#coBank").innerHTML=b.iban?`<div class="co-bk"><div><span>البنك</span><b>${esc(b.bank||"—")}</b></div><div><span>اسم المستفيد</span><b>${esc(b.holder||"—")}</b></div><div class="iban"><span>رقم الآيبان</span><b dir="ltr">${esc(b.iban)}</b><button type="button" class="btn sm" data-copyiban="${esc(b.iban)}">نسخ</button></div>${b.note?`<p class="muted">${esc(b.note)}</p>`:""}</div>`:`<p class="muted">لم يضف المشرف بيانات الحساب البنكي بعد${b.whatsapp?`، تواصل عبر <a href="https://wa.me/${esc(String(b.whatsapp).replace(/\D/g,""))}" target="_blank" rel="noopener">واتساب</a>`:""}.</p>`;
   $("#coRef").value="";$("#coNote").value="";coRcpt=null;$("#coPrev").innerHTML="";$("#coErr").textContent="";$("#coM").classList.add("open");
 }
-let coRcpt=null;
+let coRcpt=null,coCoupon=null;
+function coSum(){const c=cartGet().filter(f=>!owns(f)&&!shopP(f).free),sub=cartTotal(c),dis=coCoupon?r2(sub*coCoupon.pct/100):0;
+  $("#coSum").innerHTML=`<ul class="st-cl">${c.map(f=>`<li><span>${esc(fileName(f))}</span><b>${priceHTML(shopP(f))}</b></li>`).join("")}</ul>${dis?`<div class="st-tot sub"><span>المجموع</span><span>${money(sub)}</span></div><div class="st-tot sub disc"><span>كود الخصم ${esc(coCoupon.code)} (${Math.round(coCoupon.pct)}%)</span><span>− ${money(dis)}</span></div>`:""}<div class="st-tot"><span>المبلغ المطلوب تحويله</span><b>${money(Math.max(sub-dis,0))}</b></div>`}
+async function coApply(){const code=$("#coCode").value.trim().toUpperCase(),m=$("#coCodeMsg");if(!code){coCoupon=null;m.textContent="";return coSum()}
+  if(!BE.checkCoupon){m.textContent="أكواد الخصم غير متاحة";return}
+  try{const pct=await BE.checkCoupon(code);if(pct){coCoupon={code,pct:+pct};m.className="co-cm ok";m.textContent="طُبّق الخصم "+Math.round(pct)+"%"}else{coCoupon=null;m.className="co-cm no";m.textContent="الكود غير صحيح أو منتهي"}}catch(e){coCoupon=null;m.className="co-cm no";m.textContent="تعذّر التحقق من الكود"}coSum()}
 async function coPick(file){if(!/^image\//.test(file.type))return $("#coErr").textContent="أرفق صورة الإيصال (لقطة شاشة أو صورة)";
   const url=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)});const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=url});
   const sc=Math.min(1,1300/Math.max(im.naturalWidth,im.naturalHeight)),cv=document.createElement("canvas");cv.width=Math.round(im.naturalWidth*sc);cv.height=Math.round(im.naturalHeight*sc);const c=cv.getContext("2d");c.fillStyle="#fff";c.fillRect(0,0,cv.width,cv.height);c.drawImage(im,0,0,cv.width,cv.height);
@@ -4532,9 +4553,9 @@ async function coSubmit(){
   const c=cartGet().filter(f=>!owns(f)&&!shopP(f).free);if(!c.length)return;
   if(!coRcpt)return $("#coErr").textContent="أرفق صورة إيصال التحويل.";
   const bt=$("#coGo");bt.disabled=true;
-  try{const r=await BE.placeOrder({items:c,receipt:coRcpt,ref:$("#coRef").value.trim(),note:$("#coNote").value.trim()});
-    cartSet(cartGet().filter(f=>!c.includes(f)));$("#coM").classList.remove("open");toast("أُرسل طلبك رقم "+r.id+" وسيُفعَّل بعد التحقق من التحويل");go("#/account")}
-  catch(e){console.error(e);$("#coErr").textContent=e&&e.code==="quota"?"مساحة التخزين ممتلئة":"تعذّر إرسال الطلب، حاول مرة أخرى."}
+  try{const r=await BE.placeOrder({items:c,coupon:coCoupon?coCoupon.code:null,receipt:coRcpt,ref:$("#coRef").value.trim(),note:$("#coNote").value.trim()});
+    cartSet(cartGet().filter(f=>!c.includes(f)));$("#coM").classList.remove("open");toast("أُرسل طلبك رقم "+r.id+" بمبلغ "+money(+r.total)+"، وسيُفعَّل بعد التحقق من التحويل");go("#/account")}
+  catch(e){console.error(e);$("#coErr").textContent=e&&e.code==="quota"?"مساحة التخزين ممتلئة":/coupon/i.test((e&&e.message)||"")?"كود الخصم لم يعد صالحًا، احذفه وأعد المحاولة.":"تعذّر إرسال الطلب، حاول مرة أخرى."}
   bt.disabled=false;
 }
 const OST={pending:["قيد المراجعة","pend"],approved:["مفعّل","ok"],rejected:["مرفوض","no"]};
@@ -4552,7 +4573,7 @@ async function renderOrdersAdmin(){
     const n=k=>ORD.filter(o=>k==="all"||o.status===k).length;
     const L=ORD.filter(o=>ORDf==="all"||o.status===ORDf);
     $("#orBody").innerHTML=`<div class="seg or-f">${[["pending","قيد المراجعة"],["approved","المفعّلة"],["rejected","المرفوضة"],["all","الكل"]].map(([k,l])=>`<button type="button" data-of="${k}" class="${ORDf===k?"on":""}">${l} (${n(k)})</button>`).join("")}</div>
-      <div class="od-l">${L.length?L.map(o=>`<div class="od"><div class="od-h"><b>طلب ${o.id}</b><span class="od-s ${OST[o.status][1]}">${OST[o.status][0]}</span><span>${esc(o.name||"")}</span><span class="muted" dir="ltr">${esc(o.email||"")}</span><span class="muted">${fdate(o.at)}</span><span style="flex:1"></span><b>${money(+o.total)}</b></div>
+      <div class="od-l">${L.length?L.map(o=>`<div class="od"><div class="od-h"><b>طلب ${o.id}</b><span class="od-s ${OST[o.status][1]}">${OST[o.status][0]}</span><span>${esc(o.name||"")}</span><span class="muted" dir="ltr">${esc(o.email||"")}</span><span class="muted">${fdate(o.at)}</span><span style="flex:1"></span>${+o.discount>0?`<span class="od-s pend">${esc(o.coupon||"خصم")} − ${money(+o.discount)}</span>`:""}<b>${money(+o.total)}</b></div>
       <div class="od-i">${o.items.map(f=>`<span>${esc(fileName(f))}</span>`).join("")}</div>
       ${o.ref||o.note?`<p class="muted">${o.ref?"رقم العملية: "+esc(o.ref):""}${o.ref&&o.note?" · ":""}${o.note?esc(o.note):""}</p>`:""}${o.admin_note?`<p class="muted">ملاحظتك: ${esc(o.admin_note)}</p>`:""}
       <div class="od-a"><button class="btn sm" type="button" data-orc="${o.id}">${ico("image")}عرض الإيصال</button>${o.status==="pending"?`<button class="btn sm primary" type="button" data-oapp="${o.id}">${ico("check")}اعتماد وتفعيل الملفات</button><button class="btn sm ghost" type="button" data-orej="${o.id}">رفض</button>`:""}</div></div>`).join(""):`<p class="muted">لا توجد طلبات هنا.</p>`}</div>`;
@@ -4560,8 +4581,15 @@ async function renderOrdersAdmin(){
   }else if(ORDtab==="prices"){
     const cats=[...new Set(FILES.map(catOf))];
     $("#orBody").innerHTML=`<div class="or-def"><div class="field"><label for="orDef">السعر الافتراضي لأي ملف بلا سعر (${CUR()})</label><input id="orDef" class="inp" type="number" min="0" step="1" value="${+((SHOP.store||{}).def)||0}"></div><div class="field"><label for="orAll">تطبيق سعر على كل الملفات المدفوعة</label><div class="row" style="gap:.5rem"><input id="orAll" class="inp" type="number" min="0" step="1" placeholder="مثال: 15"><button class="btn sm" type="button" id="orAllGo">تطبيق</button></div></div></div>
-      ${cats.map(c=>`<div class="or-cat"><h4>${esc(c)}</h4><table class="or-t"><thead><tr><th>الملف</th><th>السعر (${CUR()})</th><th>مجاني</th><th>معروض</th></tr></thead><tbody>${FILES.filter(f=>catOf(f)===c).map(f=>{const p=shopP(f.id),has=!!SHOP.prices[f.id];return `<tr data-pf="${f.id}"><td>${esc(f.name())}</td><td><input class="inp" type="number" min="0" step="1" data-pp value="${has?p.price:""}" placeholder="${+((SHOP.store||{}).def)||0}"></td><td><input type="checkbox" data-pfree${p.free?" checked":""}></td><td><input type="checkbox" data-pact${p.active?" checked":""}></td></tr>`}).join("")}</tbody></table></div>`).join("")}
+      <div class="or-sale"><h4>خصم عام على كل الملفات</h4><p class="muted">يُطبّق على كل الملفات المدفوعة حتى التاريخ المحدد. إذا كان للملف خصم خاص أكبر يُعتمد الأكبر.</p><div class="or-def"><div class="field"><label for="orSaleP">نسبة الخصم %</label><input id="orSaleP" class="inp" type="number" min="0" max="100" step="1" value="${+((SHOP.store||{}).sale_pct)||""}" placeholder="0 = بلا خصم"></div><div class="field"><label for="orSaleU">ينتهي في (اختياري)</label><input id="orSaleU" class="inp" type="date" value="${esc((SHOP.store||{}).sale_until||"")}"></div></div><div class="field"><label for="orSaleN">عبارة تظهر في المتجر (اختياري)</label><input id="orSaleN" class="inp" maxlength="80" value="${esc((SHOP.store||{}).sale_note||"")}" placeholder="مثال: بمناسبة اليوم الوطني"></div></div>
+      ${cats.map(c=>`<div class="or-cat"><h4>${esc(c)}</h4><table class="or-t"><thead><tr><th>الملف</th><th>السعر (${CUR()})</th><th>خصم %</th><th>مجاني</th><th>معروض</th></tr></thead><tbody>${FILES.filter(f=>catOf(f)===c).map(f=>{const p=shopP(f.id),has=!!SHOP.prices[f.id];return `<tr data-pf="${f.id}"><td>${esc(f.name())}</td><td><input class="inp" type="number" min="0" step="1" data-pp value="${has?p.price:""}" placeholder="${+((SHOP.store||{}).def)||0}"></td><td><input class="inp" type="number" min="0" max="100" step="1" data-pd value="${has&&+SHOP.prices[f.id].discount?+SHOP.prices[f.id].discount:""}" placeholder="0"></td><td><input type="checkbox" data-pfree${p.free?" checked":""}></td><td><input type="checkbox" data-pact${p.active?" checked":""}></td></tr>`}).join("")}</tbody></table></div>`).join("")}
       <div class="or-save"><button class="btn primary" type="button" id="orSaveP">حفظ الأسعار</button></div>`;
+  }else if(ORDtab==="coupons"){
+    if(!be.listCoupons){$("#orBody").innerHTML=`<p class="muted">غير متاح.</p>`;return}
+    let L=[];try{L=await be.listCoupons()}catch(e){$("#orBody").innerHTML=`<p class="muted">تعذّر تحميل الأكواد.</p>`;return}
+    const today=new Date().toISOString().slice(0,10);
+    $("#orBody").innerHTML=`<div class="or-cp"><h4>كود جديد</h4><div class="or-cpf"><div class="field"><label for="cpCode">الكود</label><input id="cpCode" class="inp" dir="ltr" maxlength="30" placeholder="EID20" style="text-transform:uppercase"></div><div class="field"><label for="cpPct">الخصم %</label><input id="cpPct" class="inp" type="number" min="1" max="100" placeholder="20"></div><div class="field"><label for="cpExp">ينتهي في (اختياري)</label><input id="cpExp" class="inp" type="date"></div><div class="field"><label for="cpMax">عدد مرات الاستخدام (اختياري)</label><input id="cpMax" class="inp" type="number" min="1" placeholder="بلا حد"></div></div><div class="field"><label for="cpNote">ملاحظة (اختياري)</label><input id="cpNote" class="inp" maxlength="80" placeholder="مثال: لمعلمي مدرسة …"></div><div class="or-save" style="position:static"><button class="btn primary" type="button" id="cpAdd">إضافة الكود</button></div></div>
+      <table class="or-t cp-t"><thead><tr><th>الكود</th><th>الخصم</th><th>الاستخدام</th><th>ينتهي</th><th>الحالة</th><th></th></tr></thead><tbody>${L.length?L.map(c=>{const exp=c.expires&&c.expires<today,full=c.max_uses&&c.used>=c.max_uses;return `<tr><td dir="ltr"><b>${esc(c.code)}</b>${c.note?`<br><small class="muted">${esc(c.note)}</small>`:""}</td><td>${Math.round(+c.pct)}%</td><td>${c.used}${c.max_uses?" / "+c.max_uses:""}</td><td>${c.expires?esc(c.expires):"—"}</td><td>${exp?`<span class="od-s no">منتهي</span>`:full?`<span class="od-s no">استُنفد</span>`:c.active?`<span class="od-s ok">فعّال</span>`:`<span class="od-s pend">موقوف</span>`}</td><td><button class="btn sm ghost" type="button" data-cptog="${esc(c.code)}" data-on="${c.active?1:0}">${c.active?"إيقاف":"تفعيل"}</button><button class="btn sm ghost" type="button" data-cpdel="${esc(c.code)}">حذف</button></td></tr>`}).join(""):`<tr><td colspan="6" class="muted">لا توجد أكواد بعد.</td></tr>`}</tbody></table>`;
   }else{
     const b=SHOP.bank||{};
     $("#orBody").innerHTML=`<div class="grid2"><div class="field"><label for="bkBank">اسم البنك</label><input id="bkBank" class="inp" value="${esc(b.bank||"")}" placeholder="مثال: مصرف الراجحي"></div><div class="field"><label for="bkHolder">اسم المستفيد</label><input id="bkHolder" class="inp" value="${esc(b.holder||"")}"></div></div>
@@ -4579,7 +4607,8 @@ async function shopInit(){
     if(e.target.closest("[data-sauth]"))return openAuth(ME?"in":"up");if(e.target.closest("#stCheckout"))return openCheckout()});
   $("#coM").addEventListener("click",e=>{if(e.target.id==="coM"||e.target.closest("[data-cox]"))$("#coM").classList.remove("open");const cp=e.target.closest("[data-copyiban]");if(cp&&navigator.clipboard)navigator.clipboard.writeText(cp.dataset.copyiban.replace(/\s/g,"")).then(()=>toast("نُسخ رقم الآيبان"))});
   $("#coFile").addEventListener("change",async e=>{const f=e.target.files[0];e.target.value="";if(f)try{await coPick(f)}catch(err){$("#coErr").textContent="تعذّرت قراءة الصورة"}});
-  $("#coPick").addEventListener("click",()=>$("#coFile").click());$("#coGo").addEventListener("click",coSubmit);
+  $("#coPick").addEventListener("click",()=>$("#coFile").click());
+  $("#coCodeGo").addEventListener("click",coApply);$("#coCode").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();coApply()}});$("#coGo").addEventListener("click",coSubmit);
   $("#orTabs").addEventListener("click",e=>{const b=e.target.closest("[data-ot]");if(b){ORDtab=b.dataset.ot;renderOrdersAdmin()}});
   $("#orBody").addEventListener("click",async e=>{
     const f=e.target.closest("[data-of]");if(f){ORDf=f.dataset.of;return renderOrdersAdmin()}
@@ -4587,9 +4616,14 @@ async function shopInit(){
     const ap=e.target.closest("[data-oapp]");if(ap){const o=ORD.find(x=>String(x.id)===ap.dataset.oapp);if(!confirm("اعتماد الطلب "+o.id+" وتفعيل "+o.items.length+" ملف لـ "+(o.name||o.email)+"؟"))return;try{await BE.decideOrder(o.id,true,"");toast("اعتُمد الطلب وفُعّلت الملفات");renderOrdersAdmin()}catch(err){toast("تعذّر اعتماد الطلب")}return}
     const rj=e.target.closest("[data-orej]");if(rj){const n=prompt("سبب الرفض (يظهر للعميل):","لم يصل التحويل");if(n===null)return;try{await BE.decideOrder(+rj.dataset.orej||rj.dataset.orej,false,n);toast("رُفض الطلب");renderOrdersAdmin()}catch(err){toast("تعذّر رفض الطلب")}return}
     if(e.target.closest("#orAllGo")){const v=$("#orAll").value;if(v==="")return;document.querySelectorAll("#orBody [data-pf]").forEach(tr=>{if(!tr.querySelector("[data-pfree]").checked)tr.querySelector("[data-pp]").value=v});return toast("طُبّق السعر، اضغط «حفظ الأسعار»")}
-    if(e.target.closest("#orSaveP")){const map={};document.querySelectorAll("#orBody [data-pf]").forEach(tr=>{const v=tr.querySelector("[data-pp]").value,fr=tr.querySelector("[data-pfree]").checked,ac=tr.querySelector("[data-pact]").checked,id=tr.dataset.pf,old=SHOP.prices[id];
-        if(v!==""||fr||!ac||old)map[id]={price:v===""?(+((SHOP.store||{}).def)||0):+v,free:fr,active:ac}});
-      try{await BE.setPrices(map);await BE.setShop("store",Object.assign({},SHOP.store,{def:+$("#orDef").value||0}));await loadShop();toast("حُفظت الأسعار")}catch(err){toast("تعذّر حفظ الأسعار")}return}
+    if(e.target.closest("#orSaveP")){const map={};document.querySelectorAll("#orBody [data-pf]").forEach(tr=>{const v=tr.querySelector("[data-pp]").value,dv=tr.querySelector("[data-pd]").value,fr=tr.querySelector("[data-pfree]").checked,ac=tr.querySelector("[data-pact]").checked,id=tr.dataset.pf,old=SHOP.prices[id];
+        if(v!==""||dv!==""||fr||!ac||old)map[id]={price:v===""?(+((SHOP.store||{}).def)||0):+v,discount:Math.min(100,Math.max(0,+dv||0)),free:fr,active:ac}});
+      try{await BE.setPrices(map);await BE.setShop("store",Object.assign({},SHOP.store,{def:+$("#orDef").value||0,sale_pct:Math.min(100,Math.max(0,+$("#orSaleP").value||0)),sale_until:$("#orSaleU").value||"",sale_note:$("#orSaleN").value.trim()}));await loadShop();toast("حُفظت الأسعار والخصومات")}catch(err){toast("تعذّر حفظ الأسعار")}return}
+    if(e.target.closest("#cpAdd")){const code=$("#cpCode").value.trim().toUpperCase(),pct=+$("#cpPct").value;
+      if(!/^[A-Z0-9_-]{3,30}$/.test(code))return toast("الكود من 3 إلى 30 حرفًا إنجليزيًا أو رقمًا");if(!(pct>0&&pct<=100))return toast("نسبة الخصم بين 1 و100");
+      try{await BE.saveCoupon({code,pct,expires:$("#cpExp").value||null,max_uses:+$("#cpMax").value||null,note:$("#cpNote").value.trim()||null,active:true});toast("أُضيف الكود "+code);renderOrdersAdmin()}catch(err){toast(/duplicate|exists/i.test(err&&err.message||"")?"هذا الكود موجود":"تعذّر إضافة الكود")}return}
+    const ct=e.target.closest("[data-cptog]");if(ct){try{await BE.updCoupon(ct.dataset.cptog,{active:ct.dataset.on!=="1"});renderOrdersAdmin()}catch(err){toast("تعذّر التعديل")}return}
+    const cd=e.target.closest("[data-cpdel]");if(cd){if(!confirm("حذف الكود "+cd.dataset.cpdel+"؟"))return;try{await BE.delCoupon(cd.dataset.cpdel);renderOrdersAdmin()}catch(err){toast("تعذّر الحذف")}return}
     if(e.target.closest("#orSaveB")){const b={bank:$("#bkBank").value.trim(),holder:$("#bkHolder").value.trim(),iban:$("#bkIban").value.trim().toUpperCase(),whatsapp:$("#bkWa").value.trim(),note:$("#bkNote").value.trim()};
       if(b.iban&&!/^SA\d{2}[\dA-Z ]{18,30}$/.test(b.iban))return toast("رقم الآيبان يجب أن يبدأ بـ SA");
       try{await BE.setShop("bank",b);await BE.setShop("store",Object.assign({},SHOP.store,{currency:$("#bkCur").value.trim()||"ر.س"}));await loadShop();toast("حُفظت بيانات الدفع")}catch(err){toast("تعذّر الحفظ")}return}
@@ -4730,12 +4764,21 @@ function demoBackend(){
     async getShop(){const s=store.get("hq:demo:shop",null)||{prices:{weeks:{price:0,free:true},"ks-absence":{price:0,free:true},certs:{price:0,free:true}},store:{def:10,currency:"ر.س"},bank:{bank:"",holder:"",iban:"",whatsapp:"966554801019",note:""}};return JSON.parse(JSON.stringify(s))},
     async setPrices(map){const s=await this.getShop();Object.assign(s.prices,map);store.set("hq:demo:shop",s)},
     async setShop(key,val){const s=await this.getShop();s[key]=val;store.set("hq:demo:shop",s)},
-    async placeOrder(o){const u=me();if(!u)throw{code:"auth"};const s=await this.getShop(),L=store.get("hq:demo:orders",[]);let t=0;[...new Set(o.items)].forEach(f=>{const p=s.prices[f];if(!p)t+=+s.store.def||0;else if(p.active!==false&&!p.free)t+=+p.price||0});
-      const id=(L.reduce((a,x)=>Math.max(a,x.id),1000))+1;L.unshift({id,uid:u.uid,email:u.email,name:u.name,items:o.items,total:t,receipt:o.receipt||null,ref:o.ref||"",note:o.note||"",status:"pending",admin_note:null,at:Date.now()});if(!store.set("hq:demo:orders",L))throw{code:"quota"};return{id,total:t}},
+    async checkCoupon(c){const L=store.get("hq:demo:coupons",[]),x=L.find(k=>k.code===String(c||"").trim().toUpperCase()),today=new Date().toISOString().slice(0,10);return x&&x.active&&(!x.expires||x.expires>=today)&&(!x.max_uses||x.used<x.max_uses)?x.pct:null},
+    async listCoupons(){return store.get("hq:demo:coupons",[])},
+    async saveCoupon(c){const L=store.get("hq:demo:coupons",[]);if(L.some(k=>k.code===c.code))throw{message:"duplicate"};L.unshift(Object.assign({used:0},c));store.set("hq:demo:coupons",L)},
+    async updCoupon(code,patch){const L=store.get("hq:demo:coupons",[]);const x=L.find(k=>k.code===code);if(x)Object.assign(x,patch);store.set("hq:demo:coupons",L)},
+    async delCoupon(code){store.set("hq:demo:coupons",store.get("hq:demo:coupons",[]).filter(k=>k.code!==code))},
+    async placeOrder(o){const u=me();if(!u)throw{code:"auth"};const s=await this.getShop(),L=store.get("hq:demo:orders",[]);let t=0;const st=s.store||{};let sale=+st.sale_pct||0;if(st.sale_until&&new Date()>new Date(st.sale_until+"T23:59:59+03:00"))sale=0;
+      [...new Set(o.items)].forEach(f=>{const p=s.prices[f];if(!p)t+=Math.round((+st.def||0)*(1-sale/100)*100)/100;else if(p.active!==false&&!p.free){const d=Math.max(+p.discount||0,sale);t+=Math.round((+p.price||0)*(1-d/100)*100)/100}});
+      let disc=0,coupon=null;if(o.coupon){const pc=await this.checkCoupon(o.coupon);if(!pc)throw{code:"coupon",message:"invalid coupon"};coupon=String(o.coupon).toUpperCase();disc=Math.round(t*pc)/100}
+      const sub=t;t=Math.max(Math.round((t-disc)*100)/100,0);
+      const id=(L.reduce((a,x)=>Math.max(a,x.id),1000))+1;L.unshift({id,uid:u.uid,email:u.email,name:u.name,items:o.items,total:t,subtotal:sub,discount:disc,coupon,receipt:o.receipt||null,ref:o.ref||"",note:o.note||"",status:"pending",admin_note:null,at:Date.now()});if(!store.set("hq:demo:orders",L))throw{code:"quota"};return{id,total:t}},
     async myOrders(){const u=me();if(!u)return[];return store.get("hq:demo:orders",[]).filter(o=>o.uid===u.uid).map(o=>Object.assign({},o,{receipt:undefined}))},
     async listOrders(){return store.get("hq:demo:orders",[]).map(o=>Object.assign({},o,{receipt:undefined}))},
     async getReceipt(id){const o=store.get("hq:demo:orders",[]).find(x=>x.id===id);return o&&o.receipt},
-    async decideOrder(id,ok,note){const L=store.get("hq:demo:orders",[]),o=L.find(x=>x.id===id);if(!o)throw{code:"nf"};o.status=ok?"approved":"rejected";o.admin_note=note||null;o.decided_at=Date.now();store.set("hq:demo:orders",L);
+    async decideOrder(id,ok,note){const L=store.get("hq:demo:orders",[]),o=L.find(x=>x.id===id);if(!o)throw{code:"nf"};const was=o.status;o.status=ok?"approved":"rejected";o.admin_note=note||null;o.decided_at=Date.now();store.set("hq:demo:orders",L);
+      if(ok&&was!=="approved"&&o.coupon){const C=store.get("hq:demo:coupons",[]),x=C.find(k=>k.code===o.coupon);if(x){x.used=(x.used||0)+1;store.set("hq:demo:coupons",C)}}
       if(ok){const u=users.find(x=>x.uid===o.uid);if(u){u.perms=u.perms||{};o.items.forEach(f=>u.perms[f]={e:true,p:true});u.status="active";u.requests=(u.requests||[]).filter(f=>!o.items.includes(f));save()}}},
     async listCards(){const u=me();if(!u)return[];const out=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith("hq:demo:card:")){const d=store.get(k,null);if(d&&d.uid===u.uid)out.push({id:k.slice(13),name:d.name,tpl:d.tpl,at:d.at})}}return out.sort((a,b)=>b.at-a.at)}
   };
@@ -4752,6 +4795,7 @@ async function sbBackend(cfg){
     if(/Password should|weak/i.test(m))return{code:"auth/weak-password"};
     if(/rate limit|too many/i.test(m))return{code:"auth/too-many-requests"};
     if(/row-level security|not allowed|permission/i.test(m))return{code:"permission-denied"};
+    if(/invalid coupon/i.test(m))return{code:"coupon",message:"invalid coupon"};
     return{code:"sb",message:m}};
   const ck=r=>{if(r.error)throw norm(r.error);return r.data};
   const toMe=(u,p)=>p?{uid:u.id,email:p.email||u.email,name:p.name||"",phone:p.phone||"",title:p.title||"",gender:p.gender||"m",school:p.school||"",dept:p.dept||"",status:p.status,role:p.role,perms:p.perms||{},requests:p.requests||[],createdAt:p.created_at?Date.parse(p.created_at):0}
@@ -4792,12 +4836,17 @@ async function sbBackend(cfg){
     async delCard(id){ck(await sb.from("cards").delete().eq("id",id))},
     async listCards(){if(!uid)return[];return ck(await sb.from("cards").select("id,name,tpl,created_at").eq("uid",uid).order("created_at",{ascending:false})).map(c=>({id:c.id,name:c.name,tpl:c.tpl,at:Date.parse(c.created_at)}))},
     /* المتجر */
-    async getShop(){const [p,s]=await Promise.all([sb.from("products").select("file_id,price,free,active"),sb.from("settings").select("key,value")]);const prices={};ck(p).forEach(x=>prices[x.file_id]={price:+x.price,free:!!x.free,active:x.active!==false});const st={};ck(s).forEach(x=>st[x.key]=x.value);return{prices,store:st.store||{def:10},bank:st.bank||{}}},
-    async setPrices(map){const rows=Object.keys(map).map(k=>({file_id:k,price:+map[k].price||0,free:!!map[k].free,active:map[k].active!==false,updated_at:new Date().toISOString()}));if(rows.length)ck(await sb.from("products").upsert(rows))},
+    async getShop(){const [p,s]=await Promise.all([sb.from("products").select("file_id,price,discount,free,active"),sb.from("settings").select("key,value")]);const prices={};ck(p).forEach(x=>prices[x.file_id]={price:+x.price,discount:+x.discount||0,free:!!x.free,active:x.active!==false});const st={};ck(s).forEach(x=>st[x.key]=x.value);return{prices,store:st.store||{def:10},bank:st.bank||{}}},
+    async setPrices(map){const rows=Object.keys(map).map(k=>({file_id:k,price:+map[k].price||0,discount:+map[k].discount||0,free:!!map[k].free,active:map[k].active!==false,updated_at:new Date().toISOString()}));if(rows.length)ck(await sb.from("products").upsert(rows))},
     async setShop(key,val){ck(await sb.from("settings").upsert({key,value:val}))},
-    async placeOrder(o){if(!uid)throw{code:"auth"};return ck(await sb.from("orders").insert({uid,items:o.items,receipt:o.receipt||null,ref:o.ref||"",note:o.note||""}).select("id,total").single())},
-    async myOrders(){if(!uid)return[];return ck(await sb.from("orders").select("id,items,total,status,admin_note,ref,created_at,decided_at").eq("uid",uid).order("created_at",{ascending:false})).map(x=>Object.assign(x,{at:Date.parse(x.created_at)}))},
-    async listOrders(){return ck(await sb.from("orders").select("id,uid,email,name,items,total,status,admin_note,ref,note,created_at,decided_at").order("created_at",{ascending:false}).limit(300)).map(x=>Object.assign(x,{at:Date.parse(x.created_at)}))},
+    async placeOrder(o){if(!uid)throw{code:"auth"};return ck(await sb.from("orders").insert({uid,items:o.items,coupon:o.coupon||null,receipt:o.receipt||null,ref:o.ref||"",note:o.note||""}).select("id,total").single())},
+    async checkCoupon(c){return ck(await sb.rpc("check_coupon",{c}))},
+    async listCoupons(){return ck(await sb.from("coupons").select("*").order("created_at",{ascending:false}))},
+    async saveCoupon(c){ck(await sb.from("coupons").insert(c))},
+    async updCoupon(code,patch){ck(await sb.from("coupons").update(patch).eq("code",code))},
+    async delCoupon(code){ck(await sb.from("coupons").delete().eq("code",code))},
+    async myOrders(){if(!uid)return[];return ck(await sb.from("orders").select("id,items,total,discount,coupon,status,admin_note,ref,created_at,decided_at").eq("uid",uid).order("created_at",{ascending:false})).map(x=>Object.assign(x,{at:Date.parse(x.created_at)}))},
+    async listOrders(){return ck(await sb.from("orders").select("id,uid,email,name,items,total,subtotal,discount,coupon,status,admin_note,ref,note,created_at,decided_at").order("created_at",{ascending:false}).limit(300)).map(x=>Object.assign(x,{at:Date.parse(x.created_at)}))},
     async getReceipt(id){const r=ck(await sb.from("orders").select("receipt").eq("id",id).maybeSingle());return r&&r.receipt},
     async decideOrder(id,ok,note){ck(await sb.rpc("decide_order",{oid:id,ok,note:note||null}));if(reloadUsers)reloadUsers()}
   };
@@ -4861,7 +4910,7 @@ function renderBanner(){
   else if(ME.status==="pending"){h=`${demo}<span>${ico("clock")}طلب تسجيلك قيد المراجعة من المشرف. ستتمكن من التعديل والطباعة بعد تفعيل حسابك ومنحك الصلاحيات.</span>`}
   else if(ME.status!=="active"){h=`${demo}<span>${ico("ban")}حسابك غير مفعّل حاليًا (${ST_LBL[ME.status]||ME.status}). تواصل مع المشرف.</span>`}
   else if(!(EDIT&&PRINT)&&STORE&&SHOP_OK){const sp=shopP(S.file),inC=cartGet().includes(S.file);
-    h=`${demo}<span>${ico("lock")}هذا الملف مدفوع: ${money(sp.price)}. اشترِه لتتمكن من تعديله وطباعته.</span><span class="acts">${inC?`<a class="btn sm" href="#/store">${ico("cart")}في السلة — إتمام الشراء</a>`:`<button class="btn sm" data-buy="1">${ico("cart")}أضف إلى السلة</button><button class="btn primary sm" data-buynow="1">شراء الآن</button>`}</span>`}
+    h=`${demo}<span>${ico("lock")}هذا الملف مدفوع: ${priceHTML(sp)}${sp.disc>0?` (خصم ${Math.round(sp.disc)}%)`:""}. اشترِه لتتمكن من تعديله وطباعته.</span><span class="acts">${inC?`<a class="btn sm" href="#/store">${ico("cart")}في السلة — إتمام الشراء</a>`:`<button class="btn sm" data-buy="1">${ico("cart")}أضف إلى السلة</button><button class="btn primary sm" data-buynow="1">شراء الآن</button>`}</span>`}
   else if(!(EDIT&&PRINT)){
     const asked=(ME.requests||[]).includes(S.file);
     const what=EDIT?"الطباعة":PRINT?"التعديل":"التعديل والطباعة";
