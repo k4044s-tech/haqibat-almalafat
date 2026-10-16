@@ -892,6 +892,29 @@ table.t.kx2{border-right:2px solid #111;border-bottom:2px solid #111}
 .or-cpf{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:.4rem 0 .75rem}
 .cp-t td,.cp-t th{width:auto!important;text-align:start!important}
 @media (max-width:900px){.or-cpf{grid-template-columns:1fr 1fr}}
+html.embed .sb,html.embed .sb-gap,html.embed .sb-ov,html.embed .hdr,html.embed .vhead,html.embed .access,html.embed .ksr,html.embed .certc,html.embed .opts,html.embed .ftb,html.embed .ft,html.embed .pbar,html.embed .toast{display:none!important}
+html.embed .mn,html.embed .sb-inset,html.embed #vFile{margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#eef2f4!important}
+html.embed .pframe{padding:8px!important;border:0!important;background:none!important}html.embed .pages{pointer-events:none}
+.st-n{font-weight:700;color:inherit;text-decoration:none}.st-n:hover{color:var(--pri)}
+.pr-back{margin-bottom:.8rem}.pr-back a{color:var(--mut-fg);text-decoration:none;font-size:.9rem}
+.pr-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:2rem;align-items:start}
+.pr-tags{display:flex;gap:.4rem;flex-wrap:wrap}.pr-tag{background:#0f766e;color:#fff;border-radius:999px;padding:.25rem .8rem;font-size:.8rem;font-weight:700}.pr-tag.soft{background:var(--mut);color:var(--fg);font-weight:500}
+.pr-t{font-size:1.9rem;line-height:1.35;margin:.8rem 0 .5rem}
+.pr-p{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;margin-bottom:.8rem}.pr-p b{font-size:1.7rem;color:#0f766e}.pr-p s{color:var(--mut-fg);font-size:1.05rem}.pr-off{background:#fee2e2;color:#991b1b;border-radius:999px;padding:.1rem .6rem;font-size:.8rem;font-weight:700}
+.pr-d{font-size:1.02rem;line-height:1.9;margin:0 0 1rem}
+.pr-a{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.pr-i h3{font-size:1.15rem;margin:1.4rem 0 .6rem}
+.pr-aud{display:flex;gap:.4rem;flex-wrap:wrap}.pr-aud span{border:1px solid var(--bd);border-radius:999px;padding:.25rem .75rem;font-size:.85rem;background:var(--card)}
+.pr-st{margin:0;padding-inline-start:0;list-style:none;counter-reset:st;display:flex;flex-direction:column;gap:.6rem}
+.pr-st li{counter-increment:st;display:flex;gap:.7rem;line-height:1.75;font-size:.95rem}
+.pr-st li::before{content:counter(st);flex:none;width:1.8rem;height:1.8rem;border-radius:50%;background:#0f766e;color:#fff;display:grid;place-items:center;font-weight:700;font-size:.85rem;margin-top:.1rem}
+.pr-f{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:.45rem .9rem}.pr-f li{display:flex;gap:.4rem;font-size:.88rem;line-height:1.6}.pr-f .ico{width:16px;height:16px;color:#0f766e;flex:none;margin-top:.2rem}
+.pr-c{margin:0;padding-inline-start:1.3rem;columns:2;column-gap:1.5rem;font-size:.85rem;line-height:1.9;color:var(--mut-fg)}
+.pr-n{margin-top:1rem;font-size:.85rem;color:var(--mut-fg)}
+.pr-v{position:sticky;top:4.5rem;background:var(--mut);border-radius:1rem;padding:.8rem;display:flex;flex-direction:column;gap:.5rem}
+.pr-vh{display:flex;justify-content:space-between;align-items:center}
+.pr-fr{width:100%;height:72vh;border:0;border-radius:.7rem;background:#fff}
+@media (max-width:900px){.pr-g{grid-template-columns:1fr}.pr-v{position:static}.pr-fr{height:60vh}.pr-f,.pr-c{grid-template-columns:1fr;columns:1}.pr-t{font-size:1.5rem}}
 /* card platform */
 .cd-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:.75rem}
 .cd-t{display:flex;flex-direction:column;gap:.4rem;align-items:stretch;padding:.4rem;border:1px solid var(--bd);border-radius:.6rem;background:var(--card);cursor:pointer;font:inherit;font-size:.78rem;color:var(--fg);text-align:center;transition:border-color .15s,box-shadow .15s}
@@ -1176,6 +1199,10 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <aside class="card st-cart" id="stCart"></aside>
         </div>
       </section>
+      <section class="view" data-v="product" id="vProd" hidden>
+        <div class="pr-back"><a href="#/store">→ العودة إلى المتجر</a></div>
+        <div id="prBody"></div>
+      </section>
       <section class="view" data-v="orders" id="vOrders" hidden>
         <div class="vhead"><div><h1>إدارة المتجر</h1><p>راجع إيصالات التحويل واعتمد الطلبات لتُفعَّل الملفات للعميل تلقائيًا، وحدد الأسعار والملفات المجانية وبيانات الحساب البنكي.</p></div></div>
         <div class="card"><div class="card-h"><div class="seg" id="orTabs"><button type="button" data-ot="orders" class="on">الطلبات</button><button type="button" data-ot="prices">الأسعار</button><button type="button" data-ot="coupons">أكواد الخصم</button><button type="button" data-ot="bank">بيانات الدفع</button></div></div><div class="card-c" id="orBody"></div></div>
@@ -1298,6 +1325,17 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <div class="grid2" style="margin-top:.9rem"><div class="field"><label for="coRef">رقم العملية (اختياري)</label><input id="coRef" class="inp" maxlength="60"></div><div class="field"><label for="coNote">ملاحظة (اختياري)</label><input id="coNote" class="inp" maxlength="200"></div></div>
     <p class="err" id="coErr" style="color:#dc2626;min-height:1.2em;margin:.6rem 0 0"></p>
     <div class="row ksrow"><span style="flex:1"></span><button class="btn" type="button" data-cox>إلغاء</button><button class="btn primary" type="button" id="coGo">إرسال الطلب</button></div>
+  </div>
+</div>
+<div class="modal" id="piM" role="dialog" aria-modal="true" aria-labelledby="piT">
+  <div class="dialog lg">
+    <button class="x-btn" type="button" data-pix aria-label="إغلاق"><i data-i="x"></i></button>
+    <div class="dlg-h"><h3 id="piT">وصف الملف</h3><p><b id="piName"></b> — اترك أي خانة فارغة ليُستخدم النص التلقائي.</p></div>
+    <div class="field"><label for="piDesc">الوصف</label><textarea id="piDesc" class="inp" rows="4"></textarea></div>
+    <div class="field" style="margin-top:.8rem"><label for="piAud">لمن هذا الملف؟ (افصل بفاصلة)</label><input id="piAud" class="inp"></div>
+    <div class="field" style="margin-top:.8rem"><label for="piSteps">طريقة إدخال البيانات (خطوة في كل سطر)</label><textarea id="piSteps" class="inp" rows="6"></textarea></div>
+    <div class="field" style="margin-top:.8rem"><label for="piNote">ملاحظة تظهر أسفل الصفحة (اختياري)</label><input id="piNote" class="inp"></div>
+    <div class="row ksrow"><button class="btn sm ghost" type="button" id="piAuto">إظهار النص التلقائي</button><span style="flex:1"></span><button class="btn" type="button" data-pix>إلغاء</button><button class="btn primary" type="button" id="piSave">حفظ</button></div>
   </div>
 </div>
 <div class="modal" id="rcM" role="dialog" aria-modal="true" aria-label="صورة الإيصال"><div class="dialog lg"><button class="x-btn" type="button" data-rcx aria-label="إغلاق"><i data-i="x"></i></button><div class="dlg-h"><h3>إيصال التحويل</h3></div><img id="rcImg" alt="صورة الإيصال" style="max-width:100%;max-height:70vh;display:block;margin:0 auto;border-radius:8px"></div></div>
@@ -3074,6 +3112,7 @@ function rGrid(file,t,p,pi,num){
 
 /* ---------- render ---------- */
 const $=s=>document.querySelector(s);
+if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed");
 const pagesEl=$("#pages");
 let cur=null, skip=new Set();
 
@@ -4270,7 +4309,7 @@ function renderUsersView(){
 function renderCrumb(){
   let h="";
   if(CURV==="file"){const f=FILES.find(x=>x.id===S.file)||FILES[0];h=`<a class="mid" href="#/">الملفات</a>${ico("chevl","mid")}<span class="mid">${esc(catOf(f))}</span>${ico("chevl","mid")}<b>${esc(f.name())}</b>`}
-  else h=`<b>${{dash:"لوحة التحكم",users:"المستخدمون والصلاحيات",account:"الحساب",cards:"منصة البطاقات",store:"المتجر",orders:"إدارة المتجر"}[CURV]}</b>`;
+  else h=`<b>${{dash:"لوحة التحكم",users:"المستخدمون والصلاحيات",account:"الحساب",cards:"منصة البطاقات",store:"المتجر",orders:"إدارة المتجر",product:"تفاصيل الملف"}[CURV]}</b>`;
   $("#crumb").innerHTML=h;
 }
 function go(h){if(location.hash===h)route();else location.hash=h}
@@ -4528,7 +4567,7 @@ function renderStore(){
   $("#stGrid").innerHTML=L.length?L.map(f=>{const p=shopP(f.id),own=owns(f.id),inC=cart.includes(f.id);
     const badge=own?`<span class="st-b own">${ico("check")}متاح لك</span>`:p.free?`<span class="st-b free">مجاني</span>`:`<span class="st-b${p.disc>0?" sale":""}">${p.disc>0?`<em>-${Math.round(p.disc)}%</em>`:""}${priceHTML(p)}</span>`;
     const act=own||(p.free&&isActive())?`<a class="btn sm primary" href="#/f/${f.id}">فتح الملف</a>`:p.free?`<button class="btn sm primary" type="button" data-sauth>سجّل لتستخدمه مجانًا</button>`:inC?`<button class="btn sm" type="button" data-srm="${f.id}">${ico("check")}في السلة</button>`:`<button class="btn sm primary" type="button" data-sadd="${f.id}">${ico("cart")}أضف للسلة</button>`;
-    return `<div class="st-c"><div class="st-h"><span class="fic">${ico(fIcon(f))}</span>${badge}</div><b class="st-n">${esc(f.name())}</b><small class="muted">${esc(catOf(f))}</small><div class="st-a"><a class="btn sm ghost" href="#/f/${f.id}">${ico("eye")}معاينة</a>${act}</div></div>`}).join(""):`<p class="muted">لا توجد ملفات مطابقة.</p>`;
+    return `<div class="st-c"><div class="st-h"><span class="fic">${ico(fIcon(f))}</span>${badge}</div><a class="st-n" href="#/p/${f.id}">${esc(f.name())}</a><small class="muted">${esc(catOf(f))}</small><div class="st-a"><a class="btn sm ghost" href="#/p/${f.id}">${ico("info")}التفاصيل</a>${act}</div></div>`}).join(""):`<p class="muted">لا توجد ملفات مطابقة.</p>`;
   const tot=cartTotal(cart);
   $("#stCart").innerHTML=`<div class="card-h"><div class="card-t">${ico("cart")} السلة <span class="muted">(${cart.length})</span></div></div><div class="card-c">${cart.length?`<ul class="st-cl">${cart.map(f=>`<li><span>${esc(fileName(f))}</span><b>${priceHTML(shopP(f))}</b><button type="button" class="x" data-srm="${f}" aria-label="إزالة">×</button></li>`).join("")}</ul><div class="st-tot"><span>الإجمالي</span><b>${money(tot)}</b></div><button class="btn primary" type="button" id="stCheckout" style="width:100%">إتمام الشراء</button>`:`<p class="muted">السلة فارغة. أضف الملفات التي تحتاجها، ثم ادفع بتحويل بنكي.</p>`}</div>`;
 }
@@ -4582,7 +4621,7 @@ async function renderOrdersAdmin(){
     const cats=[...new Set(FILES.map(catOf))];
     $("#orBody").innerHTML=`<div class="or-def"><div class="field"><label for="orDef">السعر الافتراضي لأي ملف بلا سعر (${CUR()})</label><input id="orDef" class="inp" type="number" min="0" step="1" value="${+((SHOP.store||{}).def)||0}"></div><div class="field"><label for="orAll">تطبيق سعر على كل الملفات المدفوعة</label><div class="row" style="gap:.5rem"><input id="orAll" class="inp" type="number" min="0" step="1" placeholder="مثال: 15"><button class="btn sm" type="button" id="orAllGo">تطبيق</button></div></div></div>
       <div class="or-sale"><h4>خصم عام على كل الملفات</h4><p class="muted">يُطبّق على كل الملفات المدفوعة حتى التاريخ المحدد. إذا كان للملف خصم خاص أكبر يُعتمد الأكبر.</p><div class="or-def"><div class="field"><label for="orSaleP">نسبة الخصم %</label><input id="orSaleP" class="inp" type="number" min="0" max="100" step="1" value="${+((SHOP.store||{}).sale_pct)||""}" placeholder="0 = بلا خصم"></div><div class="field"><label for="orSaleU">ينتهي في (اختياري)</label><input id="orSaleU" class="inp" type="date" value="${esc((SHOP.store||{}).sale_until||"")}"></div></div><div class="field"><label for="orSaleN">عبارة تظهر في المتجر (اختياري)</label><input id="orSaleN" class="inp" maxlength="80" value="${esc((SHOP.store||{}).sale_note||"")}" placeholder="مثال: بمناسبة اليوم الوطني"></div></div>
-      ${cats.map(c=>`<div class="or-cat"><h4>${esc(c)}</h4><table class="or-t"><thead><tr><th>الملف</th><th>السعر (${CUR()})</th><th>خصم %</th><th>مجاني</th><th>معروض</th></tr></thead><tbody>${FILES.filter(f=>catOf(f)===c).map(f=>{const p=shopP(f.id),has=!!SHOP.prices[f.id];return `<tr data-pf="${f.id}"><td>${esc(f.name())}</td><td><input class="inp" type="number" min="0" step="1" data-pp value="${has?p.price:""}" placeholder="${+((SHOP.store||{}).def)||0}"></td><td><input class="inp" type="number" min="0" max="100" step="1" data-pd value="${has&&+SHOP.prices[f.id].discount?+SHOP.prices[f.id].discount:""}" placeholder="0"></td><td><input type="checkbox" data-pfree${p.free?" checked":""}></td><td><input type="checkbox" data-pact${p.active?" checked":""}></td></tr>`}).join("")}</tbody></table></div>`).join("")}
+      ${cats.map(c=>`<div class="or-cat"><h4>${esc(c)}</h4><table class="or-t"><thead><tr><th>الملف</th><th>السعر (${CUR()})</th><th>خصم %</th><th>مجاني</th><th>معروض</th><th></th></tr></thead><tbody>${FILES.filter(f=>catOf(f)===c).map(f=>{const p=shopP(f.id),has=!!SHOP.prices[f.id];return `<tr data-pf="${f.id}"><td>${esc(f.name())}</td><td><input class="inp" type="number" min="0" step="1" data-pp value="${has?p.price:""}" placeholder="${+((SHOP.store||{}).def)||0}"></td><td><input class="inp" type="number" min="0" max="100" step="1" data-pd value="${has&&+SHOP.prices[f.id].discount?+SHOP.prices[f.id].discount:""}" placeholder="0"></td><td><input type="checkbox" data-pfree${p.free?" checked":""}></td><td><input type="checkbox" data-pact${p.active?" checked":""}></td><td><button class="btn sm ghost" type="button" data-pinfo="${f.id}">${(SHOP.prices[f.id]||{}).info&&Object.keys(SHOP.prices[f.id].info).length?"✓ الوصف":"الوصف"}</button></td></tr>`}).join("")}</tbody></table></div>`).join("")}
       <div class="or-save"><button class="btn primary" type="button" id="orSaveP">حفظ الأسعار</button></div>`;
   }else if(ORDtab==="coupons"){
     if(!be.listCoupons){$("#orBody").innerHTML=`<p class="muted">غير متاح.</p>`;return}
@@ -4605,6 +4644,14 @@ async function shopInit(){
   $("#stShow").addEventListener("click",e=>{const b=e.target.closest("[data-show]");if(b){STF.show=b.dataset.show;renderStore()}});
   $("#vStore").addEventListener("click",e=>{const a=e.target.closest("[data-sadd]");if(a)return cartAdd(a.dataset.sadd);const r=e.target.closest("[data-srm]");if(r)return cartSet(cartGet().filter(f=>f!==r.dataset.srm));
     if(e.target.closest("[data-sauth]"))return openAuth(ME?"in":"up");if(e.target.closest("#stCheckout"))return openCheckout()});
+  $("#vProd").addEventListener("click",e=>{const b=e.target.closest("[data-pbuy]");if(b){cartAdd(b.dataset.pbuy);return renderProduct(b.dataset.pbuy)}
+    const n=e.target.closest("[data-pnow]");if(n){cartAdd(n.dataset.pnow,true);go("#/store");setTimeout(openCheckout,250);return}
+    if(e.target.closest("[data-pauth]"))openAuth(ME?"in":"up")});
+  $("#piM").addEventListener("click",e=>{if(e.target.id==="piM"||e.target.closest("[data-pix]"))$("#piM").classList.remove("open")});
+  $("#piAuto").addEventListener("click",()=>{const f=FILES.find(x=>x.id===piFid);if(!f)return;const cur=(SHOP.prices[f.id]||{}).info;if(SHOP.prices[f.id])SHOP.prices[f.id].info={};const I=pInfo(f);if(SHOP.prices[f.id])SHOP.prices[f.id].info=cur;$("#piDesc").value=I.desc;$("#piAud").value=I.aud.join("، ");$("#piSteps").value=I.steps.join("\n")});
+  $("#piSave").addEventListener("click",async()=>{const f=FILES.find(x=>x.id===piFid);if(!f)return;const p=shopP(f.id),o=SHOP.prices[f.id]||{price:p.base,discount:0,free:false,active:true};
+    const info={};[["desc","#piDesc"],["audience","#piAud"],["steps","#piSteps"],["note","#piNote"]].forEach(([k,sel])=>{const v=$(sel).value.trim();if(v)info[k]=v});
+    try{await BE.setPrices({[f.id]:{price:+o.price||0,discount:+o.discount||0,free:!!o.free,active:o.active!==false,info}});await loadShop();$("#piM").classList.remove("open");toast("حُفظ وصف «"+f.name()+"»")}catch(err){toast("تعذّر الحفظ")}});
   $("#coM").addEventListener("click",e=>{if(e.target.id==="coM"||e.target.closest("[data-cox]"))$("#coM").classList.remove("open");const cp=e.target.closest("[data-copyiban]");if(cp&&navigator.clipboard)navigator.clipboard.writeText(cp.dataset.copyiban.replace(/\s/g,"")).then(()=>toast("نُسخ رقم الآيبان"))});
   $("#coFile").addEventListener("change",async e=>{const f=e.target.files[0];e.target.value="";if(f)try{await coPick(f)}catch(err){$("#coErr").textContent="تعذّرت قراءة الصورة"}});
   $("#coPick").addEventListener("click",()=>$("#coFile").click());
@@ -4612,12 +4659,13 @@ async function shopInit(){
   $("#orTabs").addEventListener("click",e=>{const b=e.target.closest("[data-ot]");if(b){ORDtab=b.dataset.ot;renderOrdersAdmin()}});
   $("#orBody").addEventListener("click",async e=>{
     const f=e.target.closest("[data-of]");if(f){ORDf=f.dataset.of;return renderOrdersAdmin()}
+    const pi=e.target.closest("[data-pinfo]");if(pi){piFid=pi.dataset.pinfo;const fl=FILES.find(x=>x.id===piFid),o=(SHOP.prices[piFid]||{}).info||{};$("#piName").textContent=fl.name();$("#piDesc").value=o.desc||"";$("#piAud").value=o.audience||"";$("#piSteps").value=o.steps||"";$("#piNote").value=o.note||"";$("#piM").classList.add("open");return}
     const rc=e.target.closest("[data-orc]");if(rc){const im=await BE.getReceipt(+rc.dataset.orc||rc.dataset.orc);if(!im)return toast("لا يوجد إيصال");$("#rcImg").src=im;$("#rcM").classList.add("open");return}
     const ap=e.target.closest("[data-oapp]");if(ap){const o=ORD.find(x=>String(x.id)===ap.dataset.oapp);if(!confirm("اعتماد الطلب "+o.id+" وتفعيل "+o.items.length+" ملف لـ "+(o.name||o.email)+"؟"))return;try{await BE.decideOrder(o.id,true,"");toast("اعتُمد الطلب وفُعّلت الملفات");renderOrdersAdmin()}catch(err){toast("تعذّر اعتماد الطلب")}return}
     const rj=e.target.closest("[data-orej]");if(rj){const n=prompt("سبب الرفض (يظهر للعميل):","لم يصل التحويل");if(n===null)return;try{await BE.decideOrder(+rj.dataset.orej||rj.dataset.orej,false,n);toast("رُفض الطلب");renderOrdersAdmin()}catch(err){toast("تعذّر رفض الطلب")}return}
     if(e.target.closest("#orAllGo")){const v=$("#orAll").value;if(v==="")return;document.querySelectorAll("#orBody [data-pf]").forEach(tr=>{if(!tr.querySelector("[data-pfree]").checked)tr.querySelector("[data-pp]").value=v});return toast("طُبّق السعر، اضغط «حفظ الأسعار»")}
     if(e.target.closest("#orSaveP")){const map={};document.querySelectorAll("#orBody [data-pf]").forEach(tr=>{const v=tr.querySelector("[data-pp]").value,dv=tr.querySelector("[data-pd]").value,fr=tr.querySelector("[data-pfree]").checked,ac=tr.querySelector("[data-pact]").checked,id=tr.dataset.pf,old=SHOP.prices[id];
-        if(v!==""||dv!==""||fr||!ac||old)map[id]={price:v===""?(+((SHOP.store||{}).def)||0):+v,discount:Math.min(100,Math.max(0,+dv||0)),free:fr,active:ac}});
+        if(v!==""||dv!==""||fr||!ac||old)map[id]={price:v===""?(+((SHOP.store||{}).def)||0):+v,discount:Math.min(100,Math.max(0,+dv||0)),free:fr,active:ac,info:(old&&old.info)||{}}});
       try{await BE.setPrices(map);await BE.setShop("store",Object.assign({},SHOP.store,{def:+$("#orDef").value||0,sale_pct:Math.min(100,Math.max(0,+$("#orSaleP").value||0)),sale_until:$("#orSaleU").value||"",sale_note:$("#orSaleN").value.trim()}));await loadShop();toast("حُفظت الأسعار والخصومات")}catch(err){toast("تعذّر حفظ الأسعار")}return}
     if(e.target.closest("#cpAdd")){const code=$("#cpCode").value.trim().toUpperCase(),pct=+$("#cpPct").value;
       if(!/^[A-Z0-9_-]{3,30}$/.test(code))return toast("الكود من 3 إلى 30 حرفًا إنجليزيًا أو رقمًا");if(!(pct>0&&pct<=100))return toast("نسبة الخصم بين 1 و100");
@@ -4631,7 +4679,77 @@ async function shopInit(){
   $("#rcM").addEventListener("click",e=>{if(e.target.id==="rcM"||e.target.closest("[data-rcx]"))$("#rcM").classList.remove("open")});
   loadShop();
 }
-let PEND=0;async function shopPending(){if(!isAdmin()||!BE||!BE.listOrders)return;try{PEND=(await BE.listOrders()).filter(o=>o.status==="pending").length;renderList()}catch(e){}}
+let PEND=0,piFid=null;async function shopPending(){if(!isAdmin()||!BE||!BE.listOrders)return;try{PEND=(await BE.listOrders()).filter(o=>o.status==="pending").length;renderList()}catch(e){}}
+/* ---------- صفحة تفاصيل الملف في المتجر ---------- */
+const AUD_LBL={teach:["المعلم","المعلمة"],deputy:["وكيل المدرسة","وكيلة المدرسة"],couns:["الموجه الطلابي","الموجهة الطلابية"],health:["الموجه الصحي","الموجهة الصحية"],act:["رائد النشاط","رائدة النشاط"],lab:["محضر المختبر","محضرة المختبر"],sped:["معلم صعوبات التعلم","معلمة صعوبات التعلم"],lrc:["أمين مصادر التعلم","أمينة مصادر التعلم"],kg:["معلمة رياض الأطفال","معلمة رياض الأطفال"],adm:["المساعد الإداري","المساعدة الإدارية"]};
+const CAT_DESC={
+ "الأداء الوظيفي":n=>`ملف شواهد الأداء الوظيفي لـ${n}، مرتّب على عناصر التقييم المعتمدة وأوزانها؛ لكل عنصر صفحة فاصلة وصفحات شواهد تضع فيها صورك أو روابطك فتتحول إلى باركود يمسحه المقيّم.`,
+ "الخطط":n=>`${n} بنماذج جاهزة ومنظمة: تحليل الواقع، والأهداف، والإجراءات، والمسؤوليات، والمؤشرات، والمتابعة؛ تكتب مباشرة في الصفحة وتطبع بهوية وزارة التعليم.`,
+ "ملفات المدرسة":n=>`${n} جاهز للتعبئة: محاضر ونماذج وسجلات متابعة بصياغة رسمية، يكتمل في ملف واحد مرتب بفهرس وترقيم تلقائي.`,
+ "ملفات الإدارة والتوجيه":n=>`${n} يجمع السجلات والنماذج التي تحتاجها خلال العام في ملف واحد منظم، بصياغة رسمية وهوية وزارة التعليم، مع صفحات شواهد.`,
+ "ملفات المعلم":n=>`${n} بصفحات منظمة جاهزة للتعبئة والطباعة، تكتب فيها مباشرة وتضيف ما تحتاجه من جداول وصور وصفحات.`,
+ "الشهادات والتهنئة":n=>`${n}: شهادة باسم كل طالب من قائمة الفصل بضغطة واحدة، بعدة أنواع وتصاميم ونص قابل للتعديل.`,
+ "كشوف الطلاب":n=>`${n}: تُدخل أسماء طلاب الفصل مرة واحدة فتظهر في الكشف تلقائيًا، وتُضاف الصفحات بحسب عدد الطلاب، مع غلاف وخيار الاتجاه أفقي أو عمودي.`
+};
+const FILE_DESC={
+ "ks-marks":"سجل متابعة الطلاب بتوزيع الدرجات الرسمي: تختار قالب المادة (المواد الأساسية أو التقويم المستمر) أو تبني توزيعك، وترصد الدرجات فيُجمع المجموع تلقائيًا، وتُنشأ صفحة «تحليل نتائج الفصل» بالمتوسطات والتقديرات وأعلى الطلاب ومن يحتاج دعمًا.",
+ "certs":"مولّد شهادات يُخرج شهادة لكل اسم في الفصل: شكر وتقدير، تفوق، حضور، مشاركة، تخرج، وشكر للمعلمين؛ بثلاثة تصاميم ونص تعدّله بنفسك.",
+ "weeks":"توزيع الأسابيع الدراسية للعام 1448هـ بالتاريخين الهجري والميلادي: المواعيد المهمة، وأسابيع الفصلين مع الإجازات، وجدول توزيع المنهج على الأسابيع للوحدات والدروس.",
+ "star":"حقيبة المعلم المتميز: الهوية المهنية (البطاقة التعريفية، الرؤية والرسالة، فلسفة التعليم، الأهداف)، والممارسات التدريسية، والتطوير والإنجاز، مع صفحات شواهد التميز.",
+ "etec":"ملف التقويم المدرسي الذاتي مرتبط بمؤشرات دليل هيئة تقويم التعليم والتدريب، مع مستوى الأداء والشواهد لكل مؤشر وخطة التحسين.",
+ "exams":"ملف لجنة الاختبارات (الكنترول): التشكيل والمهام، والجداول، ومحاضر الاستلام والتسليم، وكشوف التوقيعات، ومتابعة الغياب في الاختبارات.",
+ "nafs":"ملف الاختبارات الوطنية (نافس): الخطط العلاجية، ومتابعة التدريب، وتحليل النتائج، وتقارير المتابعة والشواهد."
+};
+function pAudience(f){const out=[],gi=S.gender==="f"?1:0;Object.keys(PRESET_FILES).forEach(k=>{if(PRESET_FILES[k].includes(f.id))out.push(AUD_LBL[k][gi])});
+  const c=catOf(f);if(/المدرسة|الإدارة|الخطط/.test(c)||!out.length)out.push(g("قائد المدرسة","قائدة المدرسة"));return [...new Set(out)]}
+function pSpec(f){try{return f.build()}catch(e){return{pages:[]}}}
+function pInfo(f){
+  const sp=pSpec(f),P=sp.pages||[],types=new Set(P.map(p=>p.t)),o=(SHOP.prices[f.id]||{}).info||{},cat=catOf(f),n=f.name();
+  const desc=o.desc||FILE_DESC[f.id]||(CAT_DESC[cat]||CAT_DESC["ملفات المعلم"])(n);
+  const aud=o.audience?String(o.audience).split(/[،,]\s*/).filter(Boolean):pAudience(f);
+  const feat=[];const pc=P.length+(sp.bare?0:2);
+  if(!sp.bare)feat.push("غلاف وفهرس وترقيم صفحات تلقائي");
+  feat.push("هوية وزارة التعليم وخمسة أنماط تصميم وألوان قابلة للتغيير");
+  if(f.ks)feat.push("أسماء الطلاب تُدخل مرة واحدة وتظهر في كل الكشوف");
+  if(f.dist)feat.push("توزيع درجات بقوالب المواد وجمع تلقائي وتحليل للنتائج");
+  if(types.has("ev"))feat.push("صفحات شواهد تتحول فيها الصور والروابط إلى باركود");
+  if(f.cert)feat.push("شهادة لكل طالب بضغطة، بعدة أنواع وتصاميم");
+  if(types.has("wk"))feat.push("تواريخ هجرية وميلادية جاهزة مع الإجازات الرسمية");
+  feat.push("تحرير مباشر مثل Word: خطوط وجداول وصور وإضافة صفحات");
+  feat.push("نسخة للبنين والبنات بتغيير الصياغة تلقائيًا");
+  const steps=o.steps?String(o.steps).split(/\n+/).map(x=>x.trim()).filter(Boolean):(()=>{const s=[];
+    s.push("اضغط «بيانات الملف» واكتب اسمك والمدرسة والإدارة مرة واحدة، فتظهر في ترويسة كل الصفحات.");
+    if(f.ks)s.push("أضف فصلًا والصق أسماء الطلاب، أو استوردها من ملف Excel مُصدَّر من نظام نور.");
+    if(f.dist)s.push("اضغط «توزيع الدرجات» واختر قالب المادة أو عدّل البنود ودرجاتها، ثم ارصد الدرجات في الكشف فيُحسب المجموع والتحليل تلقائيًا.");
+    if(f.cert)s.push("اختر نوع الشهادة وتصميمها، وعدّل نصها إن أردت؛ تُنشأ شهادة لكل اسم في الفصل.");
+    if(types.has("wk"))s.push("التواريخ والإجازات جاهزة؛ اكتب الوحدات والدروس أمام كل أسبوع، وعلّم ما نُفّذ.");
+    if(!f.ks&&!f.cert)s.push("اضغط على أي نص أو خانة في الصفحات واكتب مباشرة، واستخدم شريط التنسيق لإضافة جداول وصور وصفحات جديدة.");
+    if(types.has("ev"))s.push("في صفحات الشواهد ارفع صورة أو ألصق رابطًا فيتحول إلى باركود، وحدد عدد الشواهد في كل صفحة.");
+    s.push("اختر النمط واللون والاتجاه، ثم اضغط «طباعة / حفظ PDF». تُحفظ تعديلاتك تلقائيًا في جهازك.");return s})();
+  return{desc,aud,feat,steps,pc,titles:P.filter(p=>p.t!=="kcov").map(p=>p.title||"").filter(Boolean),note:o.note||""};
+}
+function renderProduct(fid){
+  const f=FILES.find(x=>x.id===fid),box=$("#prBody");if(!f){box.innerHTML=`<p class="muted">الملف غير موجود.</p>`;return}
+  const I=pInfo(f),p=shopP(f.id),own=owns(f.id),inC=cartGet().includes(f.id);
+  const tl=[...new Set(I.titles)];
+  const act=own||(p.free&&isActive())?`<a class="btn primary" href="#/f/${f.id}">فتح الملف</a>`:p.free?`<button class="btn primary" type="button" data-pauth>أنشئ حسابًا واستخدمه مجانًا</button>`:inC?`<a class="btn primary" href="#/store">${ico("cart")}في السلة — إتمام الشراء</a>`:`<button class="btn primary" type="button" data-pbuy="${f.id}">${ico("cart")}أضف إلى السلة</button><button class="btn" type="button" data-pnow="${f.id}">شراء الآن</button>`;
+  box.innerHTML=`<div class="pr-g">
+    <div class="pr-i">
+      <div class="pr-tags"><span class="pr-tag">ملف إلكتروني</span><span class="pr-tag soft">${esc(catOf(f))}</span><span class="pr-tag soft">${I.pc} صفحة</span></div>
+      <h1 class="pr-t">${catOf(f)==="الأداء الوظيفي"?"ملف شواهد الأداء الوظيفي — ":""}${esc(f.name())}</h1>
+      <div class="pr-p">${own?`<span class="st-b own">${ico("check")}متاح لك</span>`:p.free?`<span class="st-b free">مجاني</span>`:`<b>${money(p.price)}</b>${p.disc>0&&p.base>p.price?`<s>${money(p.base)}</s><span class="pr-off">خصم ${Math.round(p.disc)}%</span>`:""}`}</div>
+      <p class="pr-d">${esc(I.desc)}</p>
+      <div class="pr-a">${act}</div>
+      <h3>لمن هذا الملف؟</h3><div class="pr-aud">${I.aud.map(a=>`<span>${esc(a)}</span>`).join("")}</div>
+      <h3>طريقة إدخال البيانات</h3><ol class="pr-st">${I.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>
+      <h3>المزايا</h3><ul class="pr-f">${I.feat.map(s=>`<li>${ico("check")}<span>${esc(s)}</span></li>`).join("")}</ul>
+      ${tl.length?`<h3>محتوى الملف</h3><ol class="pr-c">${tl.map(t=>`<li>${esc(t)}</li>`).join("")}</ol>`:""}
+      ${I.note?`<p class="pr-n">${esc(I.note)}</p>`:""}
+    </div>
+    <div class="pr-v"><div class="pr-vh"><b>معاينة حية للملف</b><a class="btn sm ghost" href="#/f/${f.id}">${ico("eye")}فتح المعاينة كاملة</a></div><iframe class="pr-fr" title="معاينة ${esc(f.name())}" loading="lazy" src="${location.pathname}?embed=1#/f/${f.id}"></iframe><p class="muted">المعاينة بعلامة «نسخة للاستعراض»، وتُزال بعد الشراء.</p></div>
+  </div>`;
+  document.title=f.name()+" — المتجر";
+}
 async function showEv(id){
   $("#evvT").textContent="شاهد";$("#evvS").textContent="";$("#evvC").textContent="";
   $("#evvB").textContent="جارٍ تحميل الشاهد…";
@@ -4659,6 +4777,7 @@ function route(){
   else if(h==="#/cards")v="cards";
   else if(h==="#/store")v="store";
   else if(h==="#/orders")v="orders";
+  const pm=h.match(/^#\/p\/([\w-]+)/);if(pm&&FILES.some(f=>f.id===pm[1]))v="product";
   const prev=CURV;CURV=v;
   document.querySelectorAll(".view").forEach(s=>s.hidden=s.dataset.v!==v);
   if(v==="file"){
@@ -4673,10 +4792,11 @@ function route(){
   if(v==="cards")renderCardsView();
   if(v==="store")renderStore();
   if(v==="orders")renderOrdersAdmin();
+  if(v==="product")renderProduct(pm[1]);
   renderCrumb();renderUser();closeDD();try{ftbVis()}catch(e){}
   $("#sbw").classList.remove("mopen");
   if(prev!==v||v==="file")scrollTo(0,0);
-  document.title=(v==="file"?(FILES.find(x=>x.id===fid).name()+" — "):v==="cards"?"منصة البطاقات — ":v==="store"?"المتجر — ":v==="orders"?"إدارة المتجر — ":"")+"حقيبة الملفات المدرسية";
+  document.title=(v==="file"?(FILES.find(x=>x.id===fid).name()+" — "):v==="cards"?"منصة البطاقات — ":v==="store"?"المتجر — ":v==="orders"?"إدارة المتجر — ":v==="product"?((FILES.find(x=>x.id===(pm||[])[1])||{name:()=>""}).name()+" — المتجر — "):"")+"حقيبة الملفات المدرسية";
 }
 addEventListener("hashchange",route);
 addEventListener("scroll",()=>$("#hdr").classList.toggle("scrolled",scrollY>10),{passive:true});
@@ -4836,8 +4956,8 @@ async function sbBackend(cfg){
     async delCard(id){ck(await sb.from("cards").delete().eq("id",id))},
     async listCards(){if(!uid)return[];return ck(await sb.from("cards").select("id,name,tpl,created_at").eq("uid",uid).order("created_at",{ascending:false})).map(c=>({id:c.id,name:c.name,tpl:c.tpl,at:Date.parse(c.created_at)}))},
     /* المتجر */
-    async getShop(){const [p,s]=await Promise.all([sb.from("products").select("file_id,price,discount,free,active"),sb.from("settings").select("key,value")]);const prices={};ck(p).forEach(x=>prices[x.file_id]={price:+x.price,discount:+x.discount||0,free:!!x.free,active:x.active!==false});const st={};ck(s).forEach(x=>st[x.key]=x.value);return{prices,store:st.store||{def:10},bank:st.bank||{}}},
-    async setPrices(map){const rows=Object.keys(map).map(k=>({file_id:k,price:+map[k].price||0,discount:+map[k].discount||0,free:!!map[k].free,active:map[k].active!==false,updated_at:new Date().toISOString()}));if(rows.length)ck(await sb.from("products").upsert(rows))},
+    async getShop(){const [p,s]=await Promise.all([sb.from("products").select("file_id,price,discount,free,active,info"),sb.from("settings").select("key,value")]);const prices={};ck(p).forEach(x=>prices[x.file_id]={price:+x.price,discount:+x.discount||0,free:!!x.free,active:x.active!==false,info:x.info||{}});const st={};ck(s).forEach(x=>st[x.key]=x.value);return{prices,store:st.store||{def:10},bank:st.bank||{}}},
+    async setPrices(map){const rows=Object.keys(map).map(k=>({file_id:k,price:+map[k].price||0,discount:+map[k].discount||0,info:map[k].info||{},free:!!map[k].free,active:map[k].active!==false,updated_at:new Date().toISOString()}));if(rows.length)ck(await sb.from("products").upsert(rows))},
     async setShop(key,val){ck(await sb.from("settings").upsert({key,value:val}))},
     async placeOrder(o){if(!uid)throw{code:"auth"};return ck(await sb.from("orders").insert({uid,items:o.items,coupon:o.coupon||null,receipt:o.receipt||null,ref:o.ref||"",note:o.note||""}).select("id,total").single())},
     async checkCoupon(c){return ck(await sb.rpc("check_coupon",{c}))},
