@@ -339,6 +339,7 @@ table.adm input[type=checkbox],.allbox input{width:1rem;height:1rem;accent-color
 .modal.open{display:flex;animation:fadeIn .15s ease}
 .dialog{position:relative;width:100%;max-width:32rem;max-height:90vh;overflow:auto;display:grid;gap:1rem;background:var(--bg);border:1px solid var(--bd);border-radius:.5rem;padding:1.5rem;box-shadow:var(--sh-lg);animation:zoomIn .2s ease}
 .dialog.lg{max-width:42rem}
+.ui-dlg{max-width:26rem}.ui-dlg p{line-height:1.8;font-size:.92rem}.ui-dlg .ui-act{display:flex;gap:.5rem;justify-content:flex-start}.ui-err{color:var(--dest);font-size:.8rem;min-height:1em;margin-top:-.5rem}
 .dlg-h{display:flex;flex-direction:column;gap:.5rem}
 .dialog h3{margin:0;font-size:1.125rem;font-weight:600;line-height:1}
 .dialog p{margin:0;font-size:.875rem;color:var(--mut-fg)}
@@ -1581,7 +1582,7 @@ function dmNames(n,fem){const r=dmRnd("names"+(fem?"f":"m")),F=fem?DM_FIRST_F:DM
 const DM_STAFF=["أحمد محمد علي","خالد سعد عبدالله","عبدالله علي حسن","فهد ناصر محمد","سعد إبراهيم صالح","علي عمر أحمد","ماجد حسن علي","يوسف عبدالله سعد"];
 const DM_STAFF_F=["نورة محمد علي","سارة سعد عبدالله","ريم علي حسن","هيا ناصر محمد","منى إبراهيم صالح","أمل عمر أحمد","مها حسن علي","العنود عبدالله سعد"];
 function dmSeed(){
-  const set={name:"أحمد محمد علي",job:"معلم رياضيات",school:"مدرسة الأمل الابتدائية",dept:"الإدارة العامة للتعليم بمنطقة الرياض",leader:"خالد سعد عبدالله",stage:"المرحلة الابتدائية",theme:9,pstyle:"id",cover:3};
+  const set={evmode:"qr",name:"أحمد محمد علي",job:"معلم رياضيات",school:"مدرسة الأمل الابتدائية",dept:"الإدارة العامة للتعليم بمنطقة الرياض",leader:"خالد سعد عبدالله",stage:"المرحلة الابتدائية",theme:9,pstyle:"id",cover:3};
   MEMST["hq:set"]=JSON.stringify(set);
   MEMST["hq:roster"]=JSON.stringify({cur:"dm",classes:[{id:"dm",name:"الثالث الابتدائي / أ",subject:"الرياضيات",names:dmNames(24,false)}]});
 }
@@ -1654,14 +1655,14 @@ function demoFill(){
     pw.querySelectorAll(".fld").forEach((fd,i)=>{const k=(fd.querySelector(".k")||{}).textContent||"",v=fd.querySelector(".v");if(!v||v.textContent.trim())return;
       const m=[[/الاسم/,S.name],[/المؤهل/,"بكالوريوس"],[/التخصص/,"رياضيات"],[/رقم الهوية|السجل المدني/,"1XXXXXXXXX"],[/سنوات/,"12 سنة"],[/الجوال|الهاتف/,"05XXXXXXXX"],[/البريد/,"teacher@example.com"],[/القائد|المدير/,S.leader],[/المرحلة/,S.stage],[/المدرسة/,S.school],[/العمل|الوظيفة/,S.job],[/الرقم الوظيفي/,"XXXXXX"],[/تاريخ/,"1436/01/01هـ"],[/النصاب|الحصص/,"18 حصة"]].find(([re])=>re.test(k));
       if(m&&m[1])v.textContent=m[1]});
-    pw.querySelectorAll("[data-img]").forEach((el,i)=>{memImg[S.file+el.dataset.img]=LOGO;paintSlot(el);el.style.backgroundSize="46%";
+    pw.querySelectorAll("[data-img]").forEach((el,i)=>{memImg[S.file+el.dataset.img]=LOGO;store.set(qKey(el.dataset.img),{url:"https://k4044s-tech.github.io/haqibat-almalafat/#/ev/"+(pg+"-"+i),link:true});paintSlot(el);el.style.backgroundSize="46%";
       const cap=el.parentElement.querySelector(".cap");if(cap&&/وصف الشاهد/.test(cap.textContent))cap.textContent=["صورة من تنفيذ الدرس","شهادة شكر وتقدير","محضر اجتماع موثّق","تقرير مختصر للنشاط","نموذج متابعة معبّأ","صورة من سجل المتابعة"][i%6]});
     pw.querySelectorAll('.kmeta b[contenteditable="true"]').forEach(b=>{if(/^\.+$/.test(b.textContent.trim()))b.textContent=/المادة/.test(b.parentElement.textContent)?"الرياضيات":"الأسبوع الأول"});
   });
 }
 
 if(EMBED)dmSeed();
-const DEF={gender:"m",name:"",job:"",school:"",dept:"الإدارة العامة للتعليم بمنطقة ",office:"",leader:"",stage:"",year:"1448هـ",term:"الفصل الدراسي الأول",theme:0,cover:3,font:"moe",pstyle:"id",v2:1,file:"perf-t"};
+const DEF={gender:"m",name:"",job:"",school:"",dept:"الإدارة العامة للتعليم بمنطقة ",office:"",leader:"",stage:"",year:"1448هـ",term:"الفصل الدراسي الأول",theme:0,cover:3,font:"moe",pstyle:"id",v2:1,file:"perf-t",evmode:"qr"};
 let S=Object.assign({},DEF,store.get("hq:set",{}));
 const saveS=()=>store.set("hq:set",S);
 if(!S.v2){S.theme=0;S.cover=3;S.font="moe";S.pstyle="id";S.v2=1;saveS();}
@@ -3530,7 +3531,7 @@ function render(){
   if(typeof ftbCells!=="undefined"){ftbCells.clear();ftbHost=null;ftbVis()}
 }
 function syncControls(){
-  document.querySelectorAll("#eSeg button").forEach(b=>b.classList.toggle("on",b.dataset.e===(S.evmode||"img")));
+  document.querySelectorAll("#eSeg button").forEach(b=>b.classList.toggle("on",b.dataset.e===(S.evmode||"qr")));
   document.querySelectorAll("#gSeg button").forEach(b=>b.classList.toggle("on",b.dataset.g===S.gender));
   {const t=T();$("#pSeg").innerHTML=PSTYLES.map(([id,n,d,nw])=>`<button type="button" data-p="${id}" class="${id===S.pstyle?"on":""}" aria-pressed="${id===S.pstyle}">${stThumb(id,t)}<b>${n}</b><small>${d}</small>${nw?`<span class="nw">جديد</span>`:""}</button>`).join("");
   $("#cSeg").innerHTML=COVERS.map(([c,n])=>`<button type="button" data-c="${c}" class="${c===+S.cover?"on":""}" aria-pressed="${c===+S.cover}">${n}</button>`).join("");}
@@ -3548,16 +3549,17 @@ const memImg={};
 const qKey=k=>"hq3:q:"+S.file+":"+k;
 const nKey=()=>"hq3:n:"+S.file;
 const evN=pi=>Math.min(8,Math.max(1,+(store.get(nKey(),{})[pi]||4)));
-const evCtl=pi=>{const n=evN(pi);return `<div class="evn" data-evn="${pi}"><span>عدد الشواهد</span><button type="button" data-evd="-1" aria-label="إنقاص">−</button><b>${n}</b><button type="button" data-evd="1" aria-label="زيادة">+</button><button type="button" class="all" data-evall>تطبيق على كل صفحات الشواهد</button>${(S.evmode||"img")!=="img"?`<button type="button" class="all" data-evqr>إنشاء الباركود</button>`:""}</div>`};
+const evCtl=pi=>{const n=evN(pi);return `<div class="evn" data-evn="${pi}"><span>عدد الشواهد</span><button type="button" data-evd="-1" aria-label="إنقاص">−</button><b>${n}</b><button type="button" data-evd="1" aria-label="زيادة">+</button><button type="button" class="all" data-evall>تطبيق على كل صفحات الشواهد</button>${(S.evmode||"qr")!=="img"?`<button type="button" class="all" data-evqr>إنشاء الباركود</button>`:""}</div>`};
 function qrSvg(txt){
-  try{const q=qrcode(0,"M");q.addData(txt);q.make();const n=q.getModuleCount();let d="";
+  try{const q=qrcode(0,"Q");q.addData(txt);q.make();const n=q.getModuleCount();let d="";
     for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c} ${r}h1v1h-1z`;
-    return `<svg viewBox="-2 -2 ${n+4} ${n+4}" shape-rendering="crispEdges" role="img" aria-label="باركود الشاهد"><rect x="-2" y="-2" width="${n+4}" height="${n+4}" fill="#fff"/><path d="${d}" fill="#000"/></svg>`}
+    const lw=Math.round(n*.3),lh=Math.round(lw*.76),lx=(n-lw)/2,ly=(n-lh)/2;
+    return `<svg viewBox="-2 -2 ${n+4} ${n+4}" role="img" aria-label="باركود الشاهد"><rect x="-2" y="-2" width="${n+4}" height="${n+4}" fill="#fff"/><path d="${d}" fill="#000" shape-rendering="crispEdges"/><rect x="${lx-.8}" y="${ly-.8}" width="${lw+1.6}" height="${lh+1.6}" rx="1" fill="#fff"/><image href="${LOGO}" x="${lx}" y="${ly}" width="${lw}" height="${lh}" preserveAspectRatio="xMidYMid meet"/></svg>`}
   catch(e){return ""}
 }
 const slotImg=k=>memImg[S.file+k]||store.get(iKey(k),null);
 function paintSlot(el){
-  const k=el.dataset.img,img=slotImg(k),q=store.get(qKey(k),null),m=S.evmode||"img";
+  const k=el.dataset.img,img=slotImg(k),q=store.get(qKey(k),null),m=S.evmode||"qr";
   el.style.backgroundImage="";el.classList.remove("has","isqr","both","pend");
   el.querySelectorAll(".qrv,.qrc").forEach(x=>x.remove());
   const hasQ=q&&q.url;
@@ -3798,7 +3800,7 @@ function ftbStyleSpan(prop,val){
   markDirty(ftbHost);ftbSave();ftbSync();ftbPos();
 }
 function ftbCell(){return ribCell()}
-function ftbRow(kind){
+async function ftbRow(kind){
   {const c0=ribCell(),t0=c0&&c0.closest("table");if(t0&&ribNested(t0)){const tr=c0.parentElement,h=ribHostOf(t0.parentElement);
     if(kind==="rowD"){if(t0.rows.length<=1)return toast("لا يمكن حذف آخر صف");tr.remove()}
     else{const n=tr.cloneNode(true);[...n.cells].forEach(c=>{c.innerHTML="&nbsp;";c.rowSpan=1;c.style.backgroundColor="";if(c.tagName==="TH"){const d=document.createElement("td");d.innerHTML="&nbsp;";c.replaceWith(d)}});kind==="rowA"&&tr.parentElement.rows[0]!==tr?tr.before(n):kind==="rowA"?tr.before(n):tr.after(n)}
@@ -3812,7 +3814,7 @@ function ftbRow(kind){
   if(kind==="rowD"){
     if(tb.rows.length<=1)return toast("لا يمكن حذف آخر صف في الجدول");
     const txt=[...tr.cells].map(c=>c.isContentEditable?c.textContent.trim():"").join("");
-    if(txt&&!confirm("حذف هذا الصف وما فيه؟"))return;
+    if(txt&&!await uiConfirm("حذف هذا الصف وما فيه؟"))return;
     tr.remove();ftbHide();ftbHost=null;
   }else{
     const n=tr.cloneNode(true),st=Date.now().toString(36);
@@ -3854,7 +3856,7 @@ function ftbOpenPop(kind,btn){
   p.innerHTML=`<div class="fsw">${list.map(c=>`<button type="button" data-col="${c}" title="${c}" style="background:${c}"></button>`).join("")}</div><button type="button" class="none" data-col="">${kind==="fore"?"اللون التلقائي":"بلا لون"}</button>`;
   p.hidden=false;const br=btn.getBoundingClientRect(),fr=ftb.getBoundingClientRect();p.style.top=(br.bottom-fr.top+4)+"px";p.style.left=Math.max(0,br.left-fr.left-60)+"px";
 }
-ftb.addEventListener("click",e=>{
+ftb.addEventListener("click",async e=>{
   const cb=e.target.closest("[data-col]");
   if(cb){const c=cb.dataset.col,k=ftbPop;ftbClosePop();
     if(c)ftb.querySelector(`[data-bar="${k}"]`).style.background=c;
@@ -3923,14 +3925,14 @@ function ribNewCell(tag,tbl,pw,ri){const c=document.createElement(tag);if(!ribNe
 /* أعمدة الجدول */
 function ribColIndex(cell){let i=0;for(const c of cell.parentElement.cells){if(c===cell)return i;i+=c.colSpan||1}return i}
 function ribCellAt(tr,ix){let i=0;for(const c of tr.cells){const s=c.colSpan||1;if(ix>=i&&ix<i+s)return c;i+=s}return null}
-function ribCols(kind){
+async function ribCols(kind){
   const cell=ribCell();if(!cell)return toast("ضع المؤشر داخل خلية من الجدول");
   const tbl=cell.closest("table"),pw=tbl.closest(".pwrap"),ix=ribColIndex(cell),rows=[...tbl.rows];
   const ncols=Math.max(...rows.map(r=>[...r.cells].reduce((a,c)=>a+(c.colSpan||1),0)));
   const cg=tbl.querySelector("colgroup"),cols=cg?[...cg.children]:[];
   if(kind==="colD"){
     if(ncols<=1)return toast("لا يمكن حذف آخر عمود");
-    const txt=rows.map(r=>{const c=ribCellAt(r,ix);return c&&c.isContentEditable?c.textContent.trim():""}).join("");if(txt&&!confirm("حذف هذا العمود وما فيه؟"))return;
+    const txt=rows.map(r=>{const c=ribCellAt(r,ix);return c&&c.isContentEditable?c.textContent.trim():""}).join("");if(txt&&!await uiConfirm("حذف هذا العمود وما فيه؟"))return;
     rows.forEach(r=>{const c=ribCellAt(r,ix);if(!c)return;if((c.colSpan||1)>1)c.colSpan--;else c.remove()});
     if(cols[ix]){const w=parseFloat(cols[ix].style.width)||0;cols[ix].remove();const rest=[...cg.children],tot=rest.reduce((a,c)=>a+(parseFloat(c.style.width)||0),0)||1;if(w)rest.forEach(c=>c.style.width=((parseFloat(c.style.width)||0)*(tot+w)/tot).toFixed(2)+"%")}
   }else{
@@ -3984,7 +3986,7 @@ ribImgIn.addEventListener("change",async()=>{const f=ribImgIn.files[0];ribImgIn.
 /* تحديد الصور */
 function ribSelImg(im){if(ribImg)ribImg.classList.remove("isel");ribImg=im;const tb=ftb.querySelector('[data-tab="img"]');
   if(im){im.classList.add("isel");tb.hidden=false;ribShow("img")}else{tb.hidden=true;if(ribTab==="img")ribShow("home")}}
-pagesEl.addEventListener("click",e=>{if(!EDIT)return;const im=e.target.closest("img.uimg");if(im){ribSelImg(im);const h=ribHostOf(im);if(h){ftbHost=h}}else if(ribImg&&!e.target.closest("#ftb"))ribSelImg(null)});
+pagesEl.addEventListener("click",async e=>{if(!EDIT)return;const im=e.target.closest("img.uimg");if(im){ribSelImg(im);const h=ribHostOf(im);if(h){ftbHost=h}}else if(ribImg&&!e.target.closest("#ftb"))ribSelImg(null)});
 function ribImgCmd(c){const im=ribImg;if(!im||!im.isConnected)return toast("اضغط على صورة لتحديدها");const h=ribHostOf(im);
   if(c.startsWith("iw"))im.style.width=c.slice(2)+"%";
   else if(c==="ifR"){im.style.float="right";im.style.margin="0 0 2mm 3mm";im.style.display=""}
@@ -4015,10 +4017,10 @@ function ribAddPage(kind){
   render();const nw=pagesEl.querySelector(`.pwrap[data-pg="${id}"]`);if(nw){nw.scrollIntoView({behavior:"smooth",block:"start"});ribLastPw=nw}
   toast(kind==="dup"?"أُضيفت نسخة من الصفحة بعدها مباشرة":"أُضيفت صفحة جديدة بعد الصفحة الحالية");
 }
-function ribDelPage(){
+async function ribDelPage(){
   if(!EDIT)return needAuth("edit");const pw=ribCurPw();if(!pw)return;const id=pw.dataset.pg;
   if(!/^x/.test(id))return toast("صفحات الملف الأساسية لا تُحذف، يمكنك إخفاؤها من الطباعة بزر «إخفاء / إظهار»");
-  if(!confirm("حذف هذه الصفحة المضافة وما فيها؟"))return;ftbFlush();
+  if(!await uiConfirm("حذف هذه الصفحة المضافة وما فيها؟"))return;ftbFlush();
   const o=store.get(eKey(),{});o["@xp"]=(o["@xp"]||[]).filter(x=>x.id!==id).map(x=>x.after===id?Object.assign(x,{after:(o["@xp"].find(y=>y.id===id)||{}).after||x.after}):x);
   Object.keys(o).forEach(k=>{if(k.startsWith(id+"-")||k===id+"@struct")delete o[k]});store.set(eKey(),o);skip.delete(id);keepY(render);toast("حُذفت الصفحة");
 }
@@ -4035,7 +4037,7 @@ function ribRepAll(){if(!EDIT)return needAuth("edit");const q=$("#frA").value,r=
   ribHosts().forEach(h=>{const w=document.createTreeWalker(h,NodeFilter.SHOW_TEXT);const L=[];while(w.nextNode())L.push(w.currentNode);let ch=false;L.forEach(t=>{if(t.nodeValue.includes(q)){n+=t.nodeValue.split(q).length-1;t.nodeValue=t.nodeValue.split(q).join(r);ch=true}});if(ch)markDirty(h)});
   ftbFlush();$("#frN").textContent=n?("استُبدل "+n+" موضعًا"):"لم يُعثر على النص";}
 /* أوامر الشريط الجديدة */
-ftb.addEventListener("click",e=>{
+ftb.addEventListener("click",async e=>{
   if(e.target.closest("[data-rcol]")){ftb.classList.toggle("rcol");try{store.set("hq:ribcol",ftb.classList.contains("rcol"))}catch(err){}return}
   const tb=e.target.closest("[data-tab]");if(tb){ftb.classList.remove("rcol");ribShow(tb.dataset.tab);return}
   const tg=e.target.closest("[data-tg]");if(tg){const [r,c]=tg.dataset.tg.split(",").map(Number);ftbClosePop();ribIns(ribTableHTML(r,c,true));return}
@@ -4055,13 +4057,13 @@ ftb.addEventListener("click",e=>{
     case "chk":return ribIns('<ul class="uchk"><li>☐ البند الأول</li><li>☐ البند الثاني</li><li>☐ البند الثالث</li></ul>');
     case "sig":return ribIns(`<div class="usig"><span>الاسم: ......................</span><span>التوقيع: ......................</span><span>التاريخ: &nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;/ 1448هـ</span></div><p><br></p>`);
     case "date":if(!ftbRestore())return toast("ضع المؤشر في مكان الإدراج");try{document.execCommand("insertText",false,ribToday())}catch(err){}markDirty(ftbHost);ftbSave();return;
-    case "link":{if(!ftbHost)return toast("حدّد النص المراد ربطه أولًا");ftbSave();const u=prompt("اكتب الرابط (يبدأ بـ https://):","https://");if(!u||!/^https?:\/\/\S+$/i.test(u.trim()))return;ftbRestore();if(getSelection().isCollapsed)ribIns(`<a href="${esc(u.trim())}" target="_blank" rel="noopener">${esc(u.trim())}</a>&nbsp;`);else{try{document.execCommand("createLink",false,u.trim())}catch(err){}markDirty(ftbHost)}return}
+    case "link":{if(!ftbHost)return toast("حدّد النص المراد ربطه أولًا");ftbSave();const u=await uiPrompt("اكتب الرابط كاملًا ليُربط بالنص المحدد.","https://",{title:"إدراج رابط",ok:"إدراج",dir:"ltr",valid:v=>/^https?:\/\/\S+$/i.test(v)?"":"الرابط يجب أن يبدأ بـ https://"});if(!u||!/^https?:\/\/\S+$/i.test(u.trim()))return;ftbRestore();if(getSelection().isCollapsed)ribIns(`<a href="${esc(u.trim())}" target="_blank" rel="noopener">${esc(u.trim())}</a>&nbsp;`);else{try{document.execCommand("createLink",false,u.trim())}catch(err){}markDirty(ftbHost)}return}
     case "pgText":return ribAddPage("text");case "pgTable":return ribAddPage("table");case "pgDup":return ribAddPage("dup");
     case "pgDel":return ribDelPage();case "pgHide":return ribHidePage();
     case "colR":case "colL":case "colD":return ribCols(c);
     case "merge":return ribMerge();case "split":return ribSplit();case "teq":return ribEqual();
     case "vmid":{const L=ftbCells.size?[...ftbCells]:[ribCell()].filter(Boolean);if(!L.length)return toast("ضع المؤشر داخل خلية");const v=getComputedStyle(L[0]).verticalAlign==="middle"?"top":"middle";L.forEach(x=>{x.style.verticalAlign=v;ftbSaveCell(x)});return}
-    case "tdel":{const cell=ribCell(),tbl=cell&&cell.closest("table");if(!tbl)return toast("ضع المؤشر داخل الجدول المُدرج");if(!ribNested(tbl))return toast("لا يُحذف جدول الصفحة الأساسي، يمكنك حذف صفوفه أو إخفاء الصفحة");if(!confirm("حذف هذا الجدول؟"))return;const h=ribHostOf(tbl.parentElement);tbl.remove();ftbClearCells();markDirty(h);return}
+    case "tdel":{const cell=ribCell(),tbl=cell&&cell.closest("table");if(!tbl)return toast("ضع المؤشر داخل الجدول المُدرج");if(!ribNested(tbl))return toast("لا يُحذف جدول الصفحة الأساسي، يمكنك حذف صفوفه أو إخفاء الصفحة");if(!await uiConfirm("حذف هذا الجدول؟"))return;const h=ribHostOf(tbl.parentElement);tbl.remove();ftbClearCells();markDirty(h);return}
     case "find":return ribFind();
     case "count":{const txt=ribHosts().map(h=>h.innerText).join(" ");const w=(txt.match(/[^\s.،,؛:!?«»()\-–]+/g)||[]).length;toast("عدد الكلمات في الملف: "+w.toLocaleString("ar-SA-u-nu-latn")+" — عدد الأحرف: "+txt.replace(/\s/g,"").length.toLocaleString("ar-SA-u-nu-latn"));return}
     case "spell":{const on=!pagesEl.classList.contains("spell");pagesEl.classList.toggle("spell",on);pagesEl.querySelectorAll('[contenteditable="true"]').forEach(x=>x.setAttribute("spellcheck",on?"true":"false"));b.classList.toggle("on",on);toast(on?"فُعّل التدقيق الإملائي (حسب لغة المتصفح)":"أُوقف التدقيق الإملائي");return}
@@ -4083,7 +4085,7 @@ $("#frA").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();
 
 function setImg(el,v){el.style.backgroundImage=`url("${v}")`;el.classList.add("has")}
 let pendingImg=null;
-pagesEl.addEventListener("click",e=>{
+pagesEl.addEventListener("click",async e=>{
   if(!EDIT&&(e.target.closest(".cimg")||e.target.closest("[data-rm]")||e.target.closest("[data-img]"))){e.preventDefault();return needAuth("edit")}
   const ci=e.target.closest(".cimg");
   if(ci){ if(ci.classList.contains("rm")){store.del("hq3:coverimg");render();return;} pendingImg="cover";$("#fileIn").value="";$("#fileIn").click();return;}
@@ -4094,7 +4096,7 @@ pagesEl.addEventListener("click",e=>{
     o[pi]=Math.min(8,Math.max(1,evN(pi)+(+evd.dataset.evd)));store.set(nKey(),o);keepY(render);return}
   const lk=e.target.closest("[data-lk]");
   if(lk){e.stopPropagation();if(!EDIT)return needAuth("edit");const k=lk.dataset.lk,el=lk.parentElement,q=store.get(qKey(k),null);
-    const u=prompt("الصق رابط الشاهد (مثل رابط Google Drive أو ملف PDF) ليظهر باركود له:",q&&q.link?q.url:"");if(u===null)return;
+    const u=await uiPrompt("الصق رابط الشاهد (مثل رابط Google Drive أو ملف PDF) ليتحوّل إلى باركود يمسحه المقيّم. اترك الخانة فارغة لحذف الرابط.",q&&q.link?q.url:"",{title:"ربط الشاهد برابط",ok:"حفظ الرابط",dir:"ltr",ph:"https://",danger:false});if(u===null)return;
     const v=u.trim();if(!v){if(q&&q.link){store.del(qKey(k));paintSlot(el)}return}
     if(!/^https?:\/\/\S+$/i.test(v))return toast("الرابط يجب أن يبدأ بـ https://");
     if(q&&q.id&&BE&&BE.delEv)BE.delEv(q.id).catch(()=>{});
@@ -4126,7 +4128,7 @@ $("#fileIn").addEventListener("change",e=>{
     if(!store.set(iKey(k),url))toast("أُضيفت الصورة، لكن لن تبقى بعد إغلاق الصفحة لامتلاء مساحة التخزين");
     const oq=store.get(qKey(k),null);if(oq&&oq.link)store.del(qKey(k));
     paintSlot(target);
-    if((S.evmode||"img")!=="img")makeQR(target);
+    if((S.evmode||"qr")!=="img")makeQR(target);
   };img.src=r.result};
   r.readAsDataURL(file);
 });
@@ -4219,10 +4221,10 @@ $("#ksLand").addEventListener("click",e=>{const b=e.target.closest("[data-o]");i
 $("#ksCov").addEventListener("click",()=>{if(!EDIT)return needAuth("edit");const v=!ksCov();store.set("hq3:kcov:"+S.file,v);keepY(render);toast(v?"أُضيف غلاف للكشف":"أُخفي غلاف الكشف")});
 $("#ksFit").addEventListener("click",()=>{if(!EDIT)return needAuth("edit");const v=!ksFit();store.set("hq3:fit:"+S.file,v);keepY(render);toast(v?"جُمع الكشف في صفحة واحدة وصُغّرت الصفوف لتتسع":"وُزّع الكشف على الصفحات بالحجم المعتاد")});
 $("#ksEdit").addEventListener("click",()=>{const c=rosterCur();openKs(c&&c.id)});
-$("#ksDel").addEventListener("click",()=>{
+$("#ksDel").addEventListener("click",async()=>{
   if(!EDIT)return needAuth("edit");
   const r=roster(),c=rosterCur();if(!c)return;
-  if(!confirm("حذف فصل «"+c.name+"» وأسماء طلابه من هذا المتصفح؟"))return;
+  if(!await uiConfirm("حذف فصل «"+c.name+"» وأسماء طلابه من هذا المتصفح؟"))return;
   r.classes=r.classes.filter(x=>x.id!==c.id);r.cur=r.classes[0]?r.classes[0].id:"";store.set("hq:roster",r);keepY(render);toast("حُذف الفصل");
 });
 function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
@@ -4243,7 +4245,7 @@ $("#ksFile").addEventListener("change",async e=>{
   rows.forEach(r=>{const cell=(r||[]).map(c=>String(c==null?"":c).replace(/\s+/g," ").trim()).find(s=>/[؀-ۿ]/.test(s)&&s.split(" ").length>=2&&s.length<=70&&!/\d/.test(s)&&!bad.test(s));if(cell&&names[names.length-1]!==cell)names.push(cell)});
   if(!names.length)return toast("لم أجد أسماء في الملف. انسخ عمود الأسماء والصقه في المربع");
   const cur=ksLines();
-  $("#ksNames").value=(cur.length&&!confirm("استبدال الأسماء الحالية بـ "+names.length+" اسمًا من الملف؟ (إلغاء = إضافتها في الآخر)")?cur.concat(names):names).join("\n");
+  $("#ksNames").value=(cur.length&&!(await uiConfirm("في القائمة أسماء حالية. هل تستبدلها بـ "+names.length+" اسمًا من الملف، أم تضيف الأسماء الجديدة في آخرها؟",{title:"استيراد الأسماء",ok:"استبدال الأسماء",cancel:"إضافتها في الآخر",danger:false}))?cur.concat(names):names).join("\n");
   ksCount();toast("استُورد "+names.length+" اسمًا — راجعها ثم احفظ");
 });
 /* ---------- منشئ توزيع الدرجات ---------- */
@@ -4349,9 +4351,9 @@ $("#eSeg").addEventListener("click",e=>{const b=e.target.closest("[data-e]");if(
 $("#cSeg").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;S.cover=+b.dataset.c;saveS();render()});
 $("#sws").addEventListener("click",e=>{const b=e.target.closest("[data-t]");if(!b)return;S.theme=+b.dataset.t;saveS();render()});
 $("#fSel").addEventListener("change",e=>{S.font=e.target.value;saveS();render()});
-$("#resetBtn").addEventListener("click",()=>{
+$("#resetBtn").addEventListener("click",async()=>{
   if(!EDIT)return needAuth("edit");
-  if(!confirm("سيتم حذف كل ما كتبته وأضفته من صور في هذا الملف. هل تريد المتابعة؟"))return;
+  if(!await uiConfirm("سيتم حذف كل ما كتبته وأضفته من صور في هذا الملف. هل تريد المتابعة؟"))return;
   ftbDirty.clear();ftbDirtyPages.clear();clearTimeout(saveT);store.del(eKey());store.del(eKeyKs());
   try{Object.keys(localStorage).filter(k=>k.startsWith("hq3:i:"+S.file+":")||k.startsWith("hq3:q:"+S.file+":")).forEach(k=>localStorage.removeItem(k))}catch(e){}
   store.del(nKey());
@@ -4860,7 +4862,7 @@ function cdInitView(){
   $("#cdPub").addEventListener("click",cdPublish);
   $("#cpM").addEventListener("click",e=>{if(e.target.id==="cpM"||e.target.closest("[data-cpx]"))$("#cpM").classList.remove("open");const cp=e.target.closest("[data-copy]");if(cp){navigator.clipboard&&navigator.clipboard.writeText($("#cpLink").value).then(()=>toast("نُسخ الرابط")).catch(()=>{$("#cpLink").select()})}});
   $("#cdMine").addEventListener("click",async e=>{const a=e.target.closest("[data-cshow]");if(a)return cdShowLink(a.dataset.cshow,a.dataset.n);
-    const d=e.target.closest("[data-cdel]");if(d){if(!confirm("حذف هذه البطاقة؟ سيتوقف رابطها عن العمل."))return;try{await BE.delCard(d.dataset.cdel);toast("حُذفت البطاقة");renderMyCards()}catch(err){toast("تعذّر الحذف")}}
+    const d=e.target.closest("[data-cdel]");if(d){if(!await uiConfirm("حذف هذه البطاقة؟ سيتوقف رابطها عن العمل."))return;try{await BE.delCard(d.dataset.cdel);toast("حُذفت البطاقة");renderMyCards()}catch(err){toast("تعذّر الحذف")}}
     const ed=e.target.closest("[data-cedit]");if(ed){try{const c=await BE.getCard(ed.dataset.cedit);if(c){const n=JSON.parse(JSON.stringify(c));delete n.uid;delete n.at;n.pid=ed.dataset.cedit;CDsel=2;cdSet(n);scrollTo({top:0,behavior:"smooth"});toast("فُتحت البطاقة للتعديل، ثم اضغط «تحديث الرابط»")}}catch(err){toast("تعذّر فتح البطاقة")}}});
 }
 function cdAuth(){if(!ME)return openAuth("in","سجّل الدخول لتحميل البطاقات ونشرها.");needAuth("edit")}
@@ -4920,6 +4922,23 @@ async function showCardPage(id){
     if(navigator.canShare){$("#cvSh").hidden=false;$("#cvSh").addEventListener("click",async()=>{const v=need();if(!v)return;try{const b=await cdBlob(CVcard,v),f=new File([b],cdSlug(v.name||d.name)+".png",{type:"image/png"});if(navigator.canShare({files:[f]}))await navigator.share({files:[f],title:d.name||"بطاقة"});else cdSave(b,f.name)}catch(e){}})}
   }catch(e){console.error(e);$("#cvB").innerHTML=`<p class="muted">تعذّر تحميل البطاقة.</p>`}
 }
+/* ---------- نوافذ التأكيد والإدخال بتصميم التطبيق (بدل نوافذ المتصفح) ---------- */
+function uiDialog(o){return new Promise(res=>{
+  let m=document.getElementById("uiDlg");
+  if(!m){m=document.createElement("div");m.className="modal";m.id="uiDlg";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-labelledby","uiDlgT");document.body.appendChild(m)}
+  const danger=o.danger!=null?o.danger:/حذف|رفض|إلغاء صلاحية/.test(o.msg||"");
+  m.innerHTML=`<div class="dialog ui-dlg"><div class="dlg-h"><h3 id="uiDlgT">${esc(o.title||(o.input?"إدخال":danger?"تأكيد الحذف":"تأكيد"))}</h3><p>${esc(o.msg||"")}</p></div>${o.input?`<input class="inp" id="uiDlgIn" ${o.type?`type="${o.type}"`:""} dir="${o.dir||"auto"}" value="${esc(o.value||"")}" placeholder="${esc(o.ph||"")}"><div class="ui-err" id="uiDlgE"></div>`:""}<div class="row ui-act"><button class="btn ${danger?"danger":"primary"}" type="button" data-uok>${esc(o.ok||(danger?"حذف":o.input?"حفظ":"تأكيد"))}</button><button class="btn" type="button" data-ucancel>${esc(o.cancel||"إلغاء")}</button></div></div>`;
+  const inp=m.querySelector("#uiDlgIn"),prev=document.activeElement;
+  const done=v=>{m.classList.remove("open");document.removeEventListener("keydown",kd,true);try{prev&&prev.focus&&prev.focus({preventScroll:true})}catch(e){}res(v)};
+  const ok=()=>{if(inp){const v=inp.value.trim();if(o.valid){const er=o.valid(v);if(er){m.querySelector("#uiDlgE").textContent=er;inp.focus();return}}done(v)}else done(true)};
+  const kd=e=>{if(e.key==="Escape"){e.preventDefault();e.stopPropagation();done(inp?null:false)}else if(e.key==="Enter"&&(inp?document.activeElement===inp:true)){e.preventDefault();ok()}};
+  m.onclick=e=>{if(e.target===m||e.target.closest("[data-ucancel]"))done(inp?null:false);else if(e.target.closest("[data-uok]"))ok()};
+  if(inp)inp.oninput=()=>{m.querySelector("#uiDlgE").textContent=""};
+  document.addEventListener("keydown",kd,true);m.classList.add("open");
+  setTimeout(()=>{if(inp){inp.focus();inp.select()}else m.querySelector("[data-uok]").focus()},30);
+})}
+const uiConfirm=(msg,o)=>uiDialog(Object.assign({msg},o||{}));
+const uiPrompt=(msg,value,o)=>uiDialog(Object.assign({msg,value,input:true},o||{}));
 /* ---------- الأدوات (تُباع في المتجر بترخيص سنوي) ---------- */
 const TOOLS=[
  {id:"nafes",tool:true,url:"nafes.html",ic:"target",cat:"الأدوات",term:"year",name:()=>"راصد نافس",
@@ -5067,8 +5086,8 @@ async function shopInit(){
     const f=e.target.closest("[data-of]");if(f){ORDf=f.dataset.of;return renderOrdersAdmin()}
     const pi=e.target.closest("[data-pinfo]");if(pi){piFid=pi.dataset.pinfo;const fl=PRODS().find(x=>x.id===piFid),o=(SHOP.prices[piFid]||{}).info||{};$("#piName").textContent=fl.name();$("#piDesc").value=o.desc||"";$("#piAud").value=o.audience||"";$("#piSteps").value=o.steps||"";$("#piNote").value=o.note||"";$("#piM").classList.add("open");return}
     const rc=e.target.closest("[data-orc]");if(rc){const im=await BE.getReceipt(+rc.dataset.orc||rc.dataset.orc);if(!im)return toast("لا يوجد إيصال");$("#rcImg").src=im;$("#rcM").classList.add("open");return}
-    const ap=e.target.closest("[data-oapp]");if(ap){const o=ORD.find(x=>String(x.id)===ap.dataset.oapp);if(!confirm("اعتماد الطلب "+o.id+" وتفعيل "+o.items.length+" ملف لـ "+(o.name||o.email)+"؟"))return;try{await BE.decideOrder(o.id,true,"");toast("اعتُمد الطلب وفُعّلت الملفات");renderOrdersAdmin()}catch(err){toast("تعذّر اعتماد الطلب")}return}
-    const rj=e.target.closest("[data-orej]");if(rj){const n=prompt("سبب الرفض (يظهر للعميل):","لم يصل التحويل");if(n===null)return;try{await BE.decideOrder(+rj.dataset.orej||rj.dataset.orej,false,n);toast("رُفض الطلب");renderOrdersAdmin()}catch(err){toast("تعذّر رفض الطلب")}return}
+    const ap=e.target.closest("[data-oapp]");if(ap){const o=ORD.find(x=>String(x.id)===ap.dataset.oapp);if(!(await uiConfirm("سيُعتمد الطلب رقم "+o.id+" وتُفعَّل "+o.items.length+" منتجات لـ "+(o.name||o.email)+".",{title:"اعتماد الطلب",ok:"اعتماد وتفعيل",danger:false})))return;try{await BE.decideOrder(o.id,true,"");toast("اعتُمد الطلب وفُعّلت الملفات");renderOrdersAdmin()}catch(err){toast("تعذّر اعتماد الطلب")}return}
+    const rj=e.target.closest("[data-orej]");if(rj){const n=await uiPrompt("اكتب سبب الرفض، ويظهر للعميل في صفحة طلباته.","لم يصل التحويل",{title:"رفض الطلب",ok:"رفض الطلب",danger:true});if(n===null)return;try{await BE.decideOrder(+rj.dataset.orej||rj.dataset.orej,false,n);toast("رُفض الطلب");renderOrdersAdmin()}catch(err){toast("تعذّر رفض الطلب")}return}
     if(e.target.closest("#orAllGo")){const v=$("#orAll").value;if(v==="")return;document.querySelectorAll("#orBody [data-pf]").forEach(tr=>{if(!tr.querySelector("[data-pfree]").checked)tr.querySelector("[data-pp]").value=v});return toast("طُبّق السعر، اضغط «حفظ الأسعار»")}
     if(e.target.closest("#orSaveP")){const map={};document.querySelectorAll("#orBody [data-pf]").forEach(tr=>{const v=tr.querySelector("[data-pp]").value,dv=tr.querySelector("[data-pd]").value,fr=tr.querySelector("[data-pfree]").checked,ac=tr.querySelector("[data-pact]").checked,id=tr.dataset.pf,old=SHOP.prices[id];
         if(v!==""||dv!==""||fr||!ac||old)map[id]={price:v===""?(+((SHOP.store||{}).def)||0):+v,discount:Math.min(100,Math.max(0,+dv||0)),free:fr,active:ac,info:(old&&old.info)||{}}});
@@ -5077,7 +5096,7 @@ async function shopInit(){
       if(!/^[A-Z0-9_-]{3,30}$/.test(code))return toast("الكود من 3 إلى 30 حرفًا إنجليزيًا أو رقمًا");if(!(pct>0&&pct<=100))return toast("نسبة الخصم بين 1 و100");
       try{await BE.saveCoupon({code,pct,expires:$("#cpExp").value||null,max_uses:+$("#cpMax").value||null,note:$("#cpNote").value.trim()||null,active:true});toast("أُضيف الكود "+code);renderOrdersAdmin()}catch(err){toast(/duplicate|exists/i.test(err&&err.message||"")?"هذا الكود موجود":"تعذّر إضافة الكود")}return}
     const ct=e.target.closest("[data-cptog]");if(ct){try{await BE.updCoupon(ct.dataset.cptog,{active:ct.dataset.on!=="1"});renderOrdersAdmin()}catch(err){toast("تعذّر التعديل")}return}
-    const cd=e.target.closest("[data-cpdel]");if(cd){if(!confirm("حذف الكود "+cd.dataset.cpdel+"؟"))return;try{await BE.delCoupon(cd.dataset.cpdel);renderOrdersAdmin()}catch(err){toast("تعذّر الحذف")}return}
+    const cd=e.target.closest("[data-cpdel]");if(cd){if(!await uiConfirm("حذف الكود "+cd.dataset.cpdel+"؟"))return;try{await BE.delCoupon(cd.dataset.cpdel);renderOrdersAdmin()}catch(err){toast("تعذّر الحذف")}return}
     if(e.target.closest("#orSaveB")){const b={bank:$("#bkBank").value.trim(),holder:$("#bkHolder").value.trim(),iban:$("#bkIban").value.trim().toUpperCase(),whatsapp:$("#bkWa").value.trim(),note:$("#bkNote").value.trim()};
       if(b.iban&&!/^SA\d{2}[\dA-Z ]{18,30}$/.test(b.iban))return toast("رقم الآيبان يجب أن يبدأ بـ SA");
       try{await BE.setShop("bank",b);await BE.setShop("store",Object.assign({},SHOP.store,{currency:$("#bkCur").value.trim()||"ر.س"}));await loadShop();toast("حُفظت بيانات الدفع")}catch(err){toast("تعذّر الحفظ")}return}
@@ -5335,7 +5354,7 @@ async function sbBackend(cfg){
     if(!u)cur=null;else{const {data}=await sb.from("profiles").select("*").eq("id",u.id).maybeSingle();cur=toMe(u,data)}
   }catch(e){console.error(e)}ready=true;subs.forEach(f=>f(cur));loading=null})();return loading}
   sb.auth.onAuthStateChange(ev=>{
-    if(ev==="PASSWORD_RECOVERY")setTimeout(async()=>{const np=prompt("اكتب كلمة المرور الجديدة (8 أحرف على الأقل):");if(np&&np.length>=8){const {error}=await sb.auth.updateUser({password:np});toast(error?"تعذّر تغيير كلمة المرور":"تم تغيير كلمة المرور")}},400);
+    if(ev==="PASSWORD_RECOVERY")setTimeout(async()=>{const np=await uiPrompt("اكتب كلمة المرور الجديدة لحسابك.","",{title:"تعيين كلمة مرور جديدة",ok:"حفظ كلمة المرور",type:"password",dir:"ltr",valid:v=>v.length>=8?"":"8 أحرف على الأقل"});if(np&&np.length>=8){const {error}=await sb.auth.updateUser({password:np});toast(error?"تعذّر تغيير كلمة المرور":"تم تغيير كلمة المرور")}},400);
     if(ev!=="TOKEN_REFRESHED")setTimeout(loadMe,0)});
   await loadMe();
   addEventListener("focus",()=>{if(uid)loadMe()});
@@ -5569,10 +5588,10 @@ $("#admM").addEventListener("click",async e=>{
     if(act==="back"){admEdit=null;return renderAdmin()}
     if(act==="perms"){admEdit=uid;return renderAdmin()}
     if(act==="approve"){const s=document.querySelector(`[data-preset="${uid}"]`);const pv=s?s.value:"role";await BE.update(uid,{status:"active",perms:pv==="all"?{all:{e:true,p:true}}:pv==="none"?{}:presetFor(u.title)});toast("تم تفعيل الحساب")}
-    if(act==="reject"){if(!confirm("رفض طلب "+(u.name||"")+"؟"))return;await BE.update(uid,{status:"rejected"});toast("تم رفض الطلب")}
+    if(act==="reject"){if(!await uiConfirm("رفض طلب "+(u.name||"")+"؟"))return;await BE.update(uid,{status:"rejected"});toast("تم رفض الطلب")}
     if(act==="suspend"){await BE.update(uid,{status:"suspended"});toast("تم إيقاف الحساب")}
     if(act==="activate"){await BE.update(uid,{status:"active"});toast("تم تفعيل الحساب")}
-    if(act==="admin"){const mk=u.role!=="admin";if(!confirm(mk?"منح "+(u.name||"")+" صلاحية المشرف الكاملة؟":"إلغاء صلاحية المشرف عن "+(u.name||"")+"؟"))return;await BE.update(uid,{role:mk?"admin":"user"})}
+    if(act==="admin"){const mk=u.role!=="admin";if(!(await uiConfirm(mk?"منح "+(u.name||"")+" صلاحية المشرف الكاملة؟":"إلغاء صلاحية المشرف عن "+(u.name||"")+"؟",{title:mk?"منح صلاحية المشرف":"إلغاء صلاحية المشرف",ok:mk?"منح الصلاحية":"إلغاء الصلاحية",danger:!mk})))return;await BE.update(uid,{role:mk?"admin":"user"})}
     if(act==="grant"||act==="grantE"){const p=Object.assign({},u.perms||{});p[f]={e:true,p:act==="grant"};await BE.update(uid,{perms:p,requests:rm(u.requests,f)});toast("تم منح الصلاحية")}
     if(act==="deny"){await BE.update(uid,{requests:rm(u.requests,f)});toast("تم رفض الطلب")}
     if(act==="saveperms"){const np=readPerms();const req=(u.requests||[]).filter(x=>!(np.all||np[x]));await BE.update(uid,{perms:np,requests:req});admEdit=null;toast("حُفظت الصلاحيات");renderAdmin()}
