@@ -4341,7 +4341,7 @@ const ico=(n,c)=>`<svg class="ico${c?" "+c:""}" viewBox="0 0 24 24" fill="none" 
 function hydrateIcons(root){(root||document).querySelectorAll("i[data-i]").forEach(el=>{el.outerHTML=ico(el.dataset.i,el.className)})}
 const CAT_IC=c=>c.startsWith("كشوف")?"list":c.startsWith("الشهادات")?"trophy":c.startsWith("الأداء")?"briefcase":c.startsWith("الخطط")?"target":c.startsWith("ملفات المدرسة")?"building":c.startsWith("ملفات الإدارة")?"clipboard":"book";
 const FILE_IC={certs:"trophy",weeks:"calendar",star:"trophy",waiting:"clock",cases:"heart",etec:"filecheck",volunteer:"users",wplan:"calendar","perf-a":"mega","perf-k":"heart","perf-l":"flask","perf-x":"clipboard",exams:"pen",lrc:"book",sped:"puzzle",safety:"shield",lab:"flask",gifted:"trophy",health:"heart","perf-h":"heart",radio:"mega",reports:"filecheck",nafs:"cap",guide:"book",homeroom:"users",studrec:"users",committees:"users",plc:"users",partner:"users",duty:"clock",readiness:"calendar",meet:"clipboard",discipline:"shield",weekly:"layers",assign:"clipboard",achieve:"trophy",ops:"target",improve:"target",remedial:"target",loss:"target",counsel:"user",activity:"mega",visit:"eye",tfile:"book"};
-const fIcon=f=>FILE_IC[f.id]||(f.ks?"list":null)||(f.id.startsWith("perf")?"briefcase":"file");
+const fIcon=f=>f.ic||FILE_IC[f.id]||(f.ks?"list":null)||(f.id.startsWith("perf")?"briefcase":"file");
 const initials=n=>{const w=String(n||"").replace(/[^\p{L}\s]/gu," ").trim().split(/\s+/).filter(Boolean).map(x=>/^ال./.test(x)&&x.length>3?x.slice(2):x);if(!w.length)return"؟";return (w[0][0]+(w.length>1?w[w.length-1][0]:"")).toUpperCase()};
 const pagesOf=f=>{try{const b=f.build();return b.pages.length+(b.bare?0:2)}catch(e){return 0}};
 const catList=()=>{const cats=[];FILES.forEach(f=>{const c=catOf(f);let g=cats.find(x=>x.c===c);if(!g)cats.push(g={c,f:[]});g.f.push(f)});return cats};
@@ -4826,6 +4826,28 @@ async function showCardPage(id){
     if(navigator.canShare){$("#cvSh").hidden=false;$("#cvSh").addEventListener("click",async()=>{const v=need();if(!v)return;try{const b=await cdBlob(CVcard,v),f=new File([b],cdSlug(v.name||d.name)+".png",{type:"image/png"});if(navigator.canShare({files:[f]}))await navigator.share({files:[f],title:d.name||"بطاقة"});else cdSave(b,f.name)}catch(e){}})}
   }catch(e){console.error(e);$("#cvB").innerHTML=`<p class="muted">تعذّر تحميل البطاقة.</p>`}
 }
+/* ---------- الأدوات (تُباع في المتجر بترخيص سنوي) ---------- */
+const TOOLS=[
+ {id:"nafes",tool:true,url:"nafes.html",ic:"target",cat:"الأدوات",term:"year",name:()=>"راصد نافس",
+  info:{desc:"أداة لرصد نتائج اختبارات نافس التجريبية وتحليلها: تُنشئ الاختبار بأسئلته ومهاراته، وتطبع أوراق إجابة تُصحَّح آليًا من ملف PDF ممسوح، ثم تحسب نسبة كل طالب ومستواه وتُخرج تقارير الفصل وقائمة من يحتاج دعمًا.",
+   aud:["معلمو الصفوف المستهدفة في نافس (الثالث والسادس الابتدائي والثالث المتوسط)","منسقو نافس في المدرسة","وكلاء الشؤون التعليمية","قادة المدارس"],
+   steps:["سجّل الدخول بحسابك في نَسَق، ثم افتح راصد نافس من المتجر أو من رابطه.","أضف طلاب الفصل بلصق الأسماء أو استيرادها من ملف Excel.","أنشئ اختبارًا: الصف والمواد وعدد الأسئلة ومهارة كل سؤال.","اطبع أوراق الإجابة، وبعد الاختبار امسحها في ملف PDF وارفعه للتصحيح الآلي، أو ارصد الإجابات يدويًا.","راجع التقارير: نسبة كل طالب ومستواه، وتحليل المهارات، والطلاب الذين يحتاجون دعمًا، ثم اطبعها أو صدّرها Excel."],
+   feat:["تصحيح آلي لأوراق الإجابة من ملف PDF ممسوح","مستويات الأداء الأربعة بحدود تعدّلها بنفسك","تحليل كل مهارة وكل سؤال","قائمة الطلاب الذين يحتاجون دعمًا","تقارير جاهزة للطباعة وتصدير Excel","بيانات الطلاب تبقى في جهازك ولا تُرفع لأي خادم","نسخة احتياطية واستعادة"],
+   titles:["لوحة النظرة العامة","قائمة الفصل واستيراد الطلاب","إنشاء الاختبارات","أوراق الإجابة والتصحيح الآلي","تقرير الاختبار","التصدير والنسخ الاحتياطي"],
+   note:"جرّبه مجانًا على فصل واحد قبل الشراء. الترخيص لعام دراسي واحد ويُجدَّد."}},
+ {id:"pack-nafes",tool:true,bundle:["nafs","nafes"],url:"nafes.html",ic:"layers",cat:"الأدوات",term:"year",name:()=>"باقة نافس: الملف + راصد نافس",
+  info:{desc:"ملف الاختبارات الوطنية (نافس) للتوثيق والطباعة، مع ترخيص راصد نافس لعام دراسي، بسعر أقل من شرائهما منفصلين.",
+   aud:["منسقو نافس في المدرسة","معلمو الصفوف المستهدفة في نافس","وكلاء الشؤون التعليمية"],
+   steps:["بعد اعتماد الطلب يُفعَّل لك الملف والأداة معًا.","استخدم راصد نافس لرصد النتائج وتحليلها.","وثّق الخطط العلاجية والمتابعة والشواهد في ملف نافس واطبعه."],
+   feat:["ملف الاختبارات الوطنية (نافس) كاملًا بهوية الوزارة","ترخيص راصد نافس لعام دراسي","سعر أقل من شراء كل منهما منفصلًا"],
+   titles:["ملف الاختبارات الوطنية (نافس)","راصد نافس — ترخيص لعام دراسي"],note:"الملف يبقى لك دائمًا، وترخيص الأداة لعام دراسي."}}
+];
+const PRODS=()=>FILES.concat(TOOLS);
+const toolOf=id=>TOOLS.find(x=>x.id===id);
+const prodOpen=f=>f.tool?f.url:"#/f/"+f.id;
+const permOk=x=>!!(x&&x.e&&x.p&&(!x.until||x.until>=new Date().toISOString().slice(0,10)));
+const licUntil=()=>{const v=(SHOP.store||{}).license_until;if(v)return v;const d=new Date();d.setDate(d.getDate()+365);return d.toISOString().slice(0,10)};
+function grantItems(perms,items){items.forEach(f=>{const t=toolOf(f);[f].concat(t&&t.bundle||[]).forEach(id=>{const tt=toolOf(id);perms[id]=tt&&tt.term==="year"?{e:true,p:true,until:licUntil()}:{e:true,p:true}})})}
 /* ---------- المتجر ---------- */
 let SHOP={prices:{},store:{def:10,currency:"ر.س"},bank:{}},SHOP_OK=false;
 const CUR=()=>(SHOP.store&&SHOP.store.currency)||"ر.س";
@@ -4834,28 +4856,28 @@ const saleNow=()=>{const st=SHOP.store||{},pc=+st.sale_pct||0;if(pc<=0)return 0;
 const shopP=fid=>{const p=SHOP.prices[fid],sale=saleNow();if(!p){const b=+((SHOP.store||{}).def)||0;return{base:b,disc:sale,price:r2(b*(1-sale/100)),free:false,active:true}}const b=+p.price||0,d=Math.max(+p.discount||0,sale);return{base:b,disc:d,price:r2(b*(1-d/100)),free:!!p.free,active:p.active!==false}};
 const priceHTML=p=>p.disc>0&&p.base>p.price?`<s class="st-old">${money(p.base)}</s> ${money(p.price)}`:money(p.price);
 const shopFree=fid=>SHOP_OK&&shopP(fid).free;
-const owns=fid=>!!(ME&&(isAdmin()||(ME.perms&&((ME.perms.all&&ME.perms.all.e)||(ME.perms[fid]&&ME.perms[fid].e&&ME.perms[fid].p)))));
+const owns=fid=>{if(!ME)return false;if(isAdmin())return true;const P=ME.perms||{};if(P.all&&P.all.e)return true;const t=toolOf(fid);if(t&&t.bundle&&t.bundle.every(owns))return true;return permOk(P[fid])};
 const money=n=>(Math.round(n*100)/100).toLocaleString("ar-SA-u-nu-latn")+" "+CUR();
 async function loadShop(){const be=await BEP;if(!be||!be.getShop)return;try{SHOP=await be.getShop();SHOP_OK=true}catch(e){console.error(e)}
   try{if(CURV==="file")applyAccess();renderList();if(CURV==="store")renderStore();if(CURV==="orders")renderOrdersAdmin()}catch(e){}}
-const cartGet=()=>{const c=store.get("hq:cart",[]);return Array.isArray(c)?c.filter(id=>FILES.some(f=>f.id===id)):[]};
+const cartGet=()=>{const c=store.get("hq:cart",[]);return Array.isArray(c)?c.filter(id=>PRODS().some(f=>f.id===id)):[]};
 function cartSet(c){store.set("hq:cart",[...new Set(c)]);renderList();if(CURV==="store")renderStore()}
-function cartAdd(fid,quiet){if(owns(fid))return toast("هذا الملف متاح لك بالفعل");if(shopP(fid).free)return toast("هذا الملف مجاني، سجّل الدخول وابدأ مباشرة");const c=cartGet();if(!c.includes(fid)){c.push(fid);cartSet(c)}if(!quiet)toast("أُضيف «"+fileName(fid)+"» إلى السلة")}
+function cartAdd(fid,quiet){if(owns(fid))return toast(toolOf(fid)?"لديك ترخيص فعّال لهذه الأداة":"هذا الملف متاح لك بالفعل");if(shopP(fid).free)return toast("هذا الملف مجاني، سجّل الدخول وابدأ مباشرة");const c=cartGet();if(!c.includes(fid)){c.push(fid);cartSet(c)}if(!quiet)toast("أُضيف «"+fileName(fid)+"» إلى السلة")}
 const cartTotal=c=>c.reduce((a,f)=>a+(shopP(f).free||owns(f)?0:shopP(f).price),0);
 let STF={q:"",cat:"",show:"all"};
 function renderStore(){
   const v=$("#vStore");if(!v)return;
   if(!SHOP_OK){$("#stGrid").innerHTML=`<div class="card"><div class="card-c"><p class="muted">${BE&&!BE.getShop?"المتجر يعمل مع قاعدة بيانات Supabase أو الوضع التجريبي.":"جارٍ تحميل المتجر…"}</p></div></div>`;return}
   {const sp=saleNow(),st=SHOP.store||{},bn=$("#stSale");bn.hidden=!sp;if(sp)bn.innerHTML=`<b>خصم ${Math.round(sp)}% على جميع الملفات</b>${st.sale_until?`<span>حتى ${esc(fdate(Date.parse(st.sale_until+"T12:00:00Z")))}</span>`:""}${st.sale_note?`<span>${esc(st.sale_note)}</span>`:""}`}
-  const cats=[...new Set(FILES.map(catOf))];
+  const cats=[...new Set(PRODS().map(catOf))];
   $("#stCats").innerHTML=[["","الكل"]].concat(cats.map(c=>[c,c])).map(([v,l])=>`<button type="button" data-scat="${esc(v)}" class="${STF.cat===v?"on":""}">${esc(l)}</button>`).join("");
   document.querySelectorAll("#stShow button").forEach(b=>b.classList.toggle("on",b.dataset.show===STF.show));
   const cart=cartGet(),q=STF.q.trim();
-  const L=FILES.filter(f=>{const p=shopP(f.id);if(!p.active&&!owns(f.id))return false;if(STF.cat&&catOf(f)!==STF.cat)return false;if(q&&!(f.name()+" "+catOf(f)).includes(q))return false;
+  const L=PRODS().filter(f=>{const p=shopP(f.id);if(!p.active&&!owns(f.id))return false;if(STF.cat&&catOf(f)!==STF.cat)return false;if(q&&!(f.name()+" "+catOf(f)).includes(q))return false;
     if(STF.show==="free")return p.free;if(STF.show==="mine")return owns(f.id)||(isActive()&&p.free);return true});
   $("#stGrid").innerHTML=L.length?L.map(f=>{const p=shopP(f.id),own=owns(f.id),inC=cart.includes(f.id);
     const badge=own?`<span class="st-b own">${ico("check")}متاح لك</span>`:p.free?`<span class="st-b free">مجاني</span>`:`<span class="st-b${p.disc>0?" sale":""}">${p.disc>0?`<em>-${Math.round(p.disc)}%</em>`:""}${priceHTML(p)}</span>`;
-    const act=own||(p.free&&isActive())?`<a class="btn sm primary" href="#/f/${f.id}">فتح الملف</a>`:p.free?`<button class="btn sm primary" type="button" data-sauth>سجّل لتستخدمه مجانًا</button>`:inC?`<button class="btn sm" type="button" data-srm="${f.id}">${ico("check")}في السلة</button>`:`<button class="btn sm primary" type="button" data-sadd="${f.id}">${ico("cart")}أضف للسلة</button>`;
+    const act=own||(p.free&&isActive())?`<a class="btn sm primary" href="${prodOpen(f)}">${f.tool?"فتح الأداة":"فتح الملف"}</a>`:p.free?`<button class="btn sm primary" type="button" data-sauth>سجّل لتستخدمه مجانًا</button>`:inC?`<button class="btn sm" type="button" data-srm="${f.id}">${ico("check")}في السلة</button>`:`<button class="btn sm primary" type="button" data-sadd="${f.id}">${ico("cart")}أضف للسلة</button>`;
     return `<div class="st-c"><div class="st-h"><span class="fic">${ico(fIcon(f))}</span>${badge}</div><a class="st-n" href="#/p/${f.id}">${esc(f.name())}</a><small class="muted">${esc(catOf(f))}</small><div class="st-a"><a class="btn sm ghost" href="#/p/${f.id}">${ico("info")}التفاصيل</a>${act}</div></div>`}).join(""):`<p class="muted">لا توجد ملفات مطابقة.</p>`;
   const tot=cartTotal(cart);
   $("#stCart").innerHTML=`<div class="card-h"><div class="card-t">${ico("cart")} السلة <span class="muted">(${cart.length})</span></div></div><div class="card-c">${cart.length?`<ul class="st-cl">${cart.map(f=>`<li><span>${esc(fileName(f))}</span><b>${priceHTML(shopP(f))}</b><button type="button" class="x" data-srm="${f}" aria-label="إزالة">×</button></li>`).join("")}</ul><div class="st-tot"><span>الإجمالي</span><b>${money(tot)}</b></div><button class="btn primary" type="button" id="stCheckout" style="width:100%">إتمام الشراء</button>`:`<p class="muted">السلة فارغة. أضف الملفات التي تحتاجها، ثم ادفع بتحويل بنكي.</p>`}</div>`;
@@ -4907,10 +4929,11 @@ async function renderOrdersAdmin(){
       <div class="od-a"><button class="btn sm" type="button" data-orc="${o.id}">${ico("image")}عرض الإيصال</button>${o.status==="pending"?`<button class="btn sm primary" type="button" data-oapp="${o.id}">${ico("check")}اعتماد وتفعيل الملفات</button><button class="btn sm ghost" type="button" data-orej="${o.id}">رفض</button>`:""}</div></div>`).join(""):`<p class="muted">لا توجد طلبات هنا.</p>`}</div>`;
     updateTop();renderList();
   }else if(ORDtab==="prices"){
-    const cats=[...new Set(FILES.map(catOf))];
+    const cats=[...new Set(PRODS().map(catOf))];
     $("#orBody").innerHTML=`<div class="or-def"><div class="field"><label for="orDef">السعر الافتراضي لأي ملف بلا سعر (${CUR()})</label><input id="orDef" class="inp" type="number" min="0" step="1" value="${+((SHOP.store||{}).def)||0}"></div><div class="field"><label for="orAll">تطبيق سعر على كل الملفات المدفوعة</label><div class="row" style="gap:.5rem"><input id="orAll" class="inp" type="number" min="0" step="1" placeholder="مثال: 15"><button class="btn sm" type="button" id="orAllGo">تطبيق</button></div></div></div>
       <div class="or-sale"><h4>خصم عام على كل الملفات</h4><p class="muted">يُطبّق على كل الملفات المدفوعة حتى التاريخ المحدد. إذا كان للملف خصم خاص أكبر يُعتمد الأكبر.</p><div class="or-def"><div class="field"><label for="orSaleP">نسبة الخصم %</label><input id="orSaleP" class="inp" type="number" min="0" max="100" step="1" value="${+((SHOP.store||{}).sale_pct)||""}" placeholder="0 = بلا خصم"></div><div class="field"><label for="orSaleU">ينتهي في (اختياري)</label><input id="orSaleU" class="inp" type="date" value="${esc((SHOP.store||{}).sale_until||"")}"></div></div><div class="field"><label for="orSaleN">عبارة تظهر في المتجر (اختياري)</label><input id="orSaleN" class="inp" maxlength="80" value="${esc((SHOP.store||{}).sale_note||"")}" placeholder="مثال: بمناسبة اليوم الوطني"></div></div>
-      ${cats.map(c=>`<div class="or-cat"><h4>${esc(c)}</h4><table class="or-t"><thead><tr><th>الملف</th><th>السعر (${CUR()})</th><th>خصم %</th><th>مجاني</th><th>معروض</th><th></th></tr></thead><tbody>${FILES.filter(f=>catOf(f)===c).map(f=>{const p=shopP(f.id),has=!!SHOP.prices[f.id];return `<tr data-pf="${f.id}"><td>${esc(f.name())}</td><td><input class="inp" type="number" min="0" step="1" data-pp value="${has?p.price:""}" placeholder="${+((SHOP.store||{}).def)||0}"></td><td><input class="inp" type="number" min="0" max="100" step="1" data-pd value="${has&&+SHOP.prices[f.id].discount?+SHOP.prices[f.id].discount:""}" placeholder="0"></td><td><input type="checkbox" data-pfree${p.free?" checked":""}></td><td><input type="checkbox" data-pact${p.active?" checked":""}></td><td><button class="btn sm ghost" type="button" data-pinfo="${f.id}">${(SHOP.prices[f.id]||{}).info&&Object.keys(SHOP.prices[f.id].info).length?"✓ الوصف":"الوصف"}</button></td></tr>`}).join("")}</tbody></table></div>`).join("")}
+      <div class="or-sale"><h4>ترخيص الأدوات</h4><p class="muted">الأدوات (مثل راصد نافس) تُرخَّص لعام دراسي. حدّد تاريخ نهاية العام الدراسي الحالي؛ وإن تركته فارغًا ينتهي الترخيص بعد سنة من تاريخ الاعتماد.</p><div class="or-def"><div class="field"><label for="orLic">نهاية التراخيص المعتمدة الآن</label><input id="orLic" class="inp" type="date" value="${esc((SHOP.store||{}).license_until||"")}"></div></div></div>
+      ${cats.map(c=>`<div class="or-cat"><h4>${esc(c)}</h4><table class="or-t"><thead><tr><th>الملف</th><th>السعر (${CUR()})</th><th>خصم %</th><th>مجاني</th><th>معروض</th><th></th></tr></thead><tbody>${PRODS().filter(f=>catOf(f)===c).map(f=>{const p=shopP(f.id),has=!!SHOP.prices[f.id];return `<tr data-pf="${f.id}"><td>${esc(f.name())}</td><td><input class="inp" type="number" min="0" step="1" data-pp value="${has?p.price:""}" placeholder="${+((SHOP.store||{}).def)||0}"></td><td><input class="inp" type="number" min="0" max="100" step="1" data-pd value="${has&&+SHOP.prices[f.id].discount?+SHOP.prices[f.id].discount:""}" placeholder="0"></td><td><input type="checkbox" data-pfree${p.free?" checked":""}></td><td><input type="checkbox" data-pact${p.active?" checked":""}></td><td><button class="btn sm ghost" type="button" data-pinfo="${f.id}">${(SHOP.prices[f.id]||{}).info&&Object.keys(SHOP.prices[f.id].info).length?"✓ الوصف":"الوصف"}</button></td></tr>`}).join("")}</tbody></table></div>`).join("")}
       <div class="or-save"><button class="btn primary" type="button" id="orSaveP">حفظ الأسعار</button></div>`;
   }else if(ORDtab==="coupons"){
     if(!be.listCoupons){$("#orBody").innerHTML=`<p class="muted">غير متاح.</p>`;return}
@@ -4937,8 +4960,8 @@ async function shopInit(){
     const n=e.target.closest("[data-pnow]");if(n){cartAdd(n.dataset.pnow,true);go("#/store");setTimeout(openCheckout,250);return}
     if(e.target.closest("[data-pauth]"))openAuth(ME?"in":"up")});
   $("#piM").addEventListener("click",e=>{if(e.target.id==="piM"||e.target.closest("[data-pix]"))$("#piM").classList.remove("open")});
-  $("#piAuto").addEventListener("click",()=>{const f=FILES.find(x=>x.id===piFid);if(!f)return;const cur=(SHOP.prices[f.id]||{}).info;if(SHOP.prices[f.id])SHOP.prices[f.id].info={};const I=pInfo(f);if(SHOP.prices[f.id])SHOP.prices[f.id].info=cur;$("#piDesc").value=I.desc;$("#piAud").value=I.aud.join("، ");$("#piSteps").value=I.steps.join("\n")});
-  $("#piSave").addEventListener("click",async()=>{const f=FILES.find(x=>x.id===piFid);if(!f)return;const p=shopP(f.id),o=SHOP.prices[f.id]||{price:p.base,discount:0,free:false,active:true};
+  $("#piAuto").addEventListener("click",()=>{const f=PRODS().find(x=>x.id===piFid);if(!f)return;const cur=(SHOP.prices[f.id]||{}).info;if(SHOP.prices[f.id])SHOP.prices[f.id].info={};const I=pInfo(f);if(SHOP.prices[f.id])SHOP.prices[f.id].info=cur;$("#piDesc").value=I.desc;$("#piAud").value=I.aud.join("، ");$("#piSteps").value=I.steps.join("\n")});
+  $("#piSave").addEventListener("click",async()=>{const f=PRODS().find(x=>x.id===piFid);if(!f)return;const p=shopP(f.id),o=SHOP.prices[f.id]||{price:p.base,discount:0,free:false,active:true};
     const info={};[["desc","#piDesc"],["audience","#piAud"],["steps","#piSteps"],["note","#piNote"]].forEach(([k,sel])=>{const v=$(sel).value.trim();if(v)info[k]=v});
     try{await BE.setPrices({[f.id]:{price:+o.price||0,discount:+o.discount||0,free:!!o.free,active:o.active!==false,info}});await loadShop();$("#piM").classList.remove("open");toast("حُفظ وصف «"+f.name()+"»")}catch(err){toast("تعذّر الحفظ")}});
   $("#coM").addEventListener("click",e=>{if(e.target.id==="coM"||e.target.closest("[data-cox]"))$("#coM").classList.remove("open");const cp=e.target.closest("[data-copyiban]");if(cp&&navigator.clipboard)navigator.clipboard.writeText(cp.dataset.copyiban.replace(/\s/g,"")).then(()=>toast("نُسخ رقم الآيبان"))});
@@ -4948,14 +4971,14 @@ async function shopInit(){
   $("#orTabs").addEventListener("click",e=>{const b=e.target.closest("[data-ot]");if(b){ORDtab=b.dataset.ot;renderOrdersAdmin()}});
   $("#orBody").addEventListener("click",async e=>{
     const f=e.target.closest("[data-of]");if(f){ORDf=f.dataset.of;return renderOrdersAdmin()}
-    const pi=e.target.closest("[data-pinfo]");if(pi){piFid=pi.dataset.pinfo;const fl=FILES.find(x=>x.id===piFid),o=(SHOP.prices[piFid]||{}).info||{};$("#piName").textContent=fl.name();$("#piDesc").value=o.desc||"";$("#piAud").value=o.audience||"";$("#piSteps").value=o.steps||"";$("#piNote").value=o.note||"";$("#piM").classList.add("open");return}
+    const pi=e.target.closest("[data-pinfo]");if(pi){piFid=pi.dataset.pinfo;const fl=PRODS().find(x=>x.id===piFid),o=(SHOP.prices[piFid]||{}).info||{};$("#piName").textContent=fl.name();$("#piDesc").value=o.desc||"";$("#piAud").value=o.audience||"";$("#piSteps").value=o.steps||"";$("#piNote").value=o.note||"";$("#piM").classList.add("open");return}
     const rc=e.target.closest("[data-orc]");if(rc){const im=await BE.getReceipt(+rc.dataset.orc||rc.dataset.orc);if(!im)return toast("لا يوجد إيصال");$("#rcImg").src=im;$("#rcM").classList.add("open");return}
     const ap=e.target.closest("[data-oapp]");if(ap){const o=ORD.find(x=>String(x.id)===ap.dataset.oapp);if(!confirm("اعتماد الطلب "+o.id+" وتفعيل "+o.items.length+" ملف لـ "+(o.name||o.email)+"؟"))return;try{await BE.decideOrder(o.id,true,"");toast("اعتُمد الطلب وفُعّلت الملفات");renderOrdersAdmin()}catch(err){toast("تعذّر اعتماد الطلب")}return}
     const rj=e.target.closest("[data-orej]");if(rj){const n=prompt("سبب الرفض (يظهر للعميل):","لم يصل التحويل");if(n===null)return;try{await BE.decideOrder(+rj.dataset.orej||rj.dataset.orej,false,n);toast("رُفض الطلب");renderOrdersAdmin()}catch(err){toast("تعذّر رفض الطلب")}return}
     if(e.target.closest("#orAllGo")){const v=$("#orAll").value;if(v==="")return;document.querySelectorAll("#orBody [data-pf]").forEach(tr=>{if(!tr.querySelector("[data-pfree]").checked)tr.querySelector("[data-pp]").value=v});return toast("طُبّق السعر، اضغط «حفظ الأسعار»")}
     if(e.target.closest("#orSaveP")){const map={};document.querySelectorAll("#orBody [data-pf]").forEach(tr=>{const v=tr.querySelector("[data-pp]").value,dv=tr.querySelector("[data-pd]").value,fr=tr.querySelector("[data-pfree]").checked,ac=tr.querySelector("[data-pact]").checked,id=tr.dataset.pf,old=SHOP.prices[id];
         if(v!==""||dv!==""||fr||!ac||old)map[id]={price:v===""?(+((SHOP.store||{}).def)||0):+v,discount:Math.min(100,Math.max(0,+dv||0)),free:fr,active:ac,info:(old&&old.info)||{}}});
-      try{await BE.setPrices(map);await BE.setShop("store",Object.assign({},SHOP.store,{def:+$("#orDef").value||0,sale_pct:Math.min(100,Math.max(0,+$("#orSaleP").value||0)),sale_until:$("#orSaleU").value||"",sale_note:$("#orSaleN").value.trim()}));await loadShop();toast("حُفظت الأسعار والخصومات")}catch(err){toast("تعذّر حفظ الأسعار")}return}
+      try{await BE.setPrices(map);await BE.setShop("store",Object.assign({},SHOP.store,{def:+$("#orDef").value||0,sale_pct:Math.min(100,Math.max(0,+$("#orSaleP").value||0)),sale_until:$("#orSaleU").value||"",sale_note:$("#orSaleN").value.trim(),license_until:($("#orLic")&&$("#orLic").value)||""}));await loadShop();toast("حُفظت الأسعار والخصومات")}catch(err){toast("تعذّر حفظ الأسعار")}return}
     if(e.target.closest("#cpAdd")){const code=$("#cpCode").value.trim().toUpperCase(),pct=+$("#cpPct").value;
       if(!/^[A-Z0-9_-]{3,30}$/.test(code))return toast("الكود من 3 إلى 30 حرفًا إنجليزيًا أو رقمًا");if(!(pct>0&&pct<=100))return toast("نسبة الخصم بين 1 و100");
       try{await BE.saveCoupon({code,pct,expires:$("#cpExp").value||null,max_uses:+$("#cpMax").value||null,note:$("#cpNote").value.trim()||null,active:true});toast("أُضيف الكود "+code);renderOrdersAdmin()}catch(err){toast(/duplicate|exists/i.test(err&&err.message||"")?"هذا الكود موجود":"تعذّر إضافة الكود")}return}
@@ -4993,6 +5016,7 @@ function pAudience(f){const out=[],gi=S.gender==="f"?1:0;Object.keys(PRESET_FILE
   const c=catOf(f);if(/المدرسة|الإدارة|الخطط/.test(c)||!out.length)out.push(g("قائد المدرسة","قائدة المدرسة"));return [...new Set(out)]}
 function pSpec(f){try{return f.build()}catch(e){return{pages:[]}}}
 function pInfo(f){
+  if(f.tool){const o=(SHOP.prices[f.id]||{}).info||{},d=f.info;return{desc:o.desc||d.desc,aud:o.audience?String(o.audience).split(/[،,]\s*/).filter(Boolean):d.aud,feat:d.feat,steps:o.steps?String(o.steps).split(/\n+/).map(x=>x.trim()).filter(Boolean):d.steps,pc:0,titles:d.titles,note:o.note||d.note}}
   const sp=pSpec(f),P=sp.pages||[],types=new Set(P.map(p=>p.t)),o=(SHOP.prices[f.id]||{}).info||{},cat=catOf(f),n=f.name();
   const desc=o.desc||FILE_DESC[f.id]||(CAT_DESC[cat]||CAT_DESC["ملفات المعلم"])(n);
   const aud=o.audience?String(o.audience).split(/[،,]\s*/).filter(Boolean):pAudience(f);
@@ -5018,24 +5042,25 @@ function pInfo(f){
   return{desc,aud,feat,steps,pc,titles:P.filter(p=>p.t!=="kcov").map(p=>p.title||"").filter(Boolean),note:o.note||""};
 }
 function renderProduct(fid){
-  const f=FILES.find(x=>x.id===fid),box=$("#prBody");if(!f){box.innerHTML=`<p class="muted">الملف غير موجود.</p>`;return}
+  const f=PRODS().find(x=>x.id===fid),box=$("#prBody");if(!f){box.innerHTML=`<p class="muted">الملف غير موجود.</p>`;return}
   const I=pInfo(f),p=shopP(f.id),own=owns(f.id),inC=cartGet().includes(f.id);
   const tl=[...new Set(I.titles)];
-  const act=own||(p.free&&isActive())?`<a class="btn primary" href="#/f/${f.id}">فتح الملف</a>`:p.free?`<button class="btn primary" type="button" data-pauth>أنشئ حسابًا واستخدمه مجانًا</button>`:inC?`<a class="btn primary" href="#/store">${ico("cart")}في السلة — إتمام الشراء</a>`:`<button class="btn primary" type="button" data-pbuy="${f.id}">${ico("cart")}أضف إلى السلة</button><button class="btn" type="button" data-pnow="${f.id}">شراء الآن</button>`;
+  const exp=f.tool&&ME&&ME.perms&&ME.perms[f.bundle?"nafes":f.id]&&ME.perms[f.bundle?"nafes":f.id].until;
+  const act=own||(p.free&&isActive())?`<a class="btn primary" href="${prodOpen(f)}">${f.tool?"فتح الأداة":"فتح الملف"}</a>`:f.tool?`<button class="btn primary" type="button" data-pbuy="${f.id}">${ico("cart")}${inC?"في السلة":"أضف إلى السلة"}</button><button class="btn" type="button" data-pnow="${f.id}">شراء الآن</button><a class="btn ghost" href="${f.url}">جرّبه مجانًا</a>`:p.free?`<button class="btn primary" type="button" data-pauth>أنشئ حسابًا واستخدمه مجانًا</button>`:inC?`<a class="btn primary" href="#/store">${ico("cart")}في السلة — إتمام الشراء</a>`:`<button class="btn primary" type="button" data-pbuy="${f.id}">${ico("cart")}أضف إلى السلة</button><button class="btn" type="button" data-pnow="${f.id}">شراء الآن</button>`;
   box.innerHTML=`<div class="pr-g">
     <div class="pr-i">
-      <div class="pr-tags"><span class="pr-tag">ملف إلكتروني</span><span class="pr-tag soft">${esc(catOf(f))}</span><span class="pr-tag soft">${I.pc} صفحة</span></div>
+      <div class="pr-tags"><span class="pr-tag">${f.tool?(f.bundle?"باقة":"أداة إلكترونية"):"ملف إلكتروني"}</span><span class="pr-tag soft">${esc(catOf(f))}</span><span class="pr-tag soft">${f.tool?"ترخيص لعام دراسي":I.pc+" صفحة"}</span></div>
       <h1 class="pr-t">${catOf(f)==="الأداء الوظيفي"?"ملف شواهد الأداء الوظيفي — ":""}${esc(f.name())}</h1>
-      <div class="pr-p">${own?`<span class="st-b own">${ico("check")}متاح لك</span>`:p.free?`<span class="st-b free">مجاني</span>`:`<b>${money(p.price)}</b>${p.disc>0&&p.base>p.price?`<s>${money(p.base)}</s><span class="pr-off">خصم ${Math.round(p.disc)}%</span>`:""}`}</div>
+      <div class="pr-p">${own?`<span class="st-b own">${ico("check")}${exp?"مرخّص لك حتى "+esc(fdate(Date.parse(exp+"T12:00:00Z"))):"متاح لك"}</span>`:p.free?`<span class="st-b free">مجاني</span>`:`<b>${money(p.price)}</b>${p.disc>0&&p.base>p.price?`<s>${money(p.base)}</s><span class="pr-off">خصم ${Math.round(p.disc)}%</span>`:""}`}</div>
       <p class="pr-d">${esc(I.desc)}</p>
       <div class="pr-a">${act}</div>
-      <h3>لمن هذا الملف؟</h3><div class="pr-aud">${I.aud.map(a=>`<span>${esc(a)}</span>`).join("")}</div>
-      <h3>طريقة إدخال البيانات</h3><ol class="pr-st">${I.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>
+      <h3>${f.tool?"لمن هذه الأداة؟":"لمن هذا الملف؟"}</h3><div class="pr-aud">${I.aud.map(a=>`<span>${esc(a)}</span>`).join("")}</div>
+      <h3>${f.tool?"كيف تعمل؟":"طريقة إدخال البيانات"}</h3><ol class="pr-st">${I.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>
       <h3>المزايا</h3><ul class="pr-f">${I.feat.map(s=>`<li>${ico("check")}<span>${esc(s)}</span></li>`).join("")}</ul>
-      ${tl.length?`<h3>محتوى الملف</h3><ol class="pr-c">${tl.map(t=>`<li>${esc(t)}</li>`).join("")}</ol>`:""}
+      ${tl.length?`<h3>${f.tool?"ماذا تتضمن؟":"محتوى الملف"}</h3><ol class="pr-c">${tl.map(t=>`<li>${esc(t)}</li>`).join("")}</ol>`:""}
       ${I.note?`<p class="pr-n">${esc(I.note)}</p>`:""}
     </div>
-    <div class="pr-v"><div class="pr-vh"><b>معاينة حية للملف</b><a class="btn sm ghost" href="#/f/${f.id}">${ico("eye")}فتح المعاينة كاملة</a></div><iframe class="pr-fr" title="معاينة ${esc(f.name())}" loading="lazy" src="${location.pathname}?embed=1#/f/${f.id}"></iframe><p class="muted">المعاينة بعلامة «نسخة للاستعراض»، وتُزال بعد الشراء.</p></div>
+    <div class="pr-v"><div class="pr-vh"><b>${f.tool?"معاينة حية للأداة":"معاينة حية للملف"}</b><a class="btn sm ghost" href="${f.tool?f.url:"#/f/"+f.id}">${ico("eye")}${f.tool?"جرّب الأداة":"فتح المعاينة كاملة"}</a></div><iframe class="pr-fr" title="معاينة ${esc(f.name())}" loading="lazy" src="${f.tool?f.url+"?embed=1":location.pathname+"?embed=1#/f/"+f.id}"></iframe><p class="muted">${f.tool?"التجربة مجانية على فصل واحد، والطباعة والتصدير فيها بعلامة «نسخة تجربة».":"المعاينة بعلامة «نسخة للاستعراض»، وتُزال بعد الشراء."}</p></div>
   </div>`;
   document.title=f.name()+" — المتجر";
 }
@@ -5066,7 +5091,8 @@ function route(){
   else if(h==="#/cards")v="cards";
   else if(h==="#/store")v="store";
   else if(h==="#/orders")v="orders";
-  const pm=h.match(/^#\/p\/([\w-]+)/);if(pm&&FILES.some(f=>f.id===pm[1]))v="product";
+  const pm=h.match(/^#\/p\/([\w-]+)/);if(pm&&PRODS().some(f=>f.id===pm[1]))v="product";
+  if(h.startsWith("#/login")){if(/back=nafes/.test(h))try{sessionStorage.setItem("nq:back","nafes.html")}catch(e){}history.replaceState(null,"","#/store");setTimeout(()=>openAuth(ME?"in":"in"),50);v="store"}
   const prev=CURV;CURV=v;
   document.querySelectorAll(".view").forEach(s=>s.hidden=s.dataset.v!==v);
   if(v==="file"){
@@ -5085,7 +5111,7 @@ function route(){
   renderCrumb();renderUser();closeDD();try{ftbVis()}catch(e){}
   $("#sbw").classList.remove("mopen");
   if(prev!==v||v==="file")scrollTo(0,0);
-  document.title=(v==="file"?(FILES.find(x=>x.id===fid).name()+" — "):v==="cards"?"منصة البطاقات — ":v==="store"?"المتجر — ":v==="orders"?"إدارة المتجر — ":v==="product"?((FILES.find(x=>x.id===(pm||[])[1])||{name:()=>""}).name()+" — المتجر — "):"")+"نَسَق";
+  document.title=(v==="file"?(FILES.find(x=>x.id===fid).name()+" — "):v==="cards"?"منصة البطاقات — ":v==="store"?"المتجر — ":v==="orders"?"إدارة المتجر — ":v==="product"?((PRODS().find(x=>x.id===(pm||[])[1])||{name:()=>""}).name()+" — المتجر — "):"")+"نَسَق";
 }
 addEventListener("hashchange",route);
 addEventListener("scroll",()=>$("#hdr").classList.toggle("scrolled",scrollY>10),{passive:true});
@@ -5141,7 +5167,7 @@ const EV_COL="haqiba_ev",CARD_COL="haqiba_cards";
 const isActive=()=>!!(ME&&ME.status==="active");
 const isAdmin=()=>isActive()&&ME.role==="admin";
 function perm(fid,k){if(isAdmin())return true;if(!isActive())return false;if(STORE&&typeof shopFree==="function"&&shopFree(fid))return true;const p=ME.perms||{};return !!((p.all&&p.all[k])||(p[fid]&&p[fid][k]));}
-const fileName=id=>{const f=FILES.find(x=>x.id===id);return f?f.name():id};
+const fileName=id=>{const f=PRODS().find(x=>x.id===id);return f?f.name():id};
 const catOf=f=>typeof f.cat==="function"?f.cat():f.cat;
 
 /* ---------- الواجهة الخلفية التجريبية ---------- */
@@ -5188,7 +5214,7 @@ function demoBackend(){
     async getReceipt(id){const o=store.get("hq:demo:orders",[]).find(x=>x.id===id);return o&&o.receipt},
     async decideOrder(id,ok,note){const L=store.get("hq:demo:orders",[]),o=L.find(x=>x.id===id);if(!o)throw{code:"nf"};const was=o.status;o.status=ok?"approved":"rejected";o.admin_note=note||null;o.decided_at=Date.now();store.set("hq:demo:orders",L);
       if(ok&&was!=="approved"&&o.coupon){const C=store.get("hq:demo:coupons",[]),x=C.find(k=>k.code===o.coupon);if(x){x.used=(x.used||0)+1;store.set("hq:demo:coupons",C)}}
-      if(ok){const u=users.find(x=>x.uid===o.uid);if(u){u.perms=u.perms||{};o.items.forEach(f=>u.perms[f]={e:true,p:true});u.status="active";u.requests=(u.requests||[]).filter(f=>!o.items.includes(f));save()}}},
+      if(ok){const u=users.find(x=>x.uid===o.uid);if(u){u.perms=u.perms||{};grantItems(u.perms,o.items);u.status="active";u.requests=(u.requests||[]).filter(f=>!o.items.includes(f));save()}}},
     async listCards(){const u=me();if(!u)return[];const out=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith("hq:demo:card:")){const d=store.get(k,null);if(d&&d.uid===u.uid)out.push({id:k.slice(13),name:d.name,tpl:d.tpl,at:d.at})}}return out.sort((a,b)=>b.at-a.at)}
   };
 }
@@ -5471,6 +5497,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#authM").classLi
   catch(e){console.error(e);BE=null;BE_RES(null);$("#access").innerHTML="<span>⚠️ تعذّر الاتصال بخادم الحسابات. يمكنك الاستعراض فقط.</span>";$("#access").hidden=false;return}
   BE.onMe(m=>{
     ME=m;
+    try{const bk=sessionStorage.getItem("nq:back");if(bk&&ME&&ME.status&&ME.status!=="noprofile"){sessionStorage.removeItem("nq:back");location.href=bk;return}}catch(e){}
     if(isAdmin())startAdmin();else stopAdmin();
     if(isActive()&&!S.name&&ME.name){S.name=ME.name;S.school=S.school||ME.school||"";S.dept=ME.dept||S.dept;S.job=S.job||ME.title||"";S.gender=ME.gender||S.gender;saveS();render();return}
     applyAccess();
