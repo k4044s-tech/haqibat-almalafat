@@ -1286,7 +1286,10 @@ table.t.rh14 td{height:18.5mm;vertical-align:middle}
 .tctx b{color:var(--p);font-family:var(--kufi);font-size:17pt}
 .tcsig{margin-top:auto;align-self:stretch;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6mm;font-size:10.5pt}
 .tcsig span{display:block;color:var(--d);font-weight:700;margin-bottom:2mm}.tcsig b{font-weight:500}
-@media screen{body.stuall #pages{opacity:.35;pointer-events:none}}
+.stuf{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
+.stuf label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}
+.stug{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600}
+@media (max-width:640px){.stuf{grid-template-columns:1fr}}
 /* أغلفة أفقية: ملف كامل بالاتجاه الأفقي */
 .page.land :is(.cv0,.cv1,.cv2,.cv4,.cv8) .card{width:236mm;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
 .page.land :is(.cv0,.cv1,.cv2,.cv4,.cv8) .card .rw{border-bottom:1px solid var(--l)}
@@ -1422,7 +1425,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         </div>
         <div class="access" id="access" role="status" hidden></div>
         <div class="card ksr" id="ksCard" hidden><div class="ksr-in"><div class="ksr-l"><span class="fic"><i data-i="users"></i></span><div><b>أسماء الطلاب</b><small id="ksInfo"></small></div></div><div class="ksr-r"><select class="fsel" id="ksSel" aria-label="الفصل"></select><button class="btn sm" id="ksEdit" type="button"><i data-i="pen"></i>تعديل الأسماء</button><button class="btn sm primary" id="ksNew" type="button"><i data-i="userplus"></i>فصل جديد</button><button class="btn sm primary" id="ksDist" type="button" hidden><i data-i="target"></i>توزيع الدرجات</button><div class="seg ksor" id="ksLand" role="group" aria-label="اتجاه الكشف"><button type="button" data-o="p">عمودي</button><button type="button" data-o="l">أفقي</button></div><button class="btn sm" id="ksCov" type="button"><i data-i="file"></i><span>الغلاف</span></button><button class="btn sm" id="ksFit" type="button"><i data-i="layers"></i><span>جمع الكشف في صفحة واحدة</span></button><button class="btn sm ghost" id="ksDel" type="button">حذف الفصل</button></div></div><div class="ksr-tip" id="ksTip" hidden></div></div>
-        <div class="card ksr stuc" id="stuCard" hidden><div class="ksr-in"><div class="ksr-l"><span class="fic"><i data-i="users"></i></span><div><b id="stuTitle">ملف الطالب</b><small id="stuInfo"></small></div></div><div class="ksr-r"><button class="btn sm" id="stuPrev" type="button" aria-label="الطالب السابق">›</button><select class="fsel" id="stuSel" aria-label="الطالب"></select><button class="btn sm" id="stuNext" type="button" aria-label="الطالب التالي">‹</button><button class="btn sm primary" id="stuAll" type="button"><i data-i="printer"></i><span>طباعة ملفات الفصل كاملًا</span></button></div></div></div>
+        <div class="card stuc" id="stuCard" hidden><div class="card-h"><div class="card-t" id="stuTitle">بياناتي</div><div class="card-d">اكتب بياناتك مرة واحدة فتظهر في الغلاف وجميع صفحات ملفاتك. الملفات مجانية للطلاب، تعبّئها وتطبعها مباشرة بدون تسجيل دخول، وتبقى محفوظة على جهازك.</div></div>
+          <div class="stuf"><label><span>الاسم</span><input class="inp" id="stuN" autocomplete="off" placeholder="اسمك الثلاثي"></label><label><span>الصف / الفصل</span><input class="inp" id="stuC" autocomplete="off" placeholder="مثال: الرابع / أ"></label><label><span>المدرسة</span><input class="inp" id="stuS" autocomplete="off" placeholder="اسم المدرسة"></label><label><span>إدارة التعليم</span><input class="inp" id="stuD" autocomplete="off" placeholder="مثال: الإدارة العامة للتعليم بمنطقة جازان"></label>
+          <div class="stug"><span>أنا</span><div class="seg" id="stuG"><button type="button" data-g="m">طالب</button><button type="button" data-g="f">طالبة</button></div></div></div></div>
         <div class="card certc" id="certCard" hidden><div class="card-h"><div class="card-t">إعداد الشهادة</div><div class="card-d">تُنشأ شهادة لكل اسم في الفصل المختار أعلاه. للمعلمين: أنشئ «فصلًا» بأسمائهم واختر نوع «شكر وتقدير للمعلمين».</div></div>
           <div class="card-c certg"><div class="fld2"><label class="lb" for="ctType">نوع الشهادة</label><select class="fsel" id="ctType"></select></div>
           <div class="fld2"><span class="lb">التصميم</span><div class="seg" id="ctDesign"><button type="button" data-d="a">كلاسيكي</button><button type="button" data-d="b">الهوية</button><button type="button" data-d="c">وطني</button></div></div>
@@ -1683,6 +1688,7 @@ const DM_STAFF_F=["نورة محمد علي","سارة سعد عبدالله","�
 function dmSeed(){
   const set={evmode:"qr",name:"أحمد محمد علي",job:"معلم رياضيات",school:"مدرسة الأمل الابتدائية",dept:"الإدارة العامة للتعليم بمنطقة الرياض",leader:"خالد سعد عبدالله",stage:"المرحلة الابتدائية",theme:9,pstyle:"id",cover:3};
   MEMST["hq:set"]=JSON.stringify(set);
+  MEMST["hq:stuinfo"]=JSON.stringify({name:"محمد خالد أحمد",cls:"الرابع / أ"});
   MEMST["hq:roster"]=JSON.stringify({cur:"dm",classes:[{id:"dm",name:"الثالث الابتدائي / أ",subject:"الرياضيات",names:dmNames(24,false)}]});
 }
 function dmHeaders(tb){
@@ -3045,34 +3051,57 @@ const FILES=[
   KSF("ks-seats","كشف أرقام الجلوس وتوزيع اللجان",{nameW:35,meta:["الفترة / الدور"],cols:[["رقم الجلوس",15],["رقم اللجنة",12],["مقر اللجنة",18],["ملاحظات",15]],per:22}),
   KSF("ks-activities","كشف المشاركة في الأنشطة والأندية",{nameW:28,meta:["الفصل الدراسي"],cols:[["النادي / النشاط",18],["المشاركات",20],["الإنجازات والجوائز",19],["ملاحظات",10]],per:22}),
   {id:"ks-groups",cat:"كشوف الطلاب",ks:true,ic:"ك",name:()=>"كشف المجموعات التعاونية",build:KSG},
-  {id:"stu-port",cat:"ملفات الطالب",stu:true,ic:"ط",name:()=>g("ملف إنجاز الطالب","ملف إنجاز الطالبة"),build:()=>{
-    const ST=g("الطالب","الطالبة"),D=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس"];
+  {id:"stu-port",cat:"ملفات الطالب",stu:true,free:true,ic:"ط",name:()=>g("ملف إنجاز الطالب","ملف إنجاز الطالبة"),build:()=>{
+    const D=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس"];
     const pages=[
       {t:"stme",title:"من أنا"},
       {t:"table",kpg:"clsT",title:"جدولي الدراسي",cols:[["اليوم",16],["١",12],["٢",12],["٣",12],["٤",12],["٥",12],["٦",12],["٧",12]],rows:D.map(d=>[d,"","","","","","",""]),center:[0,1,2,3,4,5,6,7],cls:"rh26"},
       {t:"table",kpg:"clsS",title:"موادي ومعلميّ",cols:[["م",7],["المادة",38],[g("المعلم","المعلمة"),35],["ملاحظات",20]],rows:STU_SUBJ.map((x,i)=>[String(i+1),x,"",""]),num:true,cls:"rh14"},
-      {t:"div",n:1,title:"أوراق العمل",lab:"محتوى القسم",list:"سجل أوراق العمل المنجزة\nنماذج من أوراق عملي"},
-      {t:"table",title:"سجل أوراق العمل المنجزة",cols:[["م",6],["التاريخ",15],["المادة",17],["عنوان ورقة العمل",32],["التقدير",13],["توقيع المعلم/ة",17]],rows:16,num:true},
-      {t:"ev",title:"نماذج من أوراق عملي",n:4,cap:"عنوان ورقة العمل",add:"اضغط لإضافة صورة ورقة العمل"},
-      {t:"div",n:2,title:"الإذاعة المدرسية",lab:"محتوى القسم",list:"سجل مشاركاتي في الإذاعة\nصور من مشاركتي"},
-      {t:"table",title:"سجل مشاركاتي في الإذاعة المدرسية",cols:[["م",6],["التاريخ",14],["الفقرة",20],["الموضوع",36],["ملاحظات المعلم/ة",24]],rows:14,num:true},
-      {t:"ev",title:"صور من مشاركتي في الإذاعة",n:4,cap:"الفقرة والتاريخ",add:"اضغط لإضافة صورة المشاركة"},
-      {t:"div",n:3,title:"أعمالي الفنية",lab:"محتوى القسم",list:"معرض أعمالي الفنية"},
+      {t:"div",n:1,title:"شهاداتي",lab:"محتوى القسم",list:"سجل الشهادات التي حصلت عليها\nصور شهاداتي"},
+      {t:"table",title:"سجل الشهادات التي حصلت عليها",cols:[["م",6],["اسم الشهادة",32],["الجهة المانحة",23],["المناسبة",23],["التاريخ",16]],rows:12,num:true},
+      {t:"ev",title:"صور شهاداتي (١)",n:2,cap:"اسم الشهادة",add:"اضغط لإضافة صورة الشهادة"},
+      {t:"ev",title:"صور شهاداتي (٢)",n:2,cap:"اسم الشهادة",add:"اضغط لإضافة صورة الشهادة"},
+      {t:"div",n:2,title:"أعمالي الفنية",lab:"محتوى القسم",list:"معرض أعمالي الفنية"},
       {t:"ev",title:"معرض أعمالي الفنية (١)",n:6,cap:"عنوان العمل الفني",add:"اضغط لإضافة صورة العمل"},
       {t:"ev",title:"معرض أعمالي الفنية (٢)",n:6,cap:"عنوان العمل الفني",add:"اضغط لإضافة صورة العمل"},
-      {t:"div",n:4,title:"مشاركاتي",lab:"محتوى القسم",list:"سجل الأنشطة والمسابقات والتطوع\nصور من مشاركاتي"},
-      {t:"table",title:"سجل الأنشطة والمسابقات والتطوع",cols:[["م",6],["النشاط / المسابقة",28],["نوع المشاركة",15],["الجهة المنظمة",17],["التاريخ",16],["النتيجة / الإنجاز",18]],rows:14,num:true},
-      {t:"ev",title:"صور من مشاركاتي",n:4,cap:"اسم النشاط",add:"اضغط لإضافة صورة المشاركة"},
-      {t:"div",n:5,title:"شهاداتي",lab:"محتوى القسم",list:"سجل الشهادات\nصور الشهادات التي حصلت عليها"},
-      {t:"table",title:"سجل الشهادات التي حصلت عليها",cols:[["م",6],["اسم الشهادة",32],["الجهة المانحة",23],["المناسبة",23],["التاريخ",16]],rows:12,num:true},
-      {t:"ev",title:"صور شهاداتي",n:2,cap:"اسم الشهادة",add:"اضغط لإضافة صورة الشهادة"},
-      {t:"div",n:6,title:"شهادات شكر لمعلميّ",lab:"محتوى القسم",list:"شهادة شكر لكل معلم في جدول «موادي ومعلميّ»\nتُكتب أسماء المعلمين مرة واحدة للفصل فتظهر في شهادات جميع الطلاب"},
+      {t:"div",n:3,title:"شهادات شكر لمعلميّ",lab:"محتوى القسم",list:"شهادة شكر لكل معلم في جدول «موادي ومعلميّ»\nاكتب أسماء معلميك في الجدول فتظهر في الشهادات تلقائيًا"},
       ...STU_SUBJ.map((x,i)=>({t:"tcert",i,title:"شهادة شكر — "+x})),
       {t:"text",title:"ماذا تعلمت هذا العام؟",blocks:[["أكثر ما استمتعت به هذا العام",""],["مهارات جديدة تعلمتها",""],["أهدافي للعام القادم",""]]},
       {t:"text",title:"كلمة ولي الأمر والمعلم",blocks:[["رأي ولي الأمر في ملف "+g("ابنه","ابنته"),""],["كلمة "+g("المعلم","المعلمة"),""]],sig:["ولي الأمر",g("المعلم","المعلمة")]}
     ];
     return {title:g("ملف إنجاز الطالب","ملف إنجاز الطالبة"),sub:"العام الدراسي "+S.year,pages};
   }},
+  {id:"stu-part",cat:"ملفات الطالب",stu:true,free:true,ic:"ش",name:()=>"ملف المشاركات والأنشطة",build:()=>({title:"ملف المشاركات والأنشطة",sub:"العام الدراسي "+S.year,pages:[
+      {t:"stme",title:"من أنا"},
+      {t:"div",n:1,title:"الأنشطة والمسابقات",lab:"محتوى القسم",list:"سجل الأنشطة والمسابقات\nصور من مشاركاتي"},
+      {t:"table",title:"سجل الأنشطة والمسابقات",cols:[["م",6],["النشاط / المسابقة",28],["نوع المشاركة",15],["الجهة المنظمة",17],["التاريخ",16],["النتيجة / الإنجاز",18]],rows:15,num:true},
+      {t:"ev",title:"صور من مشاركاتي (١)",n:4,cap:"اسم النشاط",add:"اضغط لإضافة صورة المشاركة"},
+      {t:"ev",title:"صور من مشاركاتي (٢)",n:4,cap:"اسم النشاط",add:"اضغط لإضافة صورة المشاركة"},
+      {t:"div",n:2,title:"العمل التطوعي",lab:"محتوى القسم",list:"سجل الأعمال التطوعية\nصور من أعمالي التطوعية"},
+      {t:"table",title:"سجل الأعمال التطوعية",cols:[["م",6],["العمل التطوعي",32],["الجهة",20],["التاريخ",16],["عدد الساعات",12],["الأثر",14]],rows:15,num:true},
+      {t:"ev",title:"صور من أعمالي التطوعية",n:4,cap:"اسم العمل التطوعي",add:"اضغط لإضافة صورة"},
+      {t:"div",n:3,title:"شهادات المشاركة",lab:"محتوى القسم",list:"صور شهادات المشاركة والشكر"},
+      {t:"ev",title:"شهادات المشاركة (١)",n:2,cap:"اسم الشهادة",add:"اضغط لإضافة صورة الشهادة"},
+      {t:"ev",title:"شهادات المشاركة (٢)",n:2,cap:"اسم الشهادة",add:"اضغط لإضافة صورة الشهادة"},
+      {t:"text",title:"ماذا أضافت لي مشاركاتي؟",blocks:[["أكثر مشاركة أفتخر بها",""],["مهارات اكتسبتها من الأنشطة",""],["مشاركات أطمح إليها",""]]}
+  ]})},
+  {id:"stu-radio",cat:"ملفات الطالب",stu:true,free:true,ic:"ذ",name:()=>"ملف الإذاعة المدرسية",build:()=>{
+    const RB=k=>({t:"text",small:true,title:"إعداد إذاعة مدرسية "+k,blocks:[["عنوان الإذاعة والتاريخ",""],["المقدمة",""],["القرآن الكريم",""],["الحديث الشريف",""],["كلمة الصباح",""],["هل تعلم؟",""],["الخاتمة",""]]});
+    return {title:"ملف الإذاعة المدرسية",sub:"العام الدراسي "+S.year,pages:[
+      {t:"stme",title:"من أنا"},
+      {t:"table",title:"سجل مشاركاتي في الإذاعة المدرسية",cols:[["م",6],["التاريخ",15],["الفقرة",20],["الموضوع",35],["ملاحظات المعلم/ة",24]],rows:16,num:true},
+      {t:"div",n:1,title:"إعداد الإذاعة",lab:"محتوى القسم",list:"نماذج لإعداد فقرات الإذاعة المدرسية"},
+      RB("(١)"),RB("(٢)"),RB("(٣)"),
+      {t:"div",n:2,title:"صور مشاركاتي",lab:"محتوى القسم",list:"صور من مشاركتي في الإذاعة"},
+      {t:"ev",title:"صور من مشاركتي في الإذاعة (١)",n:4,cap:"الفقرة والتاريخ",add:"اضغط لإضافة صورة المشاركة"},
+      {t:"ev",title:"صور من مشاركتي في الإذاعة (٢)",n:4,cap:"الفقرة والتاريخ",add:"اضغط لإضافة صورة المشاركة"}
+    ]}}},
+  {id:"stu-ws",cat:"ملفات الطالب",stu:true,free:true,ic:"و",name:()=>"ملف أوراق العمل",build:()=>({title:"ملف أوراق العمل",sub:"العام الدراسي "+S.year,pages:[
+      {t:"stme",title:"من أنا"},
+      {t:"table",title:"سجل أوراق العمل المنجزة",cols:[["م",6],["التاريخ",15],["المادة",17],["عنوان ورقة العمل",32],["التقدير",13],["توقيع المعلم/ة",17]],rows:18,num:true},
+      ...STU_SUBJ.map((x,i)=>({t:"div",n:i+1,title:x,lab:"أوراق العمل",list:"أوراق عمل مادة "+x+"\nتُوضع أوراق العمل بعد هذا الفاصل"})),
+      {t:"ev",title:"نماذج من أوراق عملي",n:4,cap:"عنوان ورقة العمل",add:"اضغط لإضافة صورة ورقة العمل"}
+  ]})},
   {id:"waiting",cat:"ملفات الإدارة والتوجيه",ic:"ظ",name:()=>"سجل حصص الانتظار",build:()=>{
     const TE=g("المعلم","المعلمة"),TES=g("المعلمين","المعلمات"),STS=g("الطلاب","الطالبات");
     return {title:"سجل حصص الانتظار",sub:"",pages:[
@@ -3820,7 +3849,7 @@ function rDgc(file,t,p,pi,num){
 }
 /* ---------- ملف إنجاز الطالب ---------- */
 function rStMe(file,t,p,pi,num){
-  const c=rosterCur(),F=[["الاسم",PN()],["الصف / الفصل",c?c.name:""],["المدرسة",S.school||""],["العام الدراسي",S.year+" — "+S.term],["تاريخ الميلاد",""],["هواياتي",""],["مادتي المفضلة",""],["لوني المفضل",""],["أحلم أن أصبح",""],["صفة أحبها في نفسي",""]];
+  const F=[["الاسم",PN()],["الصف / الفصل",PJ()],["المدرسة",S.school||""],["العام الدراسي",S.year+" — "+S.term],["تاريخ الميلاد",""],["هواياتي",""],["مادتي المفضلة",""],["لوني المفضل",""],["أحلم أن أصبح",""],["صفة أحبها في نفسي",""]];
   const flds=F.map((x,i)=>`<div class="smf"><b>${x[0]}</b>${ed(pi+"-f"+i,esc(x[1]),"div","v")}</div>`).join("");
   return frame(file,t,pi,p.title,`<div class="stme"><div class="smph"><div class="slot"><div class="img" data-img="${pi}-ph" role="button" tabindex="0" aria-label="إضافة صورة"><span>＋ ${g("صورة الطالب","صورة الطالبة")}</span><button class="x" data-rm="${pi}-ph" aria-label="حذف الصورة">×</button></div></div></div><div class="smfs">${flds}</div></div>
   <div class="blk smmsg"><h4>${g("رسالة إلى نفسي في بداية العام","رسالة إلى نفسي في بداية العام")}</h4>${ed(pi+"-msg","","div","tx")}</div>`,num);
@@ -3828,7 +3857,7 @@ function rStMe(file,t,p,pi,num){
 const STU_SUBJ=["القرآن الكريم والدراسات الإسلامية","لغتي","الرياضيات","العلوم","الدراسات الاجتماعية","اللغة الإنجليزية","المهارات الرقمية","التربية الفنية","التربية البدنية والدفاع عن النفس","المهارات الحياتية والأسرية"];
 function rTcert(file,t,p,pi){
   const i=p.i,ST=g("الطالب","الطالبة"),T=`<b class="tcs" data-sync="clsS-${i}-2" data-ph="${g("المعلم","المعلمة")}">................</b>`,SB=`<b class="tcs" data-sync="clsS-${i}-1">${esc(STU_SUBJ[i]||"")}</b>`;
-  const txt=`${g("يتقدّم","تتقدّم")} ${ST} / <b class="tcn">${esc(PN()||"................")}</b>${rosterCur()?` ${g("من","من")} ${esc(rosterCur().name)}`:""}<br>بخالص الشكر والتقدير والعرفان إلى ${g("معلمه","معلمتها")} الفاضل${S.gender==="f"?"ة":""}<br>${T}<br>${S.gender==="f"?"معلمة":"معلم"} مادة ${SB}<br>على ما ${g("قدّمه","قدّمته")} من جهد وعطاء وحرص على تعليمي،<br>سائلًا الله ${g("له","لها")} التوفيق والسداد، وأن يجزيه${S.gender==="f"?"ا":""} عني خير الجزاء.`.replace("سائلًا",g("سائلًا","سائلةً"));
+  const txt=`${g("يتقدّم","تتقدّم")} ${ST} / <b class="tcn">${esc(PN()||"................")}</b>${PJ()?` من ${esc(PJ())}`:""}<br>بخالص الشكر والتقدير والعرفان إلى ${g("معلمه","معلمتها")} الفاضل${S.gender==="f"?"ة":""}<br>${T}<br>${S.gender==="f"?"معلمة":"معلم"} مادة ${SB}<br>على ما ${g("قدّمه","قدّمته")} من جهد وعطاء وحرص على تعليمي،<br>سائلًا الله ${g("له","لها")} التوفيق والسداد، وأن يجزيه${S.gender==="f"?"ا":""} عني خير الجزاء.`.replace("سائلًا",g("سائلًا","سائلةً"));
   return `<div class="tcert"><div class="tcfr"></div><div class="tcin">
    <div class="tctop"><div><span class="ksa" role="img" aria-label="المملكة العربية السعودية"></span><br>وزارة التعليم<br>${S.school?esc(S.school):""}</div><img class="logo" src="${LOGO}" alt="شعار وزارة التعليم"><div>${esc(S.year)}<br>${esc(S.term)}</div></div>
    <div class="tcti">شهادة شكر وتقدير</div><div class="tcrib">${g("من طالبك المحب","من طالبتك المحبة")}</div>
@@ -3983,18 +4012,15 @@ function syncControls(){
 
 /* edits persistence */
 const eKeyKs=()=>"hq3:e:"+S.file+":"+S.gender+":ks";
-const eKeyCls=()=>"hq3:e:"+S.file+":"+S.gender+":cls:"+((rosterCur()||{}).id||"0");
+const eKeyCls=()=>"hq3:e:stu-shared:"+S.gender;
 /* ملف الطالب: لكل طالب بياناته المستقلة */
 const isStu=()=>{const f=FILES.find(x=>x.id===S.file);return !!(f&&f.stu)};
-const stuList=()=>{const c=rosterCur();return c?c.names.filter(Boolean):[]};
-const stuIdx=()=>{const L=stuList();return Math.min(Math.max(0,+S.stuI||0),Math.max(0,L.length-1))};
-const stuName=()=>stuList()[stuIdx()]||"";
-const stuId=()=>{const c=rosterCur(),n=stuName();return n&&c?c.id+":"+n:"0"};
-const SK=()=>S.file+(isStu()?"~"+stuId():"");
-const PN=()=>isStu()?stuName():S.name;
-const PJ=()=>isStu()?((rosterCur()||{}).name||""):S.job;
+const STI=()=>store.get("hq:stuinfo",{})||{};
+const SK=()=>S.file;
+const PN=()=>isStu()?(STI().name||""):S.name;
+const PJ=()=>isStu()?(STI().cls||""):S.job;
 const PJL=()=>isStu()?"الصف / الفصل":"العمل / التخصص";
-const eKey=()=>{const f=FILES.find(x=>x.id===S.file);return "hq3:e:"+S.file+":"+S.gender+(f&&f.ks?":"+((rosterCur()||{}).id||"0"):"")+(f&&f.stu?":s:"+stuId():"")};
+const eKey=()=>{const f=FILES.find(x=>x.id===S.file);return "hq3:e:"+S.file+":"+S.gender+(f&&f.ks?":"+((rosterCur()||{}).id||"0"):"")};
 const iKey=k=>"hq3:i:"+SK()+":"+k;
 const memImg={};
 const qKey=k=>"hq3:q:"+SK()+":"+k;
@@ -4637,7 +4663,7 @@ function ksFitTables(){
 const isKsFile=()=>{const f=FILES.find(x=>x.id===S.file);return !!(f&&f.ks)};
 function renderKsCard(){
   const card=$("#ksCard");if(!card)return;
-  card.hidden=!isKsFile()&&!isStu();renderStuCard();if(card.hidden)return;
+  card.hidden=!isKsFile();renderStuCard();if(card.hidden)return;
   const r=roster(),c=rosterCur();
   $("#ksSel").innerHTML=r.classes.length?r.classes.map(x=>`<option value="${esc(x.id)}"${c&&x.id===c.id?" selected":""}>${esc(x.name)}${x.subject?" — "+esc(x.subject):""} (${x.names.length})</option>`).join(""):`<option value="">لا توجد فصول بعد</option>`;
   $("#ksSel").disabled=!r.classes.length;$("#ksDel").hidden=!r.classes.length;$("#ksEdit").hidden=!r.classes.length;
@@ -4653,28 +4679,15 @@ function renderKsCard(){
 }
 function renderStuCard(){
   const card=$("#stuCard");if(!card)return;card.hidden=!isStu();if(card.hidden)return;
-  const L=stuList(),i=stuIdx();
-  $("#stuSel").innerHTML=L.length?L.map((n,k)=>`<option value="${k}"${k===i?" selected":""}>${k+1}. ${esc(n)}</option>`).join(""):`<option value="">— أضف فصلًا بأسماء الطلاب —</option>`;
-  $("#stuSel").disabled=!L.length;$("#stuPrev").disabled=i<=0;$("#stuNext").disabled=i>=L.length-1;$("#stuAll").hidden=L.length<2;
-  $("#stuTitle").textContent=L.length?g("ملف الطالب: ","ملف الطالبة: ")+L[i]:"ملف بدون اسم";
-  $("#stuInfo").textContent=L.length?`${i+1} من ${L.length} — ما تكتبه وتضيفه من صور يُحفظ لهذا ${g("الطالب","الطالبة")} وحده`:"يمكنك تعبئة الملف يدويًا، أو إضافة فصل لتنشئ ملفًا لكل طالب";
-  $("#stuAll").querySelector("span").textContent=`طباعة ملفات الفصل كاملًا (${L.length})`;
+  const d=STI(),A=document.activeElement;
+  [["stuN",d.name||""],["stuC",d.cls||""],["stuS",S.school||""],["stuD",S.dept||""]].forEach(([id,v])=>{const el=$("#"+id);if(el!==A)el.value=v});
+  $("#stuG").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.g===(S.gender||"m")));
 }
-function stuGo(i){ftbFlush();S.stuI=Math.max(0,Math.min(stuList().length-1,i));saveS();keepY(render)}
-$("#stuSel").addEventListener("change",e=>stuGo(+e.target.value));
-$("#stuPrev").addEventListener("click",()=>stuGo(stuIdx()-1));
-$("#stuNext").addEventListener("click",()=>stuGo(stuIdx()+1));
-$("#stuAll").addEventListener("click",async()=>{
-  if(!PRINT)return needAuth("print");
-  const L=stuList();if(L.length<2)return;
-  if(!await uiConfirm(`سيُجهَّز ملف مستقل لكل ${g("طالب","طالبة")} في الفصل (${L.length} ${L.length>10?g("طالبًا","طالبة"):g("طلاب","طالبات")}) ثم تُفتح نافذة الطباعة. الصفحات غير المحددة «ضمن الطباعة» تُستبعد من جميع الملفات.`,{title:"طباعة ملفات الفصل",ok:"تجهيز وطباعة"}))return;
-  ftbFlush();const keep=S.stuI,parts=[];
-  for(let k=0;k<L.length;k++){S.stuI=k;render();parts.push(pagesEl.innerHTML)}
-  S.stuI=keep;pagesEl.innerHTML=parts.join("");document.body.classList.add("stuall");
-  const done=()=>{document.body.classList.remove("stuall");keepY(render)};
-  addEventListener("afterprint",done,{once:true});
-  try{window.print()}catch(e){done();toast("افتح الصفحة في نافذة مستقلة ثم اضغط Ctrl+P")}
-});
+let stuT;
+document.addEventListener("input",e=>{const id=e.target.id;if(!/^stu[NCSD]$/.test(id))return;const v=e.target.value;
+  if(id==="stuN"||id==="stuC"){const d=STI();d[id==="stuN"?"name":"cls"]=v;store.set("hq:stuinfo",d)}else{S[id==="stuS"?"school":"dept"]=v;saveS()}
+  clearTimeout(stuT);stuT=setTimeout(()=>keepY(render),450)});
+document.addEventListener("click",e=>{const b=e.target.closest("#stuG [data-g]");if(!b)return;ftbFlush();S.gender=b.dataset.g;saveS();keepY(render)});
 let ksEditing=null;
 function openKs(id){
   if(!EDIT)return needAuth("edit");
@@ -4700,7 +4713,7 @@ $("#ksSave").addEventListener("click",()=>{
   if(!store.set("hq:roster",r))return toast("تعذّر الحفظ: مساحة التخزين ممتلئة");
   closeKs();keepY(render);toast("حُفظت أسماء "+name+" ("+names.length+")");
 });
-$("#ksSel").addEventListener("change",e=>{ftbFlush();S.stuI=0;const r=roster();r.cur=e.target.value;store.set("hq:roster",r);keepY(render)});
+$("#ksSel").addEventListener("change",e=>{ftbFlush();const r=roster();r.cur=e.target.value;store.set("hq:roster",r);keepY(render)});
 $("#ksNew").addEventListener("click",()=>openKs(null));
 $("#ksDist").addEventListener("click",openDist);
 $("#ksLand").addEventListener("click",e=>{const b=e.target.closest("[data-o]");if(!b)return;if(!EDIT)return needAuth("edit");store.set("hq3:land:"+S.file,b.dataset.o==="l");keepY(render);toast(b.dataset.o==="l"?"صار الكشف أفقيًا":"صار الكشف عموديًا")});
@@ -5452,7 +5465,7 @@ let SHOP={prices:{},store:{def:10,currency:"ر.س"},bank:{}},SHOP_OK=false;
 const CUR=()=>(SHOP.store&&SHOP.store.currency)||"ر.س";
 const r2=n=>Math.round(n*100)/100;
 const saleNow=()=>{const st=SHOP.store||{},pc=+st.sale_pct||0;if(pc<=0)return 0;if(st.sale_until){const t=new Date(),d=new Date(st.sale_until+"T23:59:59+03:00");if(t>d)return 0}return Math.min(pc,100)};
-const shopP=fid=>{const p=SHOP.prices[fid],sale=saleNow();if(!p){const b=+((SHOP.store||{}).def)||0;return{base:b,disc:sale,price:r2(b*(1-sale/100)),free:false,active:true}}const b=+p.price||0,d=Math.max(+p.discount||0,sale);return{base:b,disc:d,price:r2(b*(1-d/100)),free:!!p.free,active:p.active!==false}};
+const shopP=fid=>{{const F0=FILES.find(x=>x.id===fid);if(F0&&F0.free)return{base:0,disc:0,price:0,free:true,active:true}}const p=SHOP.prices[fid],sale=saleNow();if(!p){const b=+((SHOP.store||{}).def)||0;return{base:b,disc:sale,price:r2(b*(1-sale/100)),free:false,active:true}}const b=+p.price||0,d=Math.max(+p.discount||0,sale);return{base:b,disc:d,price:r2(b*(1-d/100)),free:!!p.free,active:p.active!==false}};
 const priceHTML=p=>p.disc>0&&p.base>p.price?`<s class="st-old">${money(p.base)}</s> ${money(p.price)}`:money(p.price);
 const shopFree=fid=>SHOP_OK&&shopP(fid).free;
 const owns=fid=>{if(!ME)return false;if(isAdmin())return true;const P=ME.perms||{};if(P.all&&P.all.e)return true;const t=toolOf(fid);if(t&&t.bundle&&t.bundle.every(owns))return true;return permOk(P[fid])};
@@ -5603,7 +5616,7 @@ const CAT_DESC={
  "ملفات الإدارة والتوجيه":n=>`${n} يجمع السجلات والنماذج التي تحتاجها خلال العام في ملف واحد منظم، بصياغة رسمية وهوية وزارة التعليم، مع صفحات شواهد.`,
  "ملفات المعلم":n=>`${n} بصفحات منظمة جاهزة للتعبئة والطباعة، تكتب فيها مباشرة وتضيف ما تحتاجه من جداول وصور وصفحات.`,
  "الشهادات والتهنئة":n=>`${n}: شهادة باسم كل طالب من قائمة الفصل بضغطة واحدة، بعدة أنواع وتصاميم ونص قابل للتعديل.`,
- "ملفات الطالب":n=>`${n}: ملف لكل طالب من قائمة الفصل، يتضمن «من أنا» والجدول الدراسي وأوراق العمل والإذاعة المدرسية والأعمال الفنية والمشاركات والشهادات وشهادات شكر للمعلمين، مع طباعة ملفات الفصل كاملًا دفعة واحدة.`,
+ "ملفات الطالب":n=>`${n} — مجاني للطلاب: تكتب بياناتك مرة واحدة، وتعبّئ الملف وتضيف صورك، ثم تطبعه مباشرة بدون تسجيل دخول.`,
  "كشوف الطلاب":n=>`${n}: تُدخل أسماء طلاب الفصل مرة واحدة فتظهر في الكشف تلقائيًا، وتُضاف الصفحات بحسب عدد الطلاب، مع غلاف وخيار الاتجاه أفقي أو عمودي.`
 };
 const FILE_DESC={
@@ -5771,7 +5784,7 @@ let BE_RES;const BEP=new Promise(r=>BE_RES=r);
 const EV_COL="haqiba_ev",CARD_COL="haqiba_cards";
 const isActive=()=>!!(ME&&ME.status==="active");
 const isAdmin=()=>isActive()&&ME.role==="admin";
-function perm(fid,k){if(isAdmin())return true;if(!isActive())return false;if(STORE&&typeof shopFree==="function"&&shopFree(fid))return true;const p=ME.perms||{};return !!((p.all&&p.all[k])||(p[fid]&&p[fid][k]));}
+function perm(fid,k){{const F0=FILES.find(x=>x.id===fid);if(F0&&F0.free)return true}if(isAdmin())return true;if(!isActive())return false;if(STORE&&typeof shopFree==="function"&&shopFree(fid))return true;const p=ME.perms||{};return !!((p.all&&p.all[k])||(p[fid]&&p[fid][k]));}
 const fileName=id=>{const f=PRODS().find(x=>x.id===id);return f?f.name():id};
 const catOf=f=>typeof f.cat==="function"?f.cat():f.cat;
 
