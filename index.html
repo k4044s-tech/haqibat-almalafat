@@ -1300,7 +1300,7 @@ table.t.rh14 td{height:18.5mm;vertical-align:middle}
 @media print{.gccut span{background:#fff}}
 .aib{position:relative;gap:6px}.aib .aist{font-size:15px}.aib .aibdg{font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;background:#e6f6ef;color:#0b7a4b;margin-inline-start:4px}
 .aib.off{opacity:.75}.aib.off .aibdg{background:#f1f3f5;color:#7a8791}
-.ai-dlg{max-width:620px}.ai-f{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;padding:4px 0 10px}.ai-f label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}.ai-f .w{grid-column:1/-1}.ai-f .ck{flex-direction:row;align-items:center;gap:8px;font-weight:500}.ai-f textarea{resize:vertical;font:inherit;min-height:84px}
+.ai-dlg{max-width:620px;max-height:92vh;overflow:auto}.ai-f{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;padding:4px 0 10px}.ai-f label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}.ai-f .w{grid-column:1/-1}.ai-f .ck{flex-direction:row;align-items:center;gap:8px;font-weight:500}.ai-f textarea{resize:vertical;font:inherit;min-height:66px}
 .ai-prog{display:flex;flex-direction:column;gap:6px;margin:6px 0 10px;font-size:13px;color:var(--mut,#55636c)}.ai-prog .bar{height:8px;border-radius:8px;background:#eef2f4;overflow:hidden}.ai-prog .bar i{display:block;height:100%;width:5%;background:linear-gradient(90deg,#15445a,#0da9a6);transition:width .4s}
 .ai-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 12px}.ai-sum>div{border:1px solid #e3e8eb;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:2px}.ai-sum b{font-size:20px}.ai-sum span{font-size:12px;color:#6b7a84}
 @media (max-width:640px){.ai-f{grid-template-columns:1fr}.ai-sum{grid-template-columns:1fr 1fr}}
@@ -6274,8 +6274,33 @@ async function exportWord(){
 
 /* ---------- التجهيز الذكي (Claude) ---------- */
 const AI_ERR={no_permission:"التجهيز الذكي غير متوفر لحسابك في هذا الملف. اطلبه من المشرف.",limit:"استنفدت عدد مرات التجهيز الذكي المسموحة لهذا الملف.",not_configured:"خدمة التجهيز الذكي لم تُفعَّل بعد على الخادم.",disabled:"خدمة التجهيز الذكي متوقفة مؤقتًا.",job_expired:"انتهت مهلة العملية، أعد المحاولة.",upstream:"تعذّر الاتصال بخدمة Claude، أعد المحاولة بعد قليل.",auth:"سجّل الدخول أولًا.",too_many_parts:"الملف كبير جدًا، أعد المحاولة.",net:"تعذّر الاتصال بالخادم، تحقق من الإنترنت.",server:"حدث خطأ في الخادم، أعد المحاولة."};
+/* أسئلة التجهيز الذكي تختلف حسب الملف: [التسمية، المثال، النوع i سطر / t فقرة، القيمة الافتراضية] */
+const AI_NONE=new Set(["ks-marks","ks-groups","certs","stu-certs","stu-cards"]);
+function aiQs(f){
+  const id=f.id,cat=catOf(f),N=["ملاحظات أو تركيز خاص (اختياري)","مثال: ركّز على تحسين نواتج التعلم في اختبارات نافس","t"];
+  const T=(a,b,d)=>[a,b,"t",d||""],I=(a,b,d)=>[a,b,"i",d||""];
+  const STG=I("المرحلة والصفوف","مثال: المرحلة المتوسطة — الصف الثاني",S.stage);
+  if(cat==="ملفات الطالب"){const C=I("الصف","مثال: الرابع / أ",STI().cls);
+    if(id==="stu-part")return {h:"اكتب ما شاركت فيه هذا العام ليكتب Claude سجل مشاركاتك ووصف صورها.",q:[C,T("الأنشطة والمسابقات التي شاركت فيها","مثال: مسابقة القرآن الكريم، معرض العلوم، مسابقة الرسم"),T("الأعمال التطوعية","مثال: حملة نظافة المدرسة، يوم التشجير"),T("ماذا تعلمت من مشاركاتك؟","مثال: العمل ضمن فريق، والثقة بالنفس")]};
+    if(id==="stu-radio")return {h:"اكتب ما تحب تقديمه في الإذاعة ليجهّز Claude نماذج فقرات إذاعية مناسبة لعمرك.",q:[C,T("الفقرات التي تحب تقديمها","مثال: القرآن الكريم، كلمة الصباح، هل تعلم"),T("مواضيع تريد الإذاعة عنها","مثال: اليوم الوطني، فضل القراءة، النظافة")]};
+    if(id==="stu-ws")return {h:"ارفع صور أوراق عملك ليرتبها Claude ويكتب عنوان كل ورقة.",q:[C,T("المواد التي لديك فيها أوراق عمل","مثال: الرياضيات، لغتي، العلوم")]};
+    return {h:"اكتب عن نفسك ليكتب Claude صفحات «من أنا» و«ماذا تعلمت» ووصف صورك وأعمالك.",q:[C,T("هواياتك واهتماماتك","مثال: القراءة والرسم وكرة القدم"),I("موادك المفضلة","مثال: الرياضيات والعلوم"),T("أبرز إنجازاتك وشهاداتك هذا العام","مثال: شهادة تفوق، المركز الأول في مسابقة الإملاء"),T("أحلامك وأهدافك","مثال: أن أصبح طبيبًا، وأحفظ جزء عمّ")]};
+  }
+  if(/^perf-[pd]$/.test(id))return {h:"اكتب عن قيادتك للمدرسة هذا العام ليصوغ Claude الشواهد ووصفها.",q:[I("المرحلة وعدد الطلاب والمعلمين","مثال: ابتدائية — 420 طالبًا و28 معلمًا"),I("سنوات الخبرة في القيادة","اختياري"),T("أبرز المبادرات والبرامج التي قدتها","مثال: مجتمعات التعلم المهنية، برنامج تحسين القراءة، الشراكة مع جمعية خيرية"),T("أبرز إنجازات المدرسة","مثال: تحسّن نتائج نافس، تفعيل المنصات التعليمية"),T("التحديات وخطط التحسين","مثال: ضعف الحضور في بداية الأسبوع"),N]};
+  if(id==="perf-h"||id==="health")return {h:"اكتب عن البرامج الصحية في مدرستك ليصوغ Claude الملف ووصف الشواهد.",q:[STG,T("البرامج الصحية والتوعوية المنفذة","مثال: حملة التطعيمات، برنامج الغذاء الصحي، التوعية بالسكري"),T("الفحوصات والمتابعة الصحية (دون أسماء)","مثال: فحص النظر للصف الأول، متابعة الحالات المزمنة"),T("الشراكات الصحية","مثال: مركز الرعاية الأولية بالحي"),N]};
+  if(["perf-c","counsel","cases","discipline"].includes(id))return {h:"اكتب عن برامج التوجيه في مدرستك (دون أسماء طلاب) ليصوغ Claude الملف.",q:[STG,T("البرامج الإرشادية والوقائية المنفذة","مثال: برنامج تعزيز السلوك الإيجابي، التهيئة للصف الأول"),T("طبيعة الحالات التي تتابعها (عامة دون أسماء)","مثال: تأخر دراسي، غياب متكرر، صعوبات تكيف"),T("التواصل مع الأسر","مثال: مجالس الآباء، رسائل أسبوعية"),N]};
+  if(["perf-a","activity","radio","volunteer","reports"].includes(id))return {h:"اكتب عن الأنشطة التي نفذتها ليصوغ Claude التقارير ووصف الصور.",q:[STG,T("الأندية والأنشطة المنفذة","مثال: النادي العلمي، نادي القراءة، الإذاعة المدرسية"),T("المناسبات والأيام العالمية التي فعّلتها","مثال: اليوم الوطني، يوم المعلم، اليوم العالمي للغة العربية"),T("المسابقات والمشاركات","مثال: مسابقة تحدي القراءة العربي، أولمبياد العلوم"),N]};
+  if(id==="perf-l"||id==="lab")return {h:"اكتب عن عمل المختبر ليصوغ Claude الملف.",q:[I("المختبر والمواد التي يخدمها","مثال: مختبر العلوم — الصفوف 4 إلى 6"),T("التجارب والأنشطة العملية المنفذة","مثال: تجارب الكهرباء، تجارب النبات"),T("إجراءات السلامة والجرد والصيانة","مثال: جرد فصلي، لوحات إرشادية"),N]};
+  if(["perf-x","assign","committees","weekly","waiting","readiness","duty","exams"].includes(id))return {h:"اكتب عن مهامك في هذا الملف ليصوغ Claude الإجراءات والتقارير.",q:[I("صفتك ودورك","مثال: وكيل المدرسة، رئيس لجنة الاختبارات",S.job),I("المرحلة وعدد الطلاب والمعلمين","اختياري"),T("المهام والإجراءات التي تتولاها","مثال: إعداد جداول المراقبة، متابعة حصص الانتظار"),T("أبرز ما نُفّذ والتحديات","مثال: أتمتة السجلات، نقص المراقبين"),N]};
+  if(["remedial","loss","nafs"].includes(id))return {h:"اكتب عن الطلاب المستهدفين ليكتب Claude الخطة وإجراءاتها.",q:[I("المادة والصف","مثال: الرياضيات — الصف الثالث المتوسط",S.job),I("الفئة المستهدفة","مثال: 12 طالبًا من ضعاف الأداء"),T("المهارات غير المتقنة أو جوانب الضعف","مثال: العمليات على الكسور، حل المسائل اللفظية"),T("الأساليب والبرامج التي تريد تطبيقها","مثال: التعلم بالأقران، أوراق عمل علاجية، حصص دعم"),I("مدة الخطة","مثال: 6 أسابيع"),N]};
+  if(["ops","improve","imp-sup","imp-eval"].includes(id))return {h:"اكتب واقع مدرستك باختصار ليكتب Claude محتوى الخطة: التشخيص والأهداف والإجراءات.",q:[I("المدرسة والمرحلة",`مثال: ${S.school||"ابتدائية الأمل"} — المرحلة الابتدائية`,S.school),I("عدد الطلاب والمعلمين","اختياري"),T("أبرز نقاط القوة","مثال: تعاون المعلمين، تفعيل المنصات التعليمية"),T("أبرز جوانب الضعف والتحديات","مثال: انخفاض نتائج القراءة، ضعف مشاركة الأسر"),T("المجالات أو المؤشرات المستهدفة بالتحسين","مثال: نواتج التعلم، البيئة المدرسية"),T("نتائج التقويم أو نافس إن توفرت","اختياري: اكتب النتائج كما هي"),N]};
+  if(["partner","plc","meet","etec","lrc","safety"].includes(id))return {h:"اكتب عمّا نُفّذ في مدرستك ليصوغ Claude الملف والتقارير.",q:[I("المدرسة والمرحلة","",S.school),T("الفريق أو اللجنة المسؤولة (أدوار دون أسماء)","مثال: قائد المدرسة، وكيل الشؤون التعليمية، ثلاثة معلمين"),T("أبرز ما نُفّذ هذا العام","مثال: لقاءات أسبوعية، ورش عمل، تجارب إخلاء"),T(id==="partner"?"الجهات الشريكة":"أهداف العام","مثال: جمعية البر، مركز الحي"),N]};
+  if(["homeroom","studrec","sped","gifted"].includes(id))return {h:"اكتب عن الفئة التي تخدمها (دون أسماء طلاب) ليصوغ Claude الملف.",q:[I("الصف أو الفئة","مثال: الصف الخامس / أ، أو طلاب صعوبات القراءة"),I("عدد الطلاب","اختياري"),T("البرامج والأنشطة المنفذة","مثال: برنامج إثرائي، خطط فردية، تحفيز أسبوعي"),T("التواصل مع الأسر","مثال: تقارير شهرية، لقاءات"),N]};
+  /* المعلم وملفاته العامة */
+  return {h:"اكتب معلومات مختصرة عن عملك ليكتب Claude نصوص الملف ويوزع صور الشواهد على الصفحات المناسبة.",q:[I("المادة / التخصص","مثال: معلم رياضيات",S.job),STG,I("سنوات الخبرة","اختياري"),T("الاستراتيجيات التي تطبقها","مثال: التعلم التعاوني، الصف المقلوب، التعلم باللعب"),T("الدورات والبرامج التي حضرتها","مثال: دورة التعلم النشط، مجتمع التعلم المهني"),T("المبادرات والأنشطة التي نفذتها","مثال: خطة علاجية لضعاف القراءة، الإشراف على الإذاعة"),T("التواصل مع أولياء الأمور والمجتمع","مثال: رسائل أسبوعية، لقاء أولياء الأمور"),N]};
+}
 const aiAvail=()=>!!ME&&perm(S.file,"ai");
-function renderAiBtn(){const b=$("#aiBtn");if(!b)return;b.hidden=EMBED;const ok=aiAvail();b.classList.toggle("off",!ok);
+function renderAiBtn(){const b=$("#aiBtn");if(!b)return;b.hidden=EMBED||AI_NONE.has(S.file);const ok=aiAvail();b.classList.toggle("off",!ok);
   b.querySelector(".aibdg").textContent=ok?"متوفر":"غير متوفر";b.title=ok?"يجهّز Claude نصوص الملف ويوزع صور الشواهد":"التجهيز الذكي غير متوفر لحسابك في هذا الملف"}
 function aiLabel(el){const b=el.closest(".blk");if(b&&b.querySelector("h4"))return b.querySelector("h4").innerText;
   const f=el.closest(".fld,.smf");if(f){const k=f.querySelector(".k,b");if(k)return k.innerText}
@@ -6300,15 +6325,11 @@ const aiShrink=(src,max,q)=>new Promise(ok=>{const im=new Image();im.onload=()=>
 const readURL=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=()=>ok(null);r.readAsDataURL(f)});
 function aiDialog(){return new Promise(res=>{
   let m=document.getElementById("aiDlg");if(!m){m=document.createElement("div");m.className="modal";m.id="aiDlg";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");document.body.appendChild(m)}
-  const f=cur&&cur.f,stu=f&&f.stu;
-  m.innerHTML=`<div class="dialog ui-dlg ai-dlg"><div class="dlg-h"><h3>✨ التجهيز الذكي</h3><p>اكتب معلومات مختصرة عن عملك، وأرفق صور شواهدك إن وجدت، ليكتب Claude نصوص الملف ويوزع الصور على الصفحات المناسبة. راجع المحتوى بعد التجهيز قبل الطباعة.</p></div>
-   <div class="ai-f">
-    <label><span>${stu?"الصف":"المادة / التخصص"}</span><input class="inp" id="aiSubj" value="${esc(stu?(STI().cls||""):(S.job||""))}" placeholder="${stu?"مثال: الرابع":"مثال: معلم رياضيات"}"></label>
-    <label><span>المرحلة والصفوف</span><input class="inp" id="aiStage" value="${esc(S.stage||"")}" placeholder="مثال: المرحلة الابتدائية — الصفوف العليا"></label>
-    <label><span>سنوات الخبرة</span><input class="inp" id="aiYears" placeholder="اختياري"></label>
-    <label class="w"><span>أبرز ما قدّمته هذا العام</span><textarea class="inp" id="aiDone" rows="4" placeholder="مثال: نفّذت خطة علاجية لضعاف القراءة، وحضرت دورة التعلم النشط، وأشرفت على الإذاعة المدرسية، وطبّقت استراتيجية التعلم التعاوني…"></textarea></label>
-    <label class="w"><span>ملاحظات أو تركيز خاص (اختياري)</span><textarea class="inp" id="aiNote" rows="2" placeholder="مثال: ركّز على تحسين نواتج التعلم في اختبارات نافس"></textarea></label>
-    <label class="w"><span>صور الشواهد (حتى 12 صورة)</span><input type="file" id="aiImgs" accept="image/*" multiple><small id="aiImgN" class="muted"></small></label>
+  const f=cur&&cur.f,stu=f&&f.stu,P=aiQs(f);
+  const qh=P.q.map((x,n)=>x[2]==="t"?`<label class="w"><span>${esc(x[0])}</span><textarea class="inp" data-q="${n}" rows="3" placeholder="${esc(x[1])}">${esc(x[3]||"")}</textarea></label>`:`<label><span>${esc(x[0])}</span><input class="inp" data-q="${n}" value="${esc(x[3]||"")}" placeholder="${esc(x[1])}"></label>`).join("");
+  m.innerHTML=`<div class="dialog ui-dlg ai-dlg"><div class="dlg-h"><h3>✨ التجهيز الذكي — ${esc(f?f.name():"")}</h3><p>${esc(P.h)} راجع المحتوى بعد التجهيز قبل الطباعة.</p></div>
+   <div class="ai-f">${qh}
+    <label class="w"><span>${stu?"صور أعمالك ومشاركاتك":"صور الشواهد"} (حتى 12 صورة)</span><input type="file" id="aiImgs" accept="image/*" multiple><small id="aiImgN" class="muted"></small></label>
     <label class="w ck"><input type="checkbox" id="aiRep"> استبدال النصوص المكتوبة مسبقًا (الافتراضي: تعبئة الخانات الفارغة فقط)</label>
    </div><div class="ai-prog" id="aiProg" hidden><div class="bar"><i></i></div><span></span></div>
    <div class="dlg-b"><button class="btn primary" id="aiGo" type="button">جهّز الآن</button><button class="btn" id="aiNo" type="button">إلغاء</button></div></div>`;
@@ -6316,8 +6337,10 @@ function aiDialog(){return new Promise(res=>{
   const done=v=>{m.classList.remove("open");res(v)};
   m.querySelector("#aiImgs").addEventListener("change",e=>{const n=e.target.files.length;m.querySelector("#aiImgN").textContent=n?(n>12?"سيُستخدم أول 12 صورة فقط":n+" صورة"):""});
   m.querySelector("#aiNo").onclick=()=>done(null);m.addEventListener("click",e=>{if(e.target===m)done(null)},{once:true});
-  m.querySelector("#aiGo").onclick=()=>{const v=id=>m.querySelector("#"+id).value.trim();
-    res({m,info:{subject:v("aiSubj"),stage:v("aiStage"),years:v("aiYears"),achievements:v("aiDone"),notes:v("aiNote"),name:PN()||"",school:S.school||"",gender:S.gender==="f"?"أنثى":"ذكر",role:stu?"طالب":(S.job||"")},files:[...m.querySelector("#aiImgs").files].slice(0,12),replace:m.querySelector("#aiRep").checked})};
+  m.querySelector("#aiGo").onclick=()=>{const info={"الملف":f?f.name():"","الاسم":PN()||"","المدرسة":S.school||"","الجنس":S.gender==="f"?"أنثى":"ذكر","الصفة":stu?"طالب":(S.job||"")};
+    m.querySelectorAll("[data-q]").forEach(el=>{const v=el.value.trim();if(v)info[P.q[+el.dataset.q][0]]=v});
+    if(Object.keys(info).length<=5&&!m.querySelector("#aiImgs").files.length){toast("اكتب معلومة واحدة على الأقل أو أرفق صورًا ليجهّز Claude ملفك");return}
+    res({m,info,files:[...m.querySelector("#aiImgs").files].slice(0,12),replace:m.querySelector("#aiRep").checked})};
 })}
 async function runAi(){
   if(!ME)return needAuth("edit");
