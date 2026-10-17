@@ -4381,7 +4381,8 @@ function renderList(){
     const op=openCats.has(g.c), act=CURV==="file"&&g.f.some(f=>f.id===S.file);
     return `<li class="sb-li${op?" open":""}"><button class="sb-b" type="button" data-cat="${esc(g.c)}" data-active="${act&&(!op||collapsedDesk())}" aria-expanded="${op}" title="${esc(g.c)}">${ico(CAT_IC(g.c))}<span class="tx">${esc(g.c)}</span><span class="cnt">${g.f.length}</span>${ico("chevl","chev")}</button>
     <ul class="sb-sub">${g.f.map(f=>`<li><a class="sb-sb" href="#/f/${f.id}" data-active="${CURV==="file"&&f.id===S.file}" title="${esc(f.name())}"><span>${esc(f.name())}</span></a></li>`).join("")}</ul></li>`}).join("");
-  $("#list").innerHTML=`<div class="sb-g"><div class="sb-gl">عام</div><ul class="sb-m">${gen.join("")}</ul></div><div class="sb-g"><div class="sb-gl">الملفات</div><ul class="sb-m">${files}</ul></div>`;
+  const tools=(typeof TOOLS!=="undefined"?TOOLS:[]).filter(t=>!t.bundle).map(t=>{const own=typeof owns==="function"&&owns(t.id);return `<li><a class="sb-b" href="${t.url}" title="${esc(t.name())}">${ico(t.ic)}<span class="tx">${esc(t.name())}</span>${own?"":`<span class="cnt">تجربة</span>`}</a></li>`}).join("");
+  $("#list").innerHTML=`<div class="sb-g"><div class="sb-gl">عام</div><ul class="sb-m">${gen.join("")}</ul></div>${tools?`<div class="sb-g"><div class="sb-gl">الأدوات</div><ul class="sb-m">${tools}</ul></div>`:""}<div class="sb-g"><div class="sb-gl">الملفات</div><ul class="sb-m">${files}</ul></div>`;
   $("#sbSub").textContent=FILES.length+" ملفًا · "+S.year;
 }
 $("#list").addEventListener("click",e=>{
