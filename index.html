@@ -709,7 +709,10 @@ table.t.tall td{height:44mm;vertical-align:top;padding-top:2mm}
 .ix2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;align-items:start}
 .ix2 table.t td{font-size:8.6pt;padding:.5mm 1mm;height:6.2mm}
 .ix2 table.t th{font-size:8.6pt}
-.page.land .ix2 table.t td{height:5.4mm;padding:.3mm 1mm;font-size:8.2pt}
+.ix2t td,.ix2t th{font-size:8.6pt}
+.ix2t td{padding:.5mm 1mm;height:6.2mm}
+.page.land .ix2t td{height:5.4mm;padding:.3mm 1mm;font-size:8.2pt}
+table.t.ix2t th.gap,table.t.ix2t td.gap{background:transparent!important;border-top:0!important;border-bottom:0!important;padding:0}
 .blk.sm .tx{font-size:10pt;line-height:1.75;min-height:0!important;padding:2mm 4mm}
 .blk.sm{margin-bottom:3mm}
 .blk.sm h4{font-size:11.5pt;padding:1.5mm 4mm}
@@ -3649,8 +3652,9 @@ function rCover(file,t){
 function rIndex(file,t,list,num){
   const tb=(part,off)=>`<table class="t ixt${list.length>18?" dense":""}"><colgroup><col style="width:11%"><col style="width:71%"><col style="width:18%"></colgroup><thead><tr><th>م</th><th>المحتوى</th><th>الصفحة</th></tr></thead><tbody>${part.map((x,i)=>`<tr><td class="c">${i+1+off}</td><td>${esc(x[0])}</td><td class="c">${x[1]}</td></tr>`).join("")}</tbody></table>`;
   if(list.length<=(file.land?17:26))return frame(file,t,"ix","الفهرس",tb(list,0),num);
-  const half=Math.ceil(list.length/2);
-  return frame(file,t,"ix","الفهرس",`<div class="ix2">${tb(list.slice(0,half),0)}${tb(list.slice(half),half)}</div>`,num);
+  const half=Math.ceil(list.length/2),cell=i=>{const x=list[i];return x?`<td class="c">${i+1}</td><td>${esc(x[0])}</td><td class="c">${x[1]}</td>`:`<td></td><td></td><td></td>`};
+  const rows=Array.from({length:half},(_,i)=>`<tr>${cell(i)}<td class="gap"></td>${cell(i+half)}</tr>`).join("");
+  return frame(file,t,"ix","الفهرس",`<table class="t ixt ix2t"><colgroup>${(file.land?[4.5,39.5,6,1,4.5,39.5,6]:[5.5,34.5,9,2,5.5,34.5,9]).map(w=>`<col style="width:${w}%">`).join("")}</colgroup><thead><tr><th>م</th><th>المحتوى</th><th>الصفحة</th><th class="gap"></th><th>م</th><th>المحتوى</th><th>الصفحة</th></tr></thead><tbody>${rows}</tbody></table>`,num);
 }
 function divBody(p,pi,cls){
   const d=EL_DEF[p.title];
