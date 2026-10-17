@@ -1109,7 +1109,7 @@ body.evmode{overflow:hidden}
 .cv6{display:block;background:#fff}
 .cv6 .cbig{position:absolute;left:-38mm;top:-34mm;width:178mm;height:178mm;z-index:0}
 .cv6 .c6hd{position:absolute;top:14mm;right:16mm;text-align:right;color:var(--d);font-weight:600;font-size:10pt;line-height:1.7;z-index:2}
-.cv6 .c6logo{position:absolute;top:13mm;left:16mm;height:20mm;z-index:2;background:#fff;padding:2mm 3mm;border-radius:3mm}
+.cv6 .c6logo{position:absolute;top:16mm;left:18mm;height:22mm;z-index:2}
 .cv6 .c6t{position:absolute;top:150mm;right:16mm;left:16mm;text-align:right;z-index:2}
 .cv6 .c6t h1{margin:0 0 2mm;font:700 30pt var(--kufi);color:var(--p);line-height:1.35}
 .cv6 .c6t .sub{font:600 16pt var(--kufi);color:var(--s)}
@@ -3163,7 +3163,7 @@ function rDivX(p,t,pi){
 }
 function rCoverX(c,file,t,card,lab){
   const T1=`${ed("c-t",esc(file.title),"h1")}${ed("c-s",esc(file.sub||""),"div","sub")}`;
-  if(c===6)return `<div class="cov cv6">${ciCluster(t,true)}<div class="c6hd">المملكة العربية السعودية<br>وزارة التعليم<br>${dots(S.dept)}</div><img class="c6logo" src="${LOGO}" alt="شعار وزارة التعليم"><div class="c6t">${T1}</div>${card}<div class="c6y"><span>${esc(S.year)} — ${esc(S.term)}</span><span>${S.school?esc(S.school):""}</span></div></div>`;
+  if(c===6)return `<div class="cov cv6">${ciCluster(t,true)}<div class="c6hd">المملكة العربية السعودية<br>وزارة التعليم<br>${dots(S.dept)}</div><img class="c6logo" src="${LOGO_W}" alt="شعار وزارة التعليم"><div class="c6t">${T1}</div>${card}<div class="c6y"><span>${esc(S.year)} — ${esc(S.term)}</span><span>${S.school?esc(S.school):""}</span></div></div>`;
   if(c===7)return `<div class="cov cv7"><div class="c7r"><img src="${LOGO_W}" alt="شعار وزارة التعليم"><div class="c7v">المملكة العربية السعودية — وزارة التعليم</div><div class="c7y">${esc(S.year)}</div></div><div class="c7m"><div class="c7hd">${dots(S.dept)}<br>${esc(S.term)}</div><div class="c7t">${T1}</div>${card}</div></div>`;
   if(c===8){const b=`<div class="sdb" style="background-image:${sadu(t)}"></div>`;return `<div class="cov cv8">${b}<div class="c8m"><div class="c8hd">المملكة العربية السعودية<br>وزارة التعليم<br>${dots(S.dept)}</div><img class="c8logo" src="${LOGO}" alt="شعار وزارة التعليم"><div class="c8t">${T1}</div><div class="sdt"><h3>العام الدراسي ${esc(S.year)} — ${esc(S.term)}</h3></div>${card}</div>${b}</div>`}
   if(c===9){const fsx=(k,l,v)=>`<fieldset class="fs"><legend>${l}</legend>${ed(k,v)}</fieldset>`;
@@ -3212,7 +3212,7 @@ function rCover(file,t){
     <div class="rw"><div class="k">المدرسة</div><div class="v">${ed("c-sch",dots(S.school))}</div></div>
     <div class="rw"><div class="k">العام الدراسي</div><div class="v">${esc(S.year)} — ${esc(S.term)}</div></div></div>`;
   const hd=`<div class="hd"><div>المملكة العربية السعودية<br>وزارة التعليم<br>${dots(S.dept)}</div><div style="text-align:left">العام الدراسي ${esc(S.year)}<br>${esc(S.term)}</div></div>`;
-  const ttl=(light)=>`<div class="ttl">${light?`<span class="plate"><img class="logo" src="${LOGO}" alt="شعار وزارة التعليم"></span>`:`<img class="logo" src="${LOGO}" alt="شعار وزارة التعليم">`}${ed("c-t",esc(file.title),"h1")}${ed("c-s",esc(file.sub||""),"div","sub")}</div>`;
+  const ttl=(light)=>`<div class="ttl">${light?`<img class="logo" src="${LOGO_W}" alt="شعار وزارة التعليم">`:`<img class="logo" src="${LOGO}" alt="شعار وزارة التعليم">`}${ed("c-t",esc(file.title),"h1")}${ed("c-s",esc(file.sub||""),"div","sub")}</div>`;
   const c=+S.cover;
   {const X=rCoverX(c,file,t,card,lab);if(X)return X;}
   if(c===4){
