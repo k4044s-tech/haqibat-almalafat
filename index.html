@@ -1286,6 +1286,18 @@ table.t.rh14 td{height:18.5mm;vertical-align:middle}
 .tctx b{color:var(--p);font-family:var(--kufi);font-size:17pt}
 .tcsig{margin-top:auto;align-self:stretch;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6mm;font-size:10.5pt}
 .tcsig span{display:block;color:var(--d);font-weight:700;margin-bottom:2mm}.tcsig b{font-weight:500}
+.gcp{height:100%;display:flex;flex-direction:column;background:#fff}
+.gc{position:relative;flex:1;margin:7mm 8mm;border-radius:6mm;overflow:hidden;background:#fff;color:var(--gc);border:1.6mm solid var(--gc);box-shadow:inset 0 0 0 1.4mm #fff,inset 0 0 0 2.2mm var(--ga)}
+.gcb{position:absolute;inset:0;background:radial-gradient(circle at 100% 0,color-mix(in srgb,var(--gc) 16%,#fff) 0 32%,transparent 33%),radial-gradient(circle at 0 100%,color-mix(in srgb,var(--ga) 26%,#fff) 0 28%,transparent 29%)}
+.gcart{position:absolute;width:34mm;height:34mm;color:var(--gc);opacity:.22}.gcart svg{width:100%;height:100%}
+.gcart.a1{top:7mm;right:8mm;opacity:.55;color:var(--gc)}.gcart.a2{bottom:6mm;left:8mm;width:28mm;height:28mm;color:var(--ga);opacity:.7}
+.gcin{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8mm 30mm}
+.gct{font:700 30pt var(--kufi);color:var(--gc);line-height:1.3}
+.gcto{margin-top:4mm;font-size:13pt;color:#3a4a4f}.gcto b{color:var(--gc);font-family:var(--kufi)}
+.gcm{margin-top:4mm;font-size:14.5pt;line-height:1.9;color:#26363b}
+.gcfrom{margin-top:5mm;font-size:12.5pt;color:#3a4a4f;padding:1.5mm 8mm;border-top:.5mm dashed var(--ga)}.gcfrom b{color:var(--gc);font-family:var(--kufi)}.gcfrom span{font-size:10.5pt}
+.gccut{height:0;border-top:.5mm dashed #b8c4c8;position:relative}.gccut span{position:absolute;right:12mm;top:-3.2mm;background:#fff;padding:0 2mm;color:#8a9aa0;font-size:11pt}
+@media print{.gccut span{background:#fff}}
 .stuf{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
 .stuf label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}
 .stug{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600}
@@ -3096,6 +3108,20 @@ const FILES=[
       {t:"ev",title:"صور من مشاركتي في الإذاعة (١)",n:4,cap:"الفقرة والتاريخ",add:"اضغط لإضافة صورة المشاركة"},
       {t:"ev",title:"صور من مشاركتي في الإذاعة (٢)",n:4,cap:"الفقرة والتاريخ",add:"اضغط لإضافة صورة المشاركة"}
     ]}}},
+  {id:"stu-certs",cat:"ملفات الطالب",stu:true,free:true,ic:"ش",name:()=>"شهادات الشكر",build:()=>({title:"شهادات الشكر",sub:"",bare:true,pages:[
+      {t:"table",kpg:"clsS",title:"معلميّ (اكتب أسماءهم لتظهر في الشهادات)",cols:[["م",7],["المادة",38],[g("المعلم","المعلمة"),35],["ملاحظات",20]],rows:STU_SUBJ.map((x,i)=>[String(i+1),x,"",""]),num:true,cls:"rh14"},
+      ...STU_SUBJ.map((x,i)=>({t:"tcert",i,title:"شكر "+g("لمعلم","لمعلمة")+" "+x})),
+      {t:"tcertx",title:"شكر للوالدين",rib:"إلى أغلى الناس",body:"{g:يتقدّم|تتقدّم} {g:الطالب|الطالبة} / {N}{C}<br>بأسمى عبارات الشكر والامتنان والحب<br>إلى <b>والديّ العزيزين</b><br>على ما قدّماه من رعاية ودعم وتشجيع،<br>جزاكما الله عني خير الجزاء، وأدامكما تاجًا فوق رأسي."},
+      {t:"tcertx",title:"شكر لقائد المدرسة",rib:"عرفانًا وتقديرًا",body:"{g:يتقدّم|تتقدّم} {g:الطالب|الطالبة} / {N}{C}<br>بخالص الشكر والتقدير إلى {g:قائد|قائدة} المدرسة<br><b>"+(S.leader?esc(S.leader):"................")+"</b><br>على جهوده الكبيرة في رعاية الطلاب وتهيئة بيئة تعليمية متميزة،<br>سائلين الله له التوفيق والسداد."},
+      {t:"tcertx",title:"شكر لمدرستي",rib:"مدرستي بيتي الثاني",body:"{g:يتقدّم|تتقدّم} {g:الطالب|الطالبة} / {N}{C}<br>بخالص الشكر والعرفان إلى <b>مدرستي الحبيبة</b><br>بمعلميها وإدارتها وجميع العاملين فيها،<br>على عام مليء بالعلم والقيم والذكريات الجميلة."}
+  ]})},
+  {id:"stu-cards",cat:"ملفات الطالب",stu:true,free:true,ic:"ب",name:()=>"بطاقات التهنئة",build:()=>({title:"بطاقات التهنئة",sub:"",bare:true,pages:[
+      {t:"gcard",title:"يوم المعلم · عام دراسي سعيد",cards:["tday","start"]},
+      {t:"gcard",title:"اليوم الوطني · يوم التأسيس",cards:["nday","found"]},
+      {t:"gcard",title:"يوم العلم · مبارك النجاح",cards:["flag","succ"]},
+      {t:"gcard",title:"رمضان · عيد الفطر",cards:["ram","fitr"]},
+      {t:"gcard",title:"عيد الأضحى · شكرًا على عام جميل",cards:["adha","end"]}
+  ]})},
   {id:"stu-ws",cat:"ملفات الطالب",stu:true,free:true,ic:"و",name:()=>"ملف أوراق العمل",build:()=>({title:"ملف أوراق العمل",sub:"العام الدراسي "+S.year,pages:[
       {t:"stme",title:"من أنا"},
       {t:"table",title:"سجل أوراق العمل المنجزة",cols:[["م",6],["التاريخ",15],["المادة",17],["عنوان ورقة العمل",32],["التقدير",13],["توقيع المعلم/ة",17]],rows:18,num:true},
@@ -3865,6 +3891,48 @@ function rTcert(file,t,p,pi){
    <div class="tcsig"><div><span>${ST}</span><b>${esc(PN()||"................")}</b></div><div><span>التوقيع</span><b>................</b></div><div><span>التاريخ</span><b>..../..../........هـ</b></div></div>
   </div></div>`;
 }
+function rTcertX(file,t,p,pi){
+  const ST=g("الطالب","الطالبة"),N=`<b class="tcn">${esc(PN()||"................")}</b>`,C=PJ()?` من ${esc(PJ())}`:"";
+  const txt=p.body.replace("{N}",N).replace("{C}",C).replace(/\{g:([^|}]*)\|([^}]*)\}/g,(m,a,b)=>g(a,b));
+  return `<div class="tcert"><div class="tcfr"></div><div class="tcin">
+   <div class="tctop"><div><span class="ksa" role="img" aria-label="المملكة العربية السعودية"></span><br>وزارة التعليم<br>${S.school?esc(S.school):""}</div><img class="logo" src="${LOGO}" alt="شعار وزارة التعليم"><div>${esc(S.year)}<br>${esc(S.term)}</div></div>
+   <div class="tcti">${esc(p.ct||"شهادة شكر وتقدير")}</div><div class="tcrib">${esc(p.rib)}</div>
+   <div class="tctx" contenteditable="true" spellcheck="false" data-k="${pi}-tx">${txt}</div>
+   <div class="tcsig"><div><span>${ST}</span><b>${esc(PN()||"................")}</b></div><div><span>التوقيع</span><b>................</b></div><div><span>التاريخ</span><b>..../..../........هـ</b></div></div>
+  </div></div>`;
+}
+/* ---------- بطاقات التهنئة (بطاقتان في كل صفحة) ---------- */
+const GC_ART={
+ book:'<path d="M10 22c8-4 16-4 22 0v26c-6-4-14-4-22 0z" /><path d="M54 22c-8-4-16-4-22 0v26c6-4 14-4 22 0z"/><path d="M32 22v26"/>',
+ moon:'<path d="M40 12a20 20 0 1 0 12 34 16 16 0 1 1-12-34z"/><path d="M50 16l2 5 5 .5-4 3.5 1.2 5-4.2-2.7-4.2 2.7 1.2-5-4-3.5 5-.5z"/>',
+ palm:'<path d="M32 58V30"/><path d="M32 30c-4-8-12-10-20-8 8 1 13 5 16 10"/><path d="M32 30c4-8 12-10 20-8-8 1-13 5-16 10"/><path d="M32 30c-2-9-8-15-16-17 6 4 10 9 12 16"/><path d="M32 30c2-9 8-15 16-17-6 4-10 9-12 16"/><path d="M24 58h16"/>',
+ star:'<path d="M32 8l6.5 15 16 1.5-12 10.5 3.6 16L32 42.8 17.9 51l3.6-16-12-10.5 16-1.5z"/>',
+ lamp:'<path d="M24 20h16l4 10H20z"/><path d="M22 30h20v14a10 10 0 0 1-20 0z"/><path d="M32 8v12M28 54h8"/>',
+ flagp:'<path d="M14 8v50"/><path d="M14 10h36v24H14"/><path d="M22 22h20"/>',
+ cap:'<path d="M4 26l28-12 28 12-28 12z"/><path d="M16 31v12c8 6 24 6 32 0V31"/><path d="M58 27v14"/>',
+ heart:'<path d="M32 52S10 38 10 24a11 11 0 0 1 22-3 11 11 0 0 1 22 3c0 14-22 28-22 28z"/>'
+};
+const GCARDS=[
+ {k:"tday",t:"يوم المعلم",c:"#0e7c7b",a:"#f2b631",art:"book",to:()=>g("معلمي الفاضل","معلمتي الفاضلة"),m:()=>`إلى من علّمني حرفًا وأنار لي دربًا…\nكل عام وأنت${g("","ِ")} منارة علم وعطاء،\nشكرًا من القلب يا ${g("معلمي","معلمتي")}.`},
+ {k:"nday",t:"اليوم الوطني السعودي",c:"#0b7a3e",a:"#c9a227",art:"palm",to:()=>"وطني الغالي",m:()=>"دام عزّك يا وطن…\nكل عام ووطننا في أمن ورخاء وعزّ،\nونحن فخورون بالانتماء إليه."},
+ {k:"found",t:"يوم التأسيس",c:"#7a4b22",a:"#d8a24a",art:"palm",to:()=>"مدرستي الحبيبة",m:()=>"يوم بدينا…\nنفخر بتاريخنا العريق وجذورنا الممتدة\nمنذ ثلاثة قرون."},
+ {k:"flag",t:"يوم العلم",c:"#0a6b3a",a:"#9fd3a8",art:"flagp",to:()=>"وطني",m:()=>"رايتنا شامخة خفّاقة…\nنرفعها عاليًا بالعلم والعمل،\nونحفظها في قلوبنا."},
+ {k:"ram",t:"رمضان مبارك",c:"#1e2f5c",a:"#e1b649",art:"lamp",to:()=>g("معلمي الفاضل","معلمتي الفاضلة"),m:()=>"مبارك عليكم الشهر،\nأعاده الله علينا وعليكم بالخير واليُمن والبركات،\nوتقبّل منا ومنكم الصيام والقيام."},
+ {k:"fitr",t:"عيد الفطر المبارك",c:"#5b2a86",a:"#e7b84a",art:"moon",to:()=>g("معلمي الفاضل","معلمتي الفاضلة"),m:()=>"عيدكم مبارك،\nوكل عام وأنتم بخير،\nتقبّل الله منا ومنكم صالح الأعمال."},
+ {k:"adha",t:"عيد الأضحى المبارك",c:"#13636b",a:"#e7b84a",art:"moon",to:()=>g("معلمي الفاضل","معلمتي الفاضلة"),m:()=>"أضحى مبارك،\nأسأل الله أن يعيده عليكم بالصحة والسعادة،\nوكل عام وأنتم إلى الله أقرب."},
+ {k:"start",t:"عام دراسي سعيد",c:"#2a64a8",a:"#55c1b4",art:"book",to:()=>"زملائي ومعلميّ",m:()=>"نبدأ معًا عامًا جديدًا\nبهمّة عالية وطموح لا يحدّه شيء،\nعامًا مليئًا بالعلم والإنجاز."},
+ {k:"end",t:"شكرًا على عام جميل",c:"#c0572b",a:"#f3c262",art:"heart",to:()=>g("معلمي الفاضل","معلمتي الفاضلة"),m:()=>"شكرًا على عام مليء بالعلم\nوالذكريات الجميلة والصبر الكبير،\nستبقى في قلبي دائمًا."},
+ {k:"succ",t:"مبارك النجاح",c:"#a77a10",a:"#2f8f6f",art:"cap",to:()=>g("صديقي العزيز","صديقتي العزيزة"),m:()=>"مبارك النجاح والتفوق!\nفرحتي بنجاحك كبيرة،\nوإلى مزيد من التميّز بإذن الله."}
+];
+function gcCard(c,pi,j){
+  const K=pi+"-"+j,art=`<svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${GC_ART[c.art]}</svg>`;
+  return `<div class="gc" style="--gc:${c.c};--ga:${c.a}"><div class="gcb"></div><div class="gcart a1">${art}</div><div class="gcart a2">${art}</div>
+   <div class="gcin"><div class="gct" contenteditable="true" spellcheck="false" data-k="${K}t">${esc(c.t)}</div>
+   <div class="gcto">إلى: <b contenteditable="true" spellcheck="false" data-k="${K}to">${esc(c.to())}</b></div>
+   <div class="gcm" contenteditable="true" spellcheck="false" data-k="${K}m">${esc(c.m()).replace(/\n/g,"<br>")}</div>
+   <div class="gcfrom">من: <b class="tcn">${esc(PN()||"................")}</b>${PJ()?` <span>— ${esc(PJ())}</span>`:""}</div></div></div>`;
+}
+function rGcards(file,t,p,pi){return `<div class="gcp">${p.cards.map((k,j)=>gcCard(GCARDS.find(x=>x.k===k),pi,j)).join('<div class="gccut"><span>✂</span></div>')}</div>`}
 /* ربط أسماء المعلمين والمواد في الشهادات بجدول «موادي ومعلميّ» */
 function stuSync(){
   pagesEl.querySelectorAll("[data-sync]").forEach(b=>{const src=pagesEl.querySelector(`[data-k="${b.dataset.sync}"]`);if(!src)return;const v=src.textContent.trim();b.textContent=v||b.dataset.ph&&"................"||b.textContent});
@@ -3984,6 +4052,8 @@ function render(){
     else if(p.t==="flow")h=rFlow(spec,t,p,pi,num);
     else if(p.t==="stme")h=rStMe(spec,t,p,pi,num);
     else if(p.t==="tcert")h=rTcert(spec,t,p,pi);
+    else if(p.t==="tcertx")h=rTcertX(spec,t,p,pi);
+    else if(p.t==="gcard")h=rGcards(spec,t,p,pi);
     else if(p.t==="min")h=rMin(spec,t,p,pi,num);
     else if(p.t==="grid")h=rGrid(spec,t,p,pi,num);
     out.push(wrap(pi,"صفحة "+num+" — "+p.title,h,p.land?"land":"",p.t==="ev"?evCtl(pi):""));
