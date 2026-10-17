@@ -1298,6 +1298,12 @@ table.t.rh14 td{height:18.5mm;vertical-align:middle}
 .gcfrom{margin-top:5mm;font-size:12.5pt;color:#3a4a4f;padding:1.5mm 8mm;border-top:.5mm dashed var(--ga)}.gcfrom b{color:var(--gc);font-family:var(--kufi)}.gcfrom span{font-size:10.5pt}
 .gccut{height:0;border-top:.5mm dashed #b8c4c8;position:relative}.gccut span{position:absolute;right:12mm;top:-3.2mm;background:#fff;padding:0 2mm;color:#8a9aa0;font-size:11pt}
 @media print{.gccut span{background:#fff}}
+.aib{position:relative;gap:6px}.aib .aist{font-size:15px}.aib .aibdg{font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;background:#e6f6ef;color:#0b7a4b;margin-inline-start:4px}
+.aib.off{opacity:.75}.aib.off .aibdg{background:#f1f3f5;color:#7a8791}
+.ai-dlg{max-width:620px}.ai-f{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;padding:4px 0 10px}.ai-f label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}.ai-f .w{grid-column:1/-1}.ai-f .ck{flex-direction:row;align-items:center;gap:8px;font-weight:500}.ai-f textarea{resize:vertical;font:inherit;min-height:84px}
+.ai-prog{display:flex;flex-direction:column;gap:6px;margin:6px 0 10px;font-size:13px;color:var(--mut,#55636c)}.ai-prog .bar{height:8px;border-radius:8px;background:#eef2f4;overflow:hidden}.ai-prog .bar i{display:block;height:100%;width:5%;background:linear-gradient(90deg,#15445a,#0da9a6);transition:width .4s}
+.ai-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 12px}.ai-sum>div{border:1px solid #e3e8eb;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:2px}.ai-sum b{font-size:20px}.ai-sum span{font-size:12px;color:#6b7a84}
+@media (max-width:640px){.ai-f{grid-template-columns:1fr}.ai-sum{grid-template-columns:1fr 1fr}}
 .stuf{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
 .stuf label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}
 .stug{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600}
@@ -1432,7 +1438,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <div class="vacts">
             <button class="btn" id="resetBtn" type="button" title="حذف ما كتبته في هذا الملف"><i data-i="rotate"></i>مسح التعديلات</button>
             <button class="btn" id="setBtn" type="button" hidden><i data-i="user"></i>بيانات الملف</button>
-            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button>
+            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button>
           </div>
         </div>
         <div class="access" id="access" role="status" hidden></div>
@@ -5857,7 +5863,7 @@ let BE_RES;const BEP=new Promise(r=>BE_RES=r);
 const EV_COL="haqiba_ev",CARD_COL="haqiba_cards";
 const isActive=()=>!!(ME&&ME.status==="active");
 const isAdmin=()=>isActive()&&ME.role==="admin";
-function perm(fid,k){{const F0=FILES.find(x=>x.id===fid);if(F0&&F0.free&&k!=="w")return true}if(isAdmin())return true;if(!isActive())return false;if(k!=="w"&&STORE&&typeof shopFree==="function"&&shopFree(fid))return true;const p=ME.perms||{};return !!((p.all&&p.all[k])||(p[fid]&&p[fid][k]));}
+function perm(fid,k){{const F0=FILES.find(x=>x.id===fid);if(F0&&F0.free&&k!=="w"&&k!=="ai")return true}if(isAdmin())return true;if(!isActive())return false;if(k!=="w"&&k!=="ai"&&STORE&&typeof shopFree==="function"&&shopFree(fid))return true;const p=ME.perms||{};return !!((p.all&&p.all[k])||(p[fid]&&p[fid][k]));}
 const fileName=id=>{const f=PRODS().find(x=>x.id===id);return f?f.name():id};
 const catOf=f=>typeof f.cat==="function"?f.cat():f.cat;
 
@@ -5902,6 +5908,8 @@ function demoBackend(){
       const id=(L.reduce((a,x)=>Math.max(a,x.id),1000))+1;L.unshift({id,uid:u.uid,email:u.email,name:u.name,items:o.items,total:t,subtotal:sub,discount:disc,coupon,receipt:o.receipt||null,ref:o.ref||"",note:o.note||"",status:"pending",admin_note:null,at:Date.now()});if(!store.set("hq:demo:orders",L))throw{code:"quota"};return{id,total:t}},
     async myOrders(){const u=me();if(!u)return[];return store.get("hq:demo:orders",[]).filter(o=>o.uid===u.uid).map(o=>Object.assign({},o,{receipt:undefined}))},
     async listOrders(){return store.get("hq:demo:orders",[]).map(o=>Object.assign({},o,{receipt:undefined}))},
+    async aiPrepare(b){if(typeof window.__AI_MOCK!=="function")throw{code:"ai/not_configured"};const u=me();if(!u)throw{code:"ai/auth"};const r=await window.__AI_MOCK(b);const L=store.get("hq:demo:ai",[]);if(!b.job)L.unshift({id:Date.now(),uid:u.uid,file_id:b.file,created_at:new Date().toISOString(),parts:1,input_tokens:r.usage?r.usage[0]:0,output_tokens:r.usage?r.usage[1]:0,cost_usd:r.cost||0,status:"done"});store.set("hq:demo:ai",L);return Object.assign({job:b.job||Date.now()},r)},
+    async aiJobs(){return store.get("hq:demo:ai",[])},
     async getReceipt(id){const o=store.get("hq:demo:orders",[]).find(x=>x.id===id);return o&&o.receipt},
     async decideOrder(id,ok,note){const L=store.get("hq:demo:orders",[]),o=L.find(x=>x.id===id);if(!o)throw{code:"nf"};const was=o.status;o.status=ok?"approved":"rejected";o.admin_note=note||null;o.decided_at=Date.now();store.set("hq:demo:orders",L);
       if(ok&&was!=="approved"&&o.coupon){const C=store.get("hq:demo:coupons",[]),x=C.find(k=>k.code===o.coupon);if(x){x.used=(x.used||0)+1;store.set("hq:demo:coupons",C)}}
@@ -5974,7 +5982,9 @@ async function sbBackend(cfg){
     async myOrders(){if(!uid)return[];return ck(await sb.from("orders").select("id,items,total,discount,coupon,status,admin_note,ref,created_at,decided_at").eq("uid",uid).order("created_at",{ascending:false})).map(x=>Object.assign(x,{at:Date.parse(x.created_at)}))},
     async listOrders(){return ck(await sb.from("orders").select("id,uid,email,name,items,total,subtotal,discount,coupon,status,admin_note,ref,note,created_at,decided_at").order("created_at",{ascending:false}).limit(300)).map(x=>Object.assign(x,{at:Date.parse(x.created_at)}))},
     async getReceipt(id){const r=ck(await sb.from("orders").select("receipt").eq("id",id).maybeSingle());return r&&r.receipt},
-    async decideOrder(id,ok,note){ck(await sb.rpc("decide_order",{oid:id,ok,note:note||null}));if(reloadUsers)reloadUsers()}
+    async decideOrder(id,ok,note){ck(await sb.rpc("decide_order",{oid:id,ok,note:note||null}));if(reloadUsers)reloadUsers()},
+    async aiPrepare(body){const {data,error}=await sb.functions.invoke("ai-prepare",{body});if(error){let d=null;try{d=await error.context.json()}catch(e){}throw{code:"ai/"+(d&&d.error||"net"),limit:d&&d.limit}}return data},
+    async aiJobs(){return ck(await sb.from("ai_jobs").select("id,uid,file_id,created_at,parts,input_tokens,output_tokens,cost_usd,status").order("created_at",{ascending:false}).limit(300))}
   };
 }
 /* ---------- Firebase ---------- */
@@ -6020,7 +6030,7 @@ async function fbBackend(cfg){
 
 /* ---------- تطبيق الصلاحيات على الصفحات ---------- */
 function applyAccess(){
-  EDIT=perm(S.file,"e");PRINT=perm(S.file,"p");WORD=perm(S.file,"w");{const wb=$("#wordBtn");if(wb)wb.hidden=!WORD}
+  EDIT=perm(S.file,"e");PRINT=perm(S.file,"p");WORD=perm(S.file,"w");{const wb=$("#wordBtn");if(wb)wb.hidden=!WORD}try{renderAiBtn()}catch(e){}
   document.body.classList.toggle("ro",!EDIT);
   document.body.classList.toggle("np",!PRINT);
   if(!EDIT)pagesEl.querySelectorAll('[contenteditable="true"]').forEach(el=>el.setAttribute("contenteditable","false"));
@@ -6261,6 +6271,92 @@ async function exportWord(){
   toast("تم تصدير ملف Word");
 }
 
+
+/* ---------- التجهيز الذكي (Claude) ---------- */
+const AI_ERR={no_permission:"التجهيز الذكي غير متوفر لحسابك في هذا الملف. اطلبه من المشرف.",limit:"استنفدت عدد مرات التجهيز الذكي المسموحة لهذا الملف.",not_configured:"خدمة التجهيز الذكي لم تُفعَّل بعد على الخادم.",disabled:"خدمة التجهيز الذكي متوقفة مؤقتًا.",job_expired:"انتهت مهلة العملية، أعد المحاولة.",upstream:"تعذّر الاتصال بخدمة Claude، أعد المحاولة بعد قليل.",auth:"سجّل الدخول أولًا.",too_many_parts:"الملف كبير جدًا، أعد المحاولة.",net:"تعذّر الاتصال بالخادم، تحقق من الإنترنت.",server:"حدث خطأ في الخادم، أعد المحاولة."};
+const aiAvail=()=>!!ME&&perm(S.file,"ai");
+function renderAiBtn(){const b=$("#aiBtn");if(!b)return;b.hidden=EMBED;const ok=aiAvail();b.classList.toggle("off",!ok);
+  b.querySelector(".aibdg").textContent=ok?"متوفر":"غير متوفر";b.title=ok?"يجهّز Claude نصوص الملف ويوزع صور الشواهد":"التجهيز الذكي غير متوفر لحسابك في هذا الملف"}
+function aiLabel(el){const b=el.closest(".blk");if(b&&b.querySelector("h4"))return b.querySelector("h4").innerText;
+  const f=el.closest(".fld,.smf");if(f){const k=f.querySelector(".k,b");if(k)return k.innerText}
+  const fs=el.closest("fieldset");if(fs&&fs.querySelector("legend"))return fs.querySelector("legend").innerText;
+  const p=el.previousElementSibling;return p?p.innerText:""}
+function aiCollect(replace){
+  const fields=[],slots=[],emptyish=v=>!v||/^[.\s…]+$/.test(v);
+  for(const w of [...pagesEl.querySelectorAll(".pwrap")]){if(w.classList.contains("skip"))continue;const key=w.dataset.pg;if(key==="cv"||key==="ix")continue;
+    const pg=w.querySelector(".page");if(!pg)continue;const tEl=pg.querySelector(`[data-k="${key}-h"]`);const title=((tEl?tEl.innerText:(w.querySelector(".pbar span")||{}).textContent)||"").trim().slice(0,90);
+    pg.querySelectorAll("[data-img]").forEach(el=>{if(!slotImg(el.dataset.img))slots.push({k:el.dataset.img,p:title})});
+    pg.querySelectorAll("table.t").forEach(tb=>{if(tb.classList.contains("ks")||tb.classList.contains("ixt"))return;const H=dmHeaders(tb);let n=0;
+      [...(tb.tBodies[0]||{rows:[]}).rows].forEach(tr=>{if(n>=8)return;const cells=[...tr.cells];let add=false;
+        cells.forEach((td,ci)=>{if(td.getAttribute("contenteditable")!=="true"||!td.dataset.k)return;const h=H[ci]||"";if(/توقيع|^م$/.test(h))return;const v=td.innerText.trim();if(!emptyish(v)&&!replace)return;
+          const lead=cells[0]&&cells[0]!==td?cells[0].innerText.trim().slice(0,50):"";fields.push({k:td.dataset.k,p:title,l:h.slice(0,50),r:lead,v:v.slice(0,80),t:"s"});add=true});if(add)n++})});
+    pg.querySelectorAll('[contenteditable="true"][data-k]').forEach(el=>{if(el.closest("table"))return;const k=el.dataset.k;
+      if(k===key+"-h"||/^(c-|ks-|cls)/.test(k)||el.classList.contains("cap")||el.closest(".tcert,.gc,.cert"))return;
+      const v=el.innerText.trim();if(!emptyish(v)&&!replace)return;const long=el.classList.contains("tx")||el.offsetHeight>45;
+      fields.push({k,p:title,l:aiLabel(el).trim().slice(0,70),v:v.slice(0,400),t:long?"l":"s"})});
+  }
+  return {fields,slots}}
+const aiShrink=(src,max,q)=>new Promise(ok=>{const im=new Image();im.onload=()=>{const sc=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",q))};im.onerror=()=>ok(null);im.src=src});
+const readURL=f=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=()=>ok(null);r.readAsDataURL(f)});
+function aiDialog(){return new Promise(res=>{
+  let m=document.getElementById("aiDlg");if(!m){m=document.createElement("div");m.className="modal";m.id="aiDlg";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");document.body.appendChild(m)}
+  const f=cur&&cur.f,stu=f&&f.stu;
+  m.innerHTML=`<div class="dialog ui-dlg ai-dlg"><div class="dlg-h"><h3>✨ التجهيز الذكي</h3><p>اكتب معلومات مختصرة عن عملك، وأرفق صور شواهدك إن وجدت، ليكتب Claude نصوص الملف ويوزع الصور على الصفحات المناسبة. راجع المحتوى بعد التجهيز قبل الطباعة.</p></div>
+   <div class="ai-f">
+    <label><span>${stu?"الصف":"المادة / التخصص"}</span><input class="inp" id="aiSubj" value="${esc(stu?(STI().cls||""):(S.job||""))}" placeholder="${stu?"مثال: الرابع":"مثال: معلم رياضيات"}"></label>
+    <label><span>المرحلة والصفوف</span><input class="inp" id="aiStage" value="${esc(S.stage||"")}" placeholder="مثال: المرحلة الابتدائية — الصفوف العليا"></label>
+    <label><span>سنوات الخبرة</span><input class="inp" id="aiYears" placeholder="اختياري"></label>
+    <label class="w"><span>أبرز ما قدّمته هذا العام</span><textarea class="inp" id="aiDone" rows="4" placeholder="مثال: نفّذت خطة علاجية لضعاف القراءة، وحضرت دورة التعلم النشط، وأشرفت على الإذاعة المدرسية، وطبّقت استراتيجية التعلم التعاوني…"></textarea></label>
+    <label class="w"><span>ملاحظات أو تركيز خاص (اختياري)</span><textarea class="inp" id="aiNote" rows="2" placeholder="مثال: ركّز على تحسين نواتج التعلم في اختبارات نافس"></textarea></label>
+    <label class="w"><span>صور الشواهد (حتى 12 صورة)</span><input type="file" id="aiImgs" accept="image/*" multiple><small id="aiImgN" class="muted"></small></label>
+    <label class="w ck"><input type="checkbox" id="aiRep"> استبدال النصوص المكتوبة مسبقًا (الافتراضي: تعبئة الخانات الفارغة فقط)</label>
+   </div><div class="ai-prog" id="aiProg" hidden><div class="bar"><i></i></div><span></span></div>
+   <div class="dlg-b"><button class="btn primary" id="aiGo" type="button">جهّز الآن</button><button class="btn" id="aiNo" type="button">إلغاء</button></div></div>`;
+  m.classList.add("open");
+  const done=v=>{m.classList.remove("open");res(v)};
+  m.querySelector("#aiImgs").addEventListener("change",e=>{const n=e.target.files.length;m.querySelector("#aiImgN").textContent=n?(n>12?"سيُستخدم أول 12 صورة فقط":n+" صورة"):""});
+  m.querySelector("#aiNo").onclick=()=>done(null);m.addEventListener("click",e=>{if(e.target===m)done(null)},{once:true});
+  m.querySelector("#aiGo").onclick=()=>{const v=id=>m.querySelector("#"+id).value.trim();
+    res({m,info:{subject:v("aiSubj"),stage:v("aiStage"),years:v("aiYears"),achievements:v("aiDone"),notes:v("aiNote"),name:PN()||"",school:S.school||"",gender:S.gender==="f"?"أنثى":"ذكر",role:stu?"طالب":(S.job||"")},files:[...m.querySelector("#aiImgs").files].slice(0,12),replace:m.querySelector("#aiRep").checked})};
+})}
+async function runAi(){
+  if(!ME)return needAuth("edit");
+  if(!aiAvail())return toast(AI_ERR.no_permission);
+  if(!EDIT)return toast("تحتاج صلاحية التعديل في هذا الملف لاستخدام التجهيز الذكي");
+  if(!BE||!BE.aiPrepare)return toast(AI_ERR.not_configured);
+  const r=await aiDialog();if(!r)return;const {m}=r;
+  const prog=m.querySelector("#aiProg"),bar=prog.querySelector("i"),lab=prog.querySelector("span"),go=m.querySelector("#aiGo");
+  const step=(p,t)=>{prog.hidden=false;bar.style.width=Math.round(p*100)+"%";lab.textContent=t};
+  go.disabled=true;m.querySelectorAll(".ai-f input,.ai-f textarea").forEach(x=>x.disabled=true);
+  try{
+    ftbFlush();step(.05,"تجهيز الصور…");
+    const full=[],small=[];for(const f of r.files){const u=await readURL(f);if(!u)continue;const big=await aiShrink(u,1400,.82),sm=await aiShrink(u,768,.7);if(big&&sm){full.push(big);small.push(sm.split(",")[1])}}
+    const {fields,slots}=aiCollect(r.replace);
+    if(!fields.length&&!small.length){step(1,"");m.classList.remove("open");return toast("لا توجد خانات فارغة لتعبئتها. فعّل «استبدال النصوص» لإعادة الكتابة.")}
+    const CH=110,parts=[];for(let i=0;i<fields.length;i+=CH)parts.push(fields.slice(i,i+CH));if(!parts.length)parts.push([]);
+    let job=null,applied=0,res=null;const title=cur.spec.title+(cur.spec.sub?" — "+cur.spec.sub:"");
+    for(let i=0;i<parts.length;i++){
+      step(.1+.85*i/parts.length,`يكتب Claude محتوى الملف… (الجزء ${i+1} من ${parts.length})`);
+      res=await BE.aiPrepare({file:S.file,title,job,info:r.info,replace:r.replace,fields:parts[i],slots:i===0?slots:[],images:i===0?small:[],last:i===parts.length-1});
+      job=res.job;
+      for(const [k,v] of Object.entries(res.fills||{})){if(typeof v!=="string"||!v.trim())continue;const el=pagesEl.querySelector(`[data-k="${CSS.escape(k)}"]`);if(!el||el.getAttribute("contenteditable")!=="true")continue;el.textContent=v.trim();markDirty(el);applied++}
+      if(i===0&&full.length){const used=new Set(),free=slots.map(s=>s.k);
+        const put=(idx,slot,cap)=>{const el=pagesEl.querySelector(`[data-img="${CSS.escape(slot)}"]`);if(!el||used.has(slot)||idx==null||!full[idx])return false;used.add(slot);
+          memImg[SK()+slot]=full[idx];store.set(iKey(slot),full[idx]);paintSlot(el);
+          const c=el.parentElement&&el.parentElement.querySelector(".cap");if(c&&cap){c.textContent=cap;markDirty(c)}
+          if(!isStu()&&(S.evmode||"qr")!=="img")makeQR(el);return true};
+        const placed=new Set();(res.images||[]).forEach(x=>{if(x&&put(+x.i,String(x.slot||""),String(x.cap||"")))placed.add(+x.i)});
+        full.forEach((_,idx)=>{if(placed.has(idx))return;const s=free.find(k=>!used.has(k));if(s&&put(idx,s,""))placed.add(idx)})}
+    }
+    ftbFlush();step(1,"اكتمل التجهيز");
+    setTimeout(()=>m.classList.remove("open"),400);
+    toast(`تم التجهيز: عُبّئت ${applied} خانة${full.length?" ووُزّعت "+full.length+" صورة":""}. راجع الملف قبل الطباعة.`+(res&&res.limit?` (المتبقي ${Math.max(0,res.limit-res.used)} من ${res.limit})`:""));
+    keepY(render);
+  }catch(e){console.error(e);go.disabled=false;m.querySelectorAll(".ai-f input,.ai-f textarea").forEach(x=>x.disabled=false);prog.hidden=true;
+    const c=String(e&&e.code||"").replace(/^ai\//,"");toast(AI_ERR[c]||AI_ERR.server)}
+}
+$("#aiBtn").addEventListener("click",()=>{if(!ME)return needAuth("edit");if(!aiAvail())return toast(AI_ERR.no_permission);runAi()});
+
 $("#wordBtn").addEventListener("click",()=>exportWord().catch(e=>{console.error(e);toast("تعذّر إنشاء ملف Word")}));
 /* ---------- لوحة الإعدادات (المشرف) ---------- */
 let admTab="pending",admEdit=null,admQ="";
@@ -6269,10 +6365,11 @@ function stopAdmin(){if(unsubUsers){unsubUsers();unsubUsers=null}USERS=[];$("#ad
 function renderAdmin(){
   const pend=USERS.filter(u=>u.status==="pending");
   const reqs=USERS.filter(u=>u.status==="active").flatMap(u=>(u.requests||[]).map(f=>({u,f})));
-  const tabs=[["pending","طلبات التسجيل",pend.length],["users","المستخدمون",USERS.length],["reqs","طلبات الصلاحيات",reqs.length]];
+  const tabs=[["pending","طلبات التسجيل",pend.length],["users","المستخدمون",USERS.length],["reqs","طلبات الصلاحيات",reqs.length],["ai","التجهيز الذكي",0]];
   $("#admTabs").innerHTML=tabs.map(t=>`<button class="${admTab===t[0]&&!admEdit?"on":""}" data-atab="${t[0]}">${t[1]}${t[2]?` <span class="cnt">${t[2]}</span>`:""}</button>`).join("");
   const B=$("#admBody");
   if(admEdit){const u=USERS.find(x=>x.uid===admEdit);if(u)return renderPermEditor(u);admEdit=null}
+  if(admTab==="ai")return renderAiUsage(B);
   if(admTab==="pending"){
     B.innerHTML=pend.length?pend.map(u=>`<div class="ucard"><div class="uinfo"><b>${esc(u.name||"")}</b><span>${esc(u.title||"")} — ${esc(u.school||"")}</span><span class="muted">${esc(u.dept||"")}</span><span class="muted" dir="ltr">${esc(u.email||"")} · ${esc(u.phone||"")}</span></div>
       <div class="uact"><label class="lbl">الصلاحيات عند التفعيل</label><select data-preset="${u.uid}"><option value="role">حسب الوظيفة (${esc(u.title||"")})</option><option value="all">جميع الملفات</option><option value="none">بدون صلاحيات (أحددها لاحقًا)</option></select>
@@ -6282,13 +6379,21 @@ function renderAdmin(){
     const list=USERS.filter(u=>!q||[u.name,u.email,u.school,u.title].join(" ").includes(q)).sort((a,b)=>(a.status>b.status?1:-1));
     B.innerHTML=`<input class="search" id="admQ" type="search" placeholder="بحث بالاسم أو المدرسة أو البريد…" value="${esc(admQ)}">
     <div class="tw"><table class="adm"><thead><tr><th>المستخدم</th><th>الصفة / المدرسة</th><th>الحالة</th><th>الصلاحيات</th><th>إجراءات</th></tr></thead><tbody>${list.map(u=>{
-      const p=u.perms||{};const n=(u.role==="admin"?"مشرف — الكل":p.all&&(p.all.e||p.all.p)?"جميع الملفات":Object.keys(p).filter(k=>k!=="all"&&(p[k].e||p[k].p)).length+" ملف")+(u.role!=="admin"&&(p.all&&p.all.w||Object.keys(p).some(k=>p[k]&&p[k].w))?" · Word":"");
+      const p=u.perms||{};const n=(u.role==="admin"?"مشرف — الكل":p.all&&(p.all.e||p.all.p)?"جميع الملفات":Object.keys(p).filter(k=>k!=="all"&&(p[k].e||p[k].p)).length+" ملف")+(u.role!=="admin"&&(p.all&&p.all.w||Object.keys(p).some(k=>p[k]&&p[k].w))?" · Word":"")+(u.role!=="admin"&&(p.all&&p.all.ai||Object.keys(p).some(k=>p[k]&&p[k].ai))?" · تجهيز ذكي":"");
       const self=ME&&u.uid===ME.uid;
       return `<tr><td><b>${esc(u.name||"")}</b><div class="muted" dir="ltr">${esc(u.email||"")}</div></td><td>${esc(u.title||"")}<div class="muted">${esc(u.school||"")}</div></td><td><span class="st st-${u.status}">${ST_LBL[u.status]||u.status}</span>${u.role==="admin"?' <span class="st st-admin">مشرف</span>':""}</td><td>${n}</td>
       <td class="acts">${u.status==="pending"?`<button class="btn sm primary" data-act="approve" data-u="${u.uid}">تفعيل</button>`:""}<button class="btn sm" data-act="perms" data-u="${u.uid}">الصلاحيات</button>${self?"":u.status==="active"?`<button class="btn sm" data-act="suspend" data-u="${u.uid}">إيقاف</button>`:u.status!=="pending"?`<button class="btn sm" data-act="activate" data-u="${u.uid}">تفعيل</button>`:""}${self?"":`<button class="btn sm" data-act="admin" data-u="${u.uid}">${u.role==="admin"?"إلغاء الإشراف":"جعله مشرفًا"}</button>`}</td></tr>`}).join("")||`<tr><td colspan="5" class="empty">لا يوجد مستخدمون.</td></tr>`}</tbody></table></div>`;
   }else{
     B.innerHTML=reqs.length?`<div class="tw"><table class="adm"><thead><tr><th>المستخدم</th><th>الملف المطلوب</th><th>إجراءات</th></tr></thead><tbody>${reqs.map(r=>`<tr><td><b>${esc(r.u.name||"")}</b><div class="muted">${esc(r.u.title||"")} — ${esc(r.u.school||"")}</div></td><td>${esc(fileName(r.f))}</td><td class="acts"><button class="btn sm primary" data-act="grant" data-u="${r.u.uid}" data-f="${r.f}">منح التعديل والطباعة</button><button class="btn sm" data-act="grantE" data-u="${r.u.uid}" data-f="${r.f}">تعديل فقط</button><button class="btn sm danger" data-act="deny" data-u="${r.u.uid}" data-f="${r.f}">رفض</button></td></tr>`).join("")}</tbody></table></div>`:`<p class="empty">لا توجد طلبات صلاحيات.</p>`;
   }
+}
+async function renderAiUsage(B){
+  B.innerHTML=`<p class="muted">جارٍ التحميل…</p>`;let L=[];try{L=BE.aiJobs?await BE.aiJobs():[]}catch(e){B.innerHTML=`<p class="empty">تعذّر تحميل السجل. تأكد من تشغيل ملف migration-005-ai.sql في Supabase.</p>`;return}
+  const SAR=3.75,sum=L.reduce((a,x)=>a+(+x.cost_usd||0),0),mon=new Date().toISOString().slice(0,7),ms=L.filter(x=>String(x.created_at).slice(0,7)===mon),msum=ms.reduce((a,x)=>a+(+x.cost_usd||0),0);
+  const nm=uid=>{const u=USERS.find(x=>x.uid===uid);return u?(u.name||u.email):"—"},rs=v=>(v*SAR).toLocaleString("ar-SA-u-nu-latn",{maximumFractionDigits:2})+" ر.س";
+  B.innerHTML=`<div class="ai-sum"><div><b>${ms.length}</b><span>تجهيز هذا الشهر</span></div><div><b>${rs(msum)}</b><span>تكلفة هذا الشهر</span></div><div><b>${L.length}</b><span>إجمالي العمليات</span></div><div><b>${rs(sum)}</b><span>إجمالي التكلفة</span></div></div>
+  <p class="muted">التكلفة تقديرية بحسب أسعار Anthropic الرسمية (الدولار ≈ ${SAR} ر.س). عدد المرات المسموحة لكل ملف ونموذج Claude يُعدّلان من جدول settings (المفتاح ai).</p>
+  ${L.length?`<div class="tw"><table class="adm"><thead><tr><th>التاريخ</th><th>المستخدم</th><th>الملف</th><th>الأجزاء</th><th>التوكنات (دخل / خرج)</th><th>التكلفة</th><th>الحالة</th></tr></thead><tbody>${L.map(x=>`<tr><td>${esc(new Date(x.created_at).toLocaleString("ar-SA-u-nu-latn"))}</td><td>${esc(nm(x.uid))}</td><td>${esc(fileName(x.file_id))}</td><td>${x.parts}</td><td dir="ltr">${(+x.input_tokens).toLocaleString()} / ${(+x.output_tokens).toLocaleString()}</td><td>${rs(+x.cost_usd||0)}</td><td>${x.status==="done"?"مكتمل":x.status==="failed"?"فشل":"جارٍ"}</td></tr>`).join("")}</tbody></table></div>`:`<p class="empty">لا توجد عمليات تجهيز بعد.</p>`}`;
 }
 function renderPermEditor(u){
   const p=JSON.parse(JSON.stringify(u.perms||{}));const all=!!(p.all&&(p.all.e||p.all.p));
@@ -6297,17 +6402,19 @@ function renderPermEditor(u){
   <div class="row wrap"><span class="lbl">قوالب سريعة:</span><button class="btn sm" data-pp="role">حسب الوظيفة</button><button class="btn sm" data-pp="all">جميع الملفات</button><button class="btn sm" data-pp="none">إزالة الكل</button></div>
   <label class="allbox"><input type="checkbox" id="pAll" ${all?"checked":""}> منح التعديل والطباعة لجميع الملفات (الحالية والمستقبلية)</label>
   <label class="allbox"><input type="checkbox" id="pAllW" ${p.all&&p.all.w?"checked":""}> إظهار زر «تصدير Word» في جميع الملفات</label>
-  <div class="tw"><table class="adm pe ${all?"dis":""}"><thead><tr><th>الملف</th><th>تعديل <input type="checkbox" data-col="e" title="تحديد الكل"></th><th>طباعة <input type="checkbox" data-col="p" title="تحديد الكل"></th><th>Word <input type="checkbox" data-col="w" title="تحديد الكل"></th></tr></thead><tbody>
-  ${cats.map(g=>`<tr class="grp"><td colspan="4">${esc(g.c)}</td></tr>`+g.f.map(f=>`<tr><td>${esc(f.name())}</td><td><input type="checkbox" data-pf="${f.id}" data-k="e" ${p[f.id]&&p[f.id].e?"checked":""}></td><td><input type="checkbox" data-pf="${f.id}" data-k="p" ${p[f.id]&&p[f.id].p?"checked":""}></td><td><input type="checkbox" data-pf="${f.id}" data-k="w" ${p[f.id]&&p[f.id].w?"checked":""}></td></tr>`).join("")).join("")}
+  <label class="allbox"><input type="checkbox" id="pAllAI" ${p.all&&p.all.ai?"checked":""}> التجهيز الذكي متوفر في جميع الملفات</label>
+  <div class="tw"><table class="adm pe ${all?"dis":""}"><thead><tr><th>الملف</th><th>تعديل <input type="checkbox" data-col="e" title="تحديد الكل"></th><th>طباعة <input type="checkbox" data-col="p" title="تحديد الكل"></th><th>Word <input type="checkbox" data-col="w" title="تحديد الكل"></th><th>تجهيز ذكي <input type="checkbox" data-col="ai" title="تحديد الكل"></th></tr></thead><tbody>
+  ${cats.map(g=>`<tr class="grp"><td colspan="5">${esc(g.c)}</td></tr>`+g.f.map(f=>`<tr><td>${esc(f.name())}</td><td><input type="checkbox" data-pf="${f.id}" data-k="e" ${p[f.id]&&p[f.id].e?"checked":""}></td><td><input type="checkbox" data-pf="${f.id}" data-k="p" ${p[f.id]&&p[f.id].p?"checked":""}></td><td><input type="checkbox" data-pf="${f.id}" data-k="w" ${p[f.id]&&p[f.id].w?"checked":""}></td><td><input type="checkbox" data-pf="${f.id}" data-k="ai" ${p[f.id]&&p[f.id].ai?"checked":""}></td></tr>`).join("")).join("")}
   </tbody></table></div><div class="row"><button class="btn primary" data-act="saveperms" data-u="${u.uid}">حفظ الصلاحيات</button><button class="btn" data-act="back">إلغاء</button></div>`;
 }
 function readPerms(){
   const aw=!!($("#pAllW")&&$("#pAllW").checked);
   const o={};document.querySelectorAll("#admBody [data-pf]").forEach(c=>{if(c.checked){o[c.dataset.pf]=o[c.dataset.pf]||{e:false,p:false};o[c.dataset.pf][c.dataset.k]=true}});
-  if($("#pAll").checked)return{all:{e:true,p:true,w:aw}};
-  if(aw)o.all={w:true};return o;
+  const ai=!!($("#pAllAI")&&$("#pAllAI").checked);
+  if($("#pAll").checked)return{all:{e:true,p:true,w:aw,ai}};
+  if(aw||ai)o.all=Object.assign(aw?{w:true}:{},ai?{ai:true}:{});return o;
 }
-function setPermsUI(o){$("#pAll").checked=!!(o.all&&(o.all.e||o.all.p));if($("#pAllW"))$("#pAllW").checked=!!(o.all&&o.all.w);$("#admBody .pe").classList.toggle("dis",!!o.all);document.querySelectorAll("#admBody [data-pf]").forEach(c=>c.checked=!!(o[c.dataset.pf]&&o[c.dataset.pf][c.dataset.k]))}
+function setPermsUI(o){$("#pAll").checked=!!(o.all&&(o.all.e||o.all.p));if($("#pAllW"))$("#pAllW").checked=!!(o.all&&o.all.w);if($("#pAllAI"))$("#pAllAI").checked=!!(o.all&&o.all.ai);$("#admBody .pe").classList.toggle("dis",!!o.all);document.querySelectorAll("#admBody [data-pf]").forEach(c=>c.checked=!!(o[c.dataset.pf]&&o[c.dataset.pf][c.dataset.k]))}
 $("#admM").addEventListener("click",async e=>{
   if(e.target.id==="admM"||e.target.closest("[data-close]"))return $("#admM").classList.remove("open");
   const t=e.target.closest("[data-atab]");if(t){admTab=t.dataset.atab;admEdit=null;return renderAdmin()}
