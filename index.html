@@ -1564,11 +1564,103 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 (function(){
 "use strict";
 /* ---------- storage ---------- */
-const store={
+const EMBED=/[?&]embed=1/.test(location.search),MEMST={};
+const store=EMBED?{get(k,d){return k in MEMST?JSON.parse(MEMST[k]):d},set(k,v){MEMST[k]=JSON.stringify(v);return true},del(k){delete MEMST[k]}}:{
   get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}},
   del(k){try{localStorage.removeItem(k)}catch(e){}}
 };
+/* ---------- بيانات وهمية للمعاينة في المتجر (?embed=1) — لا تُحفظ ولا تقرأ بيانات المستخدم ---------- */
+const DM_FIRST=["محمد","أحمد","علي","عبدالله","خالد","سعد","فهد","عمر","يوسف","إبراهيم","عبدالرحمن","سلمان","ناصر","فيصل","تركي","ماجد","حسن","صالح","بندر","ريان","زياد","يزيد","عبدالعزيز","سلطان","مشاري","نواف","راكان","حمد"];
+const DM_FIRST_F=["سارة","نورة","ريم","لمى","جود","شهد","رغد","لين","هيا","دانة","أمل","منى","رهف","غلا","ليان","جنى","حلا","وعد","مها","العنود","رزان","ديما","تالا","ميار","بشرى","روان","أسيل","لانا"];
+const DM_FATHER=["محمد","أحمد","علي","عبدالله","خالد","سعد","إبراهيم","حسن","صالح","ناصر","عمر","يحيى","حسين","موسى"];
+function dmRnd(seed){let h=1779033703^seed.length;for(let i=0;i<seed.length;i++){h=Math.imul(h^seed.charCodeAt(i),3432918353);h=h<<13|h>>>19}
+  return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;return (h>>>0)/4294967296}}
+function dmNames(n,fem){const r=dmRnd("names"+(fem?"f":"m")),F=fem?DM_FIRST_F:DM_FIRST,out=[],seen=new Set();let i=0;
+  while(out.length<n&&i<500){i++;const a=F[out.length%F.length],b=DM_FATHER[Math.floor(r()*DM_FATHER.length)],c=DM_FATHER[Math.floor(r()*DM_FATHER.length)];if(b===a||c===b)continue;const nm=a+" "+b+" "+c;if(!seen.has(nm)){seen.add(nm);out.push(nm)}}return out}
+const DM_STAFF=["أحمد محمد علي","خالد سعد عبدالله","عبدالله علي حسن","فهد ناصر محمد","سعد إبراهيم صالح","علي عمر أحمد","ماجد حسن علي","يوسف عبدالله سعد"];
+const DM_STAFF_F=["نورة محمد علي","سارة سعد عبدالله","ريم علي حسن","هيا ناصر محمد","منى إبراهيم صالح","أمل عمر أحمد","مها حسن علي","العنود عبدالله سعد"];
+function dmSeed(){
+  const set={name:"أحمد محمد علي",job:"معلم رياضيات",school:"مدرسة الأمل الابتدائية",dept:"الإدارة العامة للتعليم بمنطقة الرياض",leader:"خالد سعد عبدالله",stage:"المرحلة الابتدائية",theme:9,pstyle:"id",cover:3};
+  MEMST["hq:set"]=JSON.stringify(set);
+  MEMST["hq:roster"]=JSON.stringify({cur:"dm",classes:[{id:"dm",name:"الثالث الابتدائي / أ",subject:"الرياضيات",names:dmNames(24,false)}]});
+}
+function dmHeaders(tb){
+  const th=tb.tHead;if(!th)return[];const grid=[];
+  [...th.rows].forEach((tr,ri)=>{grid[ri]=grid[ri]||[];let c=0;[...tr.cells].forEach(cell=>{while(grid[ri][c]!=null)c++;const cs=+cell.colSpan||1,rs=+cell.rowSpan||1,tx=cell.textContent.trim();
+    for(let y=0;y<rs;y++)for(let x=0;x<cs;x++){grid[ri+y]=grid[ri+y]||[];grid[ri+y][c+x]=tx}c+=cs})});
+  const n=Math.max(0,...grid.map(r=>r.length));return Array.from({length:n},(_,i)=>grid.map(r=>r[i]||"").filter((v,j,a)=>v&&a.indexOf(v)===j).join(" "));
+}
+const dmNum=s=>{const m=String(s||"").replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).match(/\d+(\.\d+)?/);return m?+m[0]:null};
+function dmGeneric(h,r,ri){
+  const fem=S.gender==="f",staff=fem?DM_STAFF_F:DM_STAFF;
+  if(/التوقيع|ملاحظ/.test(h))return null;
+  if(/الاسم|العضو|المعلم|المسؤول|المنفذ|القائد|المراقب|المكلف|الموظف|رئيس|عضو|الملاحظ/.test(h))return staff[ri%staff.length];
+  if(/التاريخ/.test(h))return (10+((ri*3)%18))+"/0"+(3+ri%3)+"/1448هـ";
+  if(/اليوم/.test(h))return ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس"][ri%5];
+  if(/الصف|الفصل|الشعبة/.test(h))return ["الثالث / أ","الثالث / ب","الرابع / أ","الخامس / أ","السادس / أ"][ri%5];
+  if(/المادة|المقرر/.test(h))return ["الرياضيات","العلوم","لغتي","الدراسات الإسلامية","المهارات الرقمية"][ri%5];
+  if(/اللجنة|المقر|القاعة/.test(h))return "لجنة "+(ri+1);
+  if(/الحصة|الوقت|الفترة/.test(h))return ["الأولى","الثانية","الثالثة","الرابعة","الخامسة"][ri%5];
+  if(/النسبة|%/.test(h))return (78+Math.floor(r()*20))+"%";
+  if(/العدد|عدد/.test(h))return String(2+Math.floor(r()*24));
+  if(/الحالة|التقييم|التقدير|المستوى/.test(h))return ["ممتاز","متقدم","جيد جدًا","مكتمل"][Math.floor(r()*4)];
+  if(/الإجراء|المعالجة|التوصية/.test(h))return ["تواصل مع ولي الأمر","خطة علاجية","تعزيز وتحفيز","متابعة أسبوعية"][Math.floor(r()*4)];
+  if(/الجوال|الهاتف|رقم التواصل/.test(h))return "05XXXXXXXX";
+  if(/المهمة|المهام|الصفة|الدور|العمل/.test(h))return ["رئيس اللجنة","نائب الرئيس","عضو","مقرر","عضو"][ri%5];
+  return null;
+}
+function dmLegend(tb){const lg=(tb.parentElement.querySelector(".klg")||{}).textContent||"";return lg}
+function demoFill(){
+  const fem=S.gender==="f";
+  pagesEl.querySelectorAll(".pwrap").forEach(pw=>{
+    const pg=pw.dataset.pg;
+    pw.querySelectorAll("table.t").forEach((tb,ti)=>{
+      const r=dmRnd(S.file+pg+ti),H=dmHeaders(tb),rows=[...(tb.tBodies[0]||{rows:[]}).rows];
+      let C=null;try{C=tb.dataset.calc?JSON.parse(tb.dataset.calc):null}catch(e){}
+      const isKs=tb.classList.contains("ks"),lg=dmLegend(tb);
+      const maxRow=rows.find(x=>x.classList.contains("kx")&&/العظمى/.test((x.cells[1]||{}).textContent||""));
+      const auto=new Set(C?[C.into,C.pct,C.grade].filter(x=>x!=null):[]);
+      rows.forEach((tr,ri)=>{
+        if(tr.classList.contains("kx"))return;
+        const nm=((tr.cells[1]||{}).textContent||"").trim();
+        if(isKs&&!nm)return;
+        const ab=.5+.5*dmRnd(nm||String(ri))();
+        [...tr.cells].forEach((td,ci)=>{
+          if(!td.isContentEditable&&td.getAttribute("contenteditable")!=="true")return;
+          if(td.textContent.trim()||auto.has(ci))return;
+          if(isKs&&ci<2)return;
+          const h=H[ci]||"";let v=null;
+          const inR=C&&(C.subs?C.subs.some(s=>ci>=s.from&&ci<=s.to):(ci>=C.from&&ci<=C.to));
+          if(isKs&&C&&inR){
+            let mx=maxRow?dmNum(maxRow.cells[ci]&&maxRow.cells[ci].textContent):null;
+            if(mx==null&&C.subs){const sb=C.subs.find(s=>ci>=s.from&&ci<=s.to);if(sb)mx=sb.calc==="avg"?sb.m:sb.m/(sb.to-sb.from+1)}
+            if(mx==null&&C.max&&C.from!=null)mx=C.max/(C.to-C.from+1);
+            if(mx==null)mx=dmNum(h)||10;
+            let x=mx*Math.min(1,Math.max(.35,ab+(r()-.5)*.25));x=mx>=10?Math.round(x):Math.round(x*2)/2;v=String(x);
+          }else if(isKs&&/✓ حاضر/.test(lg)){const q=r();v=q<.88?"✓":q<.94?"غ":q<.97?"ع":"ت"}
+          else if(isKs&&/أتقن/.test(lg)){const q=r()*ab;v=q>.45?"✓":q>.3?"○":"✗"}
+          else if(isKs&&/م مشارك/.test(lg)){const q=r()*ab;v=q>.5?"م":q>.3?"و":"ن"}
+          else if(isKs&&/استلم|سلّم/.test(lg)){v=/الحالة|حالة/.test(h)?"جيدة":(r()<.93?"✓":"✗")}
+          else if(isKs&&/المستوى المناسب/.test(lg)){return}
+          else v=dmGeneric(h,r,ri)||(isKs&&!/ملاحظ|التوقيع/.test(h)&&h.length<=14?(r()<.9?"✓":"—"):null);
+          if(v!=null)td.textContent=v;
+        });
+        if(isKs&&/المستوى المناسب/.test(lg)){const lv=[...tr.cells].map((td,ci)=>[td,ci,H[ci]||""]).filter(([td,ci,h])=>ci>1&&/متقدم|متمكن|مل[مِ]|مبتدئ|ضعيف|متوسط|جيد/.test(h));
+          if(lv.length){const k=Math.min(lv.length-1,Math.floor((1-ab)*lv.length*1.6));lv[k][0].textContent="✓"}}
+      });
+      if(tb.classList.contains("ks")){}
+    });
+    pw.querySelectorAll(".fld").forEach((fd,i)=>{const k=(fd.querySelector(".k")||{}).textContent||"",v=fd.querySelector(".v");if(!v||v.textContent.trim())return;
+      const m=[[/الاسم/,S.name],[/المؤهل/,"بكالوريوس"],[/التخصص/,"رياضيات"],[/رقم الهوية|السجل المدني/,"1XXXXXXXXX"],[/سنوات/,"12 سنة"],[/الجوال|الهاتف/,"05XXXXXXXX"],[/البريد/,"teacher@example.com"],[/القائد|المدير/,S.leader],[/المرحلة/,S.stage],[/المدرسة/,S.school],[/العمل|الوظيفة/,S.job],[/الرقم الوظيفي/,"XXXXXX"],[/تاريخ/,"1436/01/01هـ"],[/النصاب|الحصص/,"18 حصة"]].find(([re])=>re.test(k));
+      if(m&&m[1])v.textContent=m[1]});
+    pw.querySelectorAll("[data-img]").forEach((el,i)=>{memImg[S.file+el.dataset.img]=LOGO;paintSlot(el);el.style.backgroundSize="46%";
+      const cap=el.parentElement.querySelector(".cap");if(cap&&/وصف الشاهد/.test(cap.textContent))cap.textContent=["صورة من تنفيذ الدرس","شهادة شكر وتقدير","محضر اجتماع موثّق","تقرير مختصر للنشاط","نموذج متابعة معبّأ","صورة من سجل المتابعة"][i%6]});
+    pw.querySelectorAll('.kmeta b[contenteditable="true"]').forEach(b=>{if(/^\.+$/.test(b.textContent.trim()))b.textContent=/المادة/.test(b.parentElement.textContent)?"الرياضيات":"الأسبوع الأول"});
+  });
+}
+
+if(EMBED)dmSeed();
 const DEF={gender:"m",name:"",job:"",school:"",dept:"الإدارة العامة للتعليم بمنطقة ",office:"",leader:"",stage:"",year:"1448هـ",term:"الفصل الدراسي الأول",theme:0,cover:3,font:"moe",pstyle:"id",v2:1,file:"perf-t"};
 let S=Object.assign({},DEF,store.get("hq:set",{}));
 const saveS=()=>store.set("hq:set",S);
@@ -3432,6 +3524,7 @@ function render(){
   let pz=document.getElementById("pgsz");if(!pz){pz=document.createElement("style");pz.id="pgsz";document.head.appendChild(pz)}
   pz.textContent=spec.pages.some(x=>x.land)?"@page{size:A4 landscape;margin:0}":"";
   restore();
+  if(EMBED)try{demoFill()}catch(e){console.error(e)}
   if(typeof BE!=="undefined")try{applyAccess()}catch(e){}
   syncControls(); renderList(); fit(); try{ksCalcAll()}catch(e){console.error(e)} ksFitTables(); renderKsCard(); renderCertCard();
   if(typeof ftbCells!=="undefined"){ftbCells.clear();ftbHost=null;ftbVis()}
