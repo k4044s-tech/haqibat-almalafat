@@ -1797,10 +1797,10 @@ function demoFill(){
 }
 
 if(EMBED)dmSeed();
-const DEF={gender:"m",name:"",job:"",school:"",dept:"الإدارة العامة للتعليم بمنطقة ",office:"",leader:"",stage:"",year:"1448هـ",term:"الفصل الدراسي الأول",theme:0,cover:3,font:"moe",pstyle:"id",v2:1,file:"perf-t",evmode:"qr"};
+const DEF={gender:"m",name:"",job:"",school:"",dept:"الإدارة العامة للتعليم بمنطقة ",office:"",leader:"",stage:"",year:"1448هـ",term:"الفصل الدراسي الأول",theme:9,cover:3,font:"moe",pstyle:"id",v2:1,file:"perf-t",evmode:"qr"};
 let S=Object.assign({},DEF,store.get("hq:set",{}));
 const saveS=()=>store.set("hq:set",S);
-if(!S.v2){S.theme=0;S.cover=3;S.font="moe";S.pstyle="id";S.v2=1;saveS();}
+if(!S.v2){S.theme=9;S.cover=3;S.font="moe";S.pstyle="id";S.v2=1;saveS();}
 const g=(m,f)=>S.gender==="f"?f:m;
 
 const dots=v=>v&&v.trim()?esc(v):"........................";
@@ -3704,6 +3704,8 @@ const PSTYLES=[
   ["id","الهوية","موجات وكبسولات",0],["ci","الدوائر","من رمز الشعار",1],["rl","الشريط","شريط جانبي رسمي",1],["sd","السدو","نقش سعودي",1],
   ["lt","الخطاب","ترويسة المراسلات",1],["rp","التقرير","شريط علوي داكن",0],["gd","الدليل","شريط عنوان مائل",0],["cl","كلاسيكي","إطار مزدوج",0]];
 const COVER_OF={id:3,rp:5,gd:4,ci:6,rl:7,sd:8,lt:9};
+/* معاينة المتجر: نمط ولون مختلف لكل تبويب ليرى المشتري تنوع التصاميم */
+const PREV_STYLE={"الأداء الوظيفي":["id",9],"الخطط":["rl",11],"ملفات الإدارة والتوجيه":["lt",9],"ملفات المدرسة":["sd",10],"ملفات المعلم":["rp",9],"ملفات المعلمة":["rp",9],"ملفات الطالب":["ci",12],"الشهادات والتهنئة":["id",9],"كشوف الطلاب":["id",9]};
 const COVERS=[[3,"الهوية"],[6,"الدوائر"],[7,"الشريط"],[8,"السدو"],[9,"الخطاب"],[5,"التقرير"],[4,"صورة"],[0,"أمواج"],[1,"إطار"],[2,"مائل"]];
 function stThumb(id,t){
   const L=(y,w,x)=>`<rect x="${x||8}" y="${y}" width="${w}" height="1.6" rx=".8" fill="#cfd8de"/>`;
@@ -4015,6 +4017,7 @@ let cur=null, skip=new Set();
 function render(){
   const f=FILES.find(x=>x.id===S.file)||FILES[0];
   S.file=f.id;
+  if(EMBED){const ps=PREV_STYLE[catOf(f)]||["id",9];S.pstyle=ps[0];S.cover=COVER_OF[ps[0]];S.theme=ps[1]}
   const t=T(); const spec=f.build();
   {const xp=(store.get(eKey(),{})["@xp"]||[]);if(xp.length){spec.pages.forEach((p,i)=>{if(p.kpg==null)p.kpg="p"+i});const out=[],seen=new Set();
     const add=a=>xp.filter(x=>x.after===a&&!seen.has(x.id)).forEach(x=>{seen.add(x.id);out.push({t:"free",kpg:x.id,title:"صفحة مضافة",land:!!x.land});add(x.id)});
