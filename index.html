@@ -1432,7 +1432,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <div class="vacts">
             <button class="btn" id="resetBtn" type="button" title="حذف ما كتبته في هذا الملف"><i data-i="rotate"></i>مسح التعديلات</button>
             <button class="btn" id="setBtn" type="button" hidden><i data-i="user"></i>بيانات الملف</button>
-            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button>
+            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button>
           </div>
         </div>
         <div class="access" id="access" role="status" hidden></div>
@@ -5852,12 +5852,12 @@ const ST_LBL={noprofile:"لم يُرسل طلب",pending:"قيد المراجع�
 const AUTH_ERR={"auth/email-already-in-use":"البريد الإلكتروني مسجّل مسبقًا.","auth/invalid-credential":"البريد أو كلمة المرور غير صحيحة.","auth/wrong-password":"البريد أو كلمة المرور غير صحيحة.","auth/user-not-found":"البريد أو كلمة المرور غير صحيحة.","auth/weak-password":"كلمة المرور ضعيفة، استخدم 8 أحرف على الأقل.","auth/invalid-email":"صيغة البريد الإلكتروني غير صحيحة.","auth/too-many-requests":"محاولات كثيرة، حاول بعد قليل.","auth/network-request-failed":"تعذّر الاتصال بالإنترنت.","demo/reset":"استعادة كلمة المرور غير متاحة في الوضع التجريبي.","permission-denied":"ليست لديك صلاحية لتنفيذ هذا الإجراء."};
 const errMsg=e=>AUTH_ERR[e&&e.code]||"حدث خطأ غير متوقع، حاول مرة أخرى.";
 
-let ME=null,BE=null,USERS=[],unsubUsers=null,EDIT=false,PRINT=false;
+let ME=null,BE=null,USERS=[],unsubUsers=null,EDIT=false,PRINT=false,WORD=false;
 let BE_RES;const BEP=new Promise(r=>BE_RES=r);
 const EV_COL="haqiba_ev",CARD_COL="haqiba_cards";
 const isActive=()=>!!(ME&&ME.status==="active");
 const isAdmin=()=>isActive()&&ME.role==="admin";
-function perm(fid,k){{const F0=FILES.find(x=>x.id===fid);if(F0&&F0.free)return true}if(isAdmin())return true;if(!isActive())return false;if(STORE&&typeof shopFree==="function"&&shopFree(fid))return true;const p=ME.perms||{};return !!((p.all&&p.all[k])||(p[fid]&&p[fid][k]));}
+function perm(fid,k){{const F0=FILES.find(x=>x.id===fid);if(F0&&F0.free&&k!=="w")return true}if(isAdmin())return true;if(!isActive())return false;if(k!=="w"&&STORE&&typeof shopFree==="function"&&shopFree(fid))return true;const p=ME.perms||{};return !!((p.all&&p.all[k])||(p[fid]&&p[fid][k]));}
 const fileName=id=>{const f=PRODS().find(x=>x.id===id);return f?f.name():id};
 const catOf=f=>typeof f.cat==="function"?f.cat():f.cat;
 
@@ -6020,7 +6020,7 @@ async function fbBackend(cfg){
 
 /* ---------- تطبيق الصلاحيات على الصفحات ---------- */
 function applyAccess(){
-  EDIT=perm(S.file,"e");PRINT=perm(S.file,"p");
+  EDIT=perm(S.file,"e");PRINT=perm(S.file,"p");WORD=perm(S.file,"w");{const wb=$("#wordBtn");if(wb)wb.hidden=!WORD}
   document.body.classList.toggle("ro",!EDIT);
   document.body.classList.toggle("np",!PRINT);
   if(!EDIT)pagesEl.querySelectorAll('[contenteditable="true"]').forEach(el=>el.setAttribute("contenteditable","false"));
@@ -6112,6 +6112,156 @@ $("#aUp").addEventListener("submit",async e=>{e.preventDefault();$("#aErr").text
   catch(err){$("#aErr").textContent=errMsg(err)}finally{bt&&(bt.disabled=false)}});
 $("#meOut").addEventListener("click",async()=>{await BE.logout();$("#authM").classList.remove("open");toast("تم تسجيل الخروج");go("#/")});
 
+/* ---------- تصدير Word (.docx) — يقرأ الصفحات كما تظهر بعد التعديل ---------- */
+const DOCX_URL="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js";
+let docxP=null;
+function loadDocx(){if(window.docx)return Promise.resolve(window.docx);if(docxP)return docxP;
+  docxP=new Promise((ok,no)=>{const s=document.createElement("script");s.src=window.__DOCX_URL||DOCX_URL;s.onload=()=>window.docx?ok(window.docx):no(new Error("docx"));s.onerror=()=>{docxP=null;no(new Error("net"))};document.head.appendChild(s)});return docxP}
+const WD={
+  hex(c){const m=String(c||"").match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?/);if(!m)return null;if(m[4]!=null&&+m[4]<.35)return null;return [m[1],m[2],m[3]].map(x=>(+x|0).toString(16).padStart(2,"0")).join("").toUpperCase()},
+  light(h){if(!h)return false;const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return (r*299+g*587+b*114)/1000>200},
+  bytes(u){const b=atob(u.split(",")[1]);const a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a},
+  dims(u){return new Promise(ok=>{const im=new Image();im.onload=()=>ok([im.naturalWidth||1,im.naturalHeight||1]);im.onerror=()=>ok([4,3]);im.src=u})},
+  async png(u){/* يحوّل أي صورة (svg/webp) إلى png ليقبلها Word */
+    if(/^data:image\/(png|jpe?g)/i.test(u))return u;
+    return new Promise(ok=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=im.naturalWidth||600;c.height=im.naturalHeight||450;c.getContext("2d").drawImage(im,0,0);ok(c.toDataURL("image/png"))};im.onerror=()=>ok(null);im.src=u})}
+};
+async function exportWord(){
+  if(!WORD&&!isAdmin())return toast("تصدير Word غير متاح لحسابك، تواصل مع المشرف");
+  if(!cur||!cur.spec)return;
+  ftbFlush();
+  let D;toast("جارٍ تجهيز ملف Word…");
+  try{D=await loadDocx()}catch(e){return toast("تعذّر تحميل أداة Word، تحقق من الاتصال بالإنترنت")}
+  const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,WidthType,AlignmentType,BorderStyle,ImageRun,Header,Footer,PageNumber,PageOrientation,ShadingType,VerticalAlign,HeightRule}=D;
+  const t=T(),PC=t.p.replace("#","").toUpperCase(),LC=(t.l||"#eef3f6").replace("#","").toUpperCase(),FONT="Arial";
+  const W_P=11906,H_P=16838,MG=850;
+  const IMGS=new Map();
+  const img=async(u,wPx,hMax)=>{if(!u)return null;u=await WD.png(u);if(!u)return null;let d=IMGS.get(u);if(!d){d={data:WD.bytes(u),wh:await WD.dims(u),type:/jpe?g/i.test(u.slice(5,16))?"jpg":"png"};IMGS.set(u,d)}
+    let w=wPx,h=Math.round(wPx*d.wh[1]/d.wh[0]);if(hMax&&h>hMax){h=hMax;w=Math.round(hMax*d.wh[0]/d.wh[1])}
+    return new ImageRun({type:d.type,data:d.data,transformation:{width:w,height:h}})};
+  const run=(text,o={})=>new TextRun(Object.assign({text,font:{ascii:FONT,cs:FONT,hAnsi:FONT},rightToLeft:true,size:o.size||22,sizeComplexScript:o.size||22,bold:!!o.bold,boldComplexScript:!!o.bold,color:o.color||undefined,break:o.br?1:undefined}));
+  const P=(children,o={})=>new Paragraph({children,bidirectional:true,alignment:o.align||undefined,spacing:children.some(c=>c instanceof ImageRun)?{before:o.before||0,after:o.after==null?60:o.after}:{before:o.before||0,after:o.after==null?60:o.after,line:o.line||276},keepNext:o.keepNext,shading:o.fill?{type:ShadingType.CLEAR,color:"auto",fill:o.fill}:undefined});
+  const alignOf=cs=>cs.textAlign==="center"?AlignmentType.CENTER:(cs.textAlign==="left"||cs.textAlign==="end")?AlignmentType.LEFT:undefined;
+  const styleOf=(el)=>{const cs=getComputedStyle(el);let col=WD.hex(cs.color);if(WD.light(col))col=PC;const px=parseFloat(cs.fontSize)||14;return {size:Math.max(16,Math.min(64,Math.round(px*.75*2))),bold:(+cs.fontWeight||400)>=600,color:col&&col!=="000000"&&col!=="1F2A2C"?col:undefined,align:alignOf(cs)}};
+  const SKIP="svg,button,input,select,textarea,style,script,.pbar,.x,.lk,.cimg,.evn,.wm,.qrc,.gcart,.gcb,.tcfr,.cfr,.lines,.caps,.ksr,.gccut span";
+  /* بناء فقرات من عنصر نصي مع الحفاظ على الغامق والألوان والأسطر */
+  function runsOf(el,base){const out=[];
+    const rec=(n,st)=>{n.childNodes.forEach(c=>{if(c.nodeType===3){const tx=c.textContent.replace(/\s+/g," ");if(tx.trim()||tx===" ")out.push(run(tx,st))}
+      else if(c.nodeType===1){if(c.matches(SKIP))return;if(c.tagName==="BR"){out.push(run("",Object.assign({},st,{br:true})));return}
+        if(c.classList.contains("ksa")){out.push(run("المملكة العربية السعودية",Object.assign({},st,{bold:true})));return}
+        const cs=getComputedStyle(c);if(cs.display==="none")return;const s2=Object.assign({},st);if((+cs.fontWeight||400)>=600)s2.bold=true;const col=WD.hex(cs.color);if(col&&!WD.light(col)&&col!=="000000")s2.color=col;rec(c,s2)}})};
+    rec(el,base);return out}
+  const isBlock=c=>{if(c.matches(SKIP))return false;const d=getComputedStyle(c).display;return /block|flex|grid|table|list-item/.test(d)&&d!=="inline-block"||c.tagName==="TABLE"||c.classList.contains("ksa")&&false};
+  const vis=c=>{if(c.matches(SKIP))return false;const cs=getComputedStyle(c);if(cs.display==="none"||cs.visibility==="hidden")return false;return !!(c.innerText||"").trim()||c.matches("[data-img]")||!!c.querySelector("[data-img],img.logo")||!!c.querySelector('[contenteditable="true"]:not(td):not(th)')};
+  const border={style:BorderStyle.SINGLE,size:4,color:"B8C7CF"},noB={style:BorderStyle.NONE,size:0,color:"FFFFFF"};
+  const allB=b=>({top:b,bottom:b,left:b,right:b,insideHorizontal:b,insideVertical:b});
+  async function slotBlock(el,wTw){const k=el.dataset.img,u=slotImg(k),q=store.get(qKey(k),null);const wPx=Math.round(wTw/15)-16;
+    if(u){const r=await img(u,wPx,300);if(r)return [P([r],{align:AlignmentType.CENTER})]}
+    if(q&&q.url)return [P([run("رابط الشاهد: ",{bold:true,size:20}),run(q.url,{size:18,color:"1F5F9F"})],{align:AlignmentType.CENTER})];
+    return [P([run("(مكان الصورة)",{size:20,color:"9AA7AE"})],{align:AlignmentType.CENTER,before:900,after:900})]}
+  async function tableOf(tb,wTw){
+    const rows=[...tb.rows];if(!rows.length)return null;
+    let cols=[...tb.querySelectorAll(":scope > colgroup > col")].map(c=>parseFloat(c.style.width)||0);
+    const nCols=Math.max(...rows.map(r=>[...r.cells].reduce((a,c)=>a+(+c.colSpan||1),0)),cols.length||0);
+    if(cols.length!==nCols||!cols.some(Boolean))cols=Array(nCols).fill(100/nCols);
+    const sum=cols.reduce((a,b)=>a+b,0)||100,colTw=cols.map(c=>Math.max(300,Math.round(wTw*c/sum)));
+    const head=tb.tHead?[...tb.tHead.rows]:[];
+    const out=[];let ci0=0;
+    for(const tr of rows){const isH=head.includes(tr);const cells=[];let ci=0;
+      for(const td of tr.cells){const cs=getComputedStyle(td),span=+td.colSpan||1;let fill=WD.hex(cs.backgroundColor);if(fill==="FFFFFF")fill=null;
+        const th=td.tagName==="TH"||isH;if(th&&!fill)fill=isH?PC:LC;const dark=fill&&!WD.light(fill);
+        const w=colTw.slice(ci,ci+span).reduce((a,b)=>a+b,0);ci+=span;
+        let kids=[];
+        if(td.classList.contains("dg")){kids=[P([run(td.classList.contains("on")||td.textContent.trim()?"●":"",{size:22,color:PC})],{align:AlignmentType.CENTER,after:0})]}
+        else if(td.querySelector("table,[data-img]")){kids=await walk(td,w-120)}
+        else{const st=styleOf(td);kids=[P(runsOf(td,{size:Math.min(st.size,th?21:21),bold:th||st.bold,color:dark?"FFFFFF":st.color}),{align:th||cs.textAlign==="center"?AlignmentType.CENTER:undefined,after:0,line:250})]}
+        if(!kids.length)kids=[P([run("")],{after:0})];
+        cells.push(new TableCell({children:kids,columnSpan:span>1?span:undefined,rowSpan:(+td.rowSpan||1)>1?+td.rowSpan:undefined,width:{size:w,type:WidthType.DXA},shading:fill?{type:ShadingType.CLEAR,color:"auto",fill}:undefined,verticalAlign:VerticalAlign.CENTER,margins:{top:50,bottom:50,left:80,right:80}}))}
+      const hPx=tr.getBoundingClientRect().height,pg=tr.closest(".page"),sc=pg?pg.getBoundingClientRect().width/pg.offsetWidth||1:1;
+      out.push(new TableRow({children:cells,tableHeader:isH,cantSplit:true,height:hPx/sc>34?{value:Math.round(hPx/sc*15),rule:HeightRule.ATLEAST}:undefined}))}
+    return new Table({rows:out,width:{size:colTw.reduce((a,b)=>a+b,0),type:WidthType.DXA},columnWidths:colTw,visuallyRightToLeft:true,borders:allB(border)})}
+  /* محوّل عام: الجداول جداول، والشبكات والصفوف المتجاورة جداول بلا حدود، والنصوص فقرات */
+  /* خانة كتابة فارغة: خلية بنفس الارتفاع ليكتب فيها المستخدم داخل Word */
+  const boxOf=(c,wTw)=>{const h=Math.max(400,Math.round(c.offsetHeight*15));return new Table({width:{size:wTw,type:WidthType.DXA},columnWidths:[wTw],visuallyRightToLeft:true,borders:allB(border),rows:[new TableRow({height:{value:h,rule:HeightRule.ATLEAST},children:[new TableCell({width:{size:wTw,type:WidthType.DXA},children:[P([run("")],{after:0})],margins:{top:60,bottom:60,left:100,right:100}})]})]})};
+  const emptyEd=c=>c.getAttribute&&c.getAttribute("contenteditable")==="true"&&!(c.innerText||"").trim()&&c.offsetHeight>28&&c.tagName!=="TD"&&c.tagName!=="TH";
+  async function walk(el,wTw){const out=[];
+    for(const c of [...el.children]){
+      if(emptyEd(c)){out.push(boxOf(c,wTw));out.push(P([run("")],{after:40}));continue}
+      if(c.matches(".gc")){/* بطاقة تهنئة: صندوق بارتفاع نصف الصفحة */
+        const col=WD.hex(getComputedStyle(c).borderTopColor)||PC,ps=[];
+        for(const k of [...c.querySelector(".gcin").children]){const st=styleOf(k);ps.push(P(runsOf(k,{size:st.size,bold:st.bold,color:st.color}),{align:AlignmentType.CENTER,after:140,line:340}))}
+        const bb={style:BorderStyle.DOUBLE,size:18,color:col};
+        out.push(new Table({width:{size:wTw,type:WidthType.DXA},columnWidths:[wTw],borders:allB(bb),visuallyRightToLeft:true,rows:[new TableRow({cantSplit:true,height:{value:6900,rule:HeightRule.EXACT},children:[new TableCell({width:{size:wTw,type:WidthType.DXA},verticalAlign:VerticalAlign.CENTER,children:ps,margins:{top:200,bottom:200,left:400,right:400}})]})]}));
+        out.push(P([run("✂ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",{size:16,color:"9AA7AE"})],{align:AlignmentType.CENTER,before:120,after:120}));continue}
+      if(!vis(c))continue;
+      if(c.tagName==="TABLE"){const tb=await tableOf(c,wTw);if(tb){out.push(tb);out.push(P([run("")],{after:60}))}continue}
+      if(c.matches("[data-img]")){out.push(...await slotBlock(c,wTw));continue}
+      if(c.tagName==="IMG"){if(c.src&&c.offsetWidth>40){const r=await img(c.src,Math.min(Math.round(wTw/15),Math.round(c.offsetWidth)),120);if(r)out.push(P([r],{align:AlignmentType.CENTER}))}continue}
+      const cs=getComputedStyle(c),kids=[...c.children].filter(vis);
+      const grid=cs.display.includes("grid")?cs.gridTemplateColumns.split(" ").filter(Boolean).length:0;
+      const row=cs.display.includes("flex")&&!cs.flexDirection.startsWith("column")&&kids.length>1&&kids.every(k=>isBlock(k));
+      if((grid>1||row)&&kids.length>1){const n=grid>1?grid:kids.length,cw=Math.round(wTw/n),trs=[];
+        for(let i=0;i<kids.length;i+=n){const cells=[];for(let j=0;j<n;j++){const k=kids[i+j];const ch=k?await walk2(k,cw-160):[];
+            const kc=k?getComputedStyle(k):null,bd=kc&&parseFloat(kc.borderTopWidth)>0;let fill=kc?WD.hex(kc.backgroundColor):null;if(fill==="FFFFFF")fill=null;
+            cells.push(new TableCell({children:ch.length?ch:[P([run("")])],width:{size:cw,type:WidthType.DXA},borders:bd?{top:border,bottom:border,left:border,right:border}:{top:noB,bottom:noB,left:noB,right:noB},shading:fill?{type:ShadingType.CLEAR,color:"auto",fill}:undefined,margins:{top:60,bottom:60,left:100,right:100}}))}
+          trs.push(new TableRow({children:cells,cantSplit:true}))}
+        out.push(new Table({rows:trs,width:{size:cw*n,type:WidthType.DXA},columnWidths:Array(n).fill(cw),visuallyRightToLeft:true,borders:allB(noB)}));out.push(P([run("")],{after:40}));continue}
+      if(kids.some(isBlock)||c.querySelector("table,[data-img]")){out.push(...await walk(c,wTw));continue}
+      const st=styleOf(c),rs=runsOf(c,{size:st.size,bold:st.bold,color:st.color});
+      if(rs.length){let fill=WD.hex(cs.backgroundColor);if(fill==="FFFFFF"||!fill)fill=undefined;const dark=fill&&!WD.light(fill);
+        if(dark)rs.forEach(r=>{});out.push(P(dark?runsOf(c,{size:st.size,bold:st.bold,color:"FFFFFF"}):rs,{align:st.align,fill,after:80,before:/H[1-4]/.test(c.tagName)?120:0,keepNext:/H[1-4]/.test(c.tagName)}))}
+    }
+    return out}
+  async function walk2(el,wTw){/* عنصر واحد داخل خلية: إن كان نصيًا فقرة واحدة */
+    if(emptyEd(el))return [boxOf(el,wTw)];
+    if(el.matches("[data-img]"))return slotBlock(el,wTw);
+    if(el.tagName==="TABLE"){const tb=await tableOf(el,wTw);return tb?[tb]:[]}
+    const kids=[...el.children].filter(vis);
+    if(kids.some(isBlock)||el.querySelector("table,[data-img]"))return walk(el,wTw);
+    const st=styleOf(el),rs=runsOf(el,{size:st.size,bold:st.bold,color:st.color});return rs.length?[P(rs,{align:st.align,after:40})]:[]}
+  /* رأس وتذييل رسميان لصفحات المحتوى */
+  const logo=await img(LOGO,92,70);
+  const hdrCell=(ch,al)=>new TableCell({children:ch,borders:{top:noB,bottom:noB,left:noB,right:noB},verticalAlign:VerticalAlign.CENTER,width:{size:3400,type:WidthType.DXA}});
+  const mkHeader=(wTw)=>new Header({children:[new Table({width:{size:wTw,type:WidthType.DXA},columnWidths:[Math.round(wTw*.4),Math.round(wTw*.2),Math.round(wTw*.4)],visuallyRightToLeft:true,borders:allB(noB),rows:[new TableRow({children:[
+      hdrCell([P([run("المملكة العربية السعودية",{bold:true,size:20,color:PC})],{after:0}),P([run("وزارة التعليم",{bold:true,size:20,color:PC})],{after:0}),P([run(S.dept||"",{size:18})],{after:0}),P([run(S.school?S.school:"",{size:18})],{after:0})]),
+      hdrCell([P(logo?[logo]:[run("")],{align:AlignmentType.CENTER,after:0})]),
+      hdrCell([P([run("العام الدراسي: "+(S.year||""),{size:18})],{align:AlignmentType.LEFT,after:0}),P([run(S.term||"",{size:18})],{align:AlignmentType.LEFT,after:0})])]})]}),
+    new Paragraph({children:[],border:{bottom:{style:BorderStyle.SINGLE,size:8,color:PC,space:4}},spacing:{after:120}})]});
+  const mkFooter=()=>new Footer({children:[new Paragraph({bidirectional:true,alignment:AlignmentType.CENTER,border:{top:{style:BorderStyle.SINGLE,size:4,color:"C9D5DB",space:4}},children:[run(cur.spec.title+(PN()?" — "+PN():"")+"   |   صفحة ",{size:17,color:"6B7F8C"}),new TextRun({children:[PageNumber.CURRENT],size:17,color:"6B7F8C"})]})]});
+  const pgBorder={pageBorderTop:{style:BorderStyle.DOUBLE,size:12,color:PC,space:18},pageBorderBottom:{style:BorderStyle.DOUBLE,size:12,color:PC,space:18},pageBorderLeft:{style:BorderStyle.DOUBLE,size:12,color:PC,space:18},pageBorderRight:{style:BorderStyle.DOUBLE,size:12,color:PC,space:18}};
+  /* الغلاف */
+  async function coverOf(pg,wTw){const q=s=>pg.querySelector(s);const txt=s=>{const e=q(s);return e?e.innerText.trim():""};const out=[];
+    const big=await img(LOGO,230,170);out.push(P([run("المملكة العربية السعودية",{bold:true,size:26,color:PC})],{align:AlignmentType.CENTER,after:0}),P([run("وزارة التعليم",{bold:true,size:24,color:PC})],{align:AlignmentType.CENTER,after:0}),P([run(S.dept||"",{size:22})],{align:AlignmentType.CENTER,after:300}));
+    if(big)out.push(P([big],{align:AlignmentType.CENTER,after:400}));
+    out.push(P([run(txt('[data-k="c-t"]')||cur.spec.title,{bold:true,size:60,color:PC})],{align:AlignmentType.CENTER,after:120}));
+    const sub=txt('[data-k="c-s"]');if(sub)out.push(P([run(sub,{bold:true,size:32,color:t.s.replace("#","")})],{align:AlignmentType.CENTER,after:500}));
+    const rws=[...pg.querySelectorAll(".card .rw")].map(r=>[(r.querySelector(".k")||{}).innerText||"",(r.querySelector(".v")||{}).innerText||""]);
+    const fs=[...pg.querySelectorAll("fieldset.fs")].map(f=>[(f.querySelector("legend")||{}).innerText||"",(f.querySelector("div")||{}).innerText||""]);
+    const L=(rws.length?rws:fs).filter(x=>x[0].trim());
+    if(L.length){const w1=Math.round(wTw*.25),w2=Math.round(wTw*.45);out.push(new Table({alignment:AlignmentType.CENTER,width:{size:w1+w2,type:WidthType.DXA},columnWidths:[w1,w2],visuallyRightToLeft:true,borders:allB(border),rows:L.map(([k,v])=>new TableRow({cantSplit:true,children:[
+      new TableCell({children:[P([run(k.trim(),{bold:true,size:24,color:"FFFFFF"})],{after:0})],shading:{type:ShadingType.CLEAR,color:"auto",fill:PC},width:{size:w1,type:WidthType.DXA},verticalAlign:VerticalAlign.CENTER,margins:{top:120,bottom:120,left:140,right:140}}),
+      new TableCell({children:[P([run(v.trim().replace(/^\.+$/,"................"),{size:24})],{after:0})],width:{size:w2,type:WidthType.DXA},verticalAlign:VerticalAlign.CENTER,margins:{top:120,bottom:120,left:140,right:140}})]}))}))}
+    return out}
+  const sections=[];
+  const wraps=[...pagesEl.querySelectorAll(".pwrap")].filter(w=>!w.classList.contains("skip"));
+  for(const w of wraps){const pg=w.querySelector(".page");if(!pg)continue;const land=pg.classList.contains("land");const wTw=(land?H_P:W_P)-2*MG;
+    const key=w.dataset.pg,body=pg.querySelector(".pbody");let children=[],framed=false,bordered=false;
+    if(key==="cv"){children=await coverOf(pg,wTw);bordered=true}
+    else if(body){framed=true;const tEl=pg.querySelector(`[data-k="${key}-h"]`);const title=tEl?tEl.innerText.trim():"";
+      if(title)children.push(P([run(title,{bold:true,size:30,color:"FFFFFF"})],{align:AlignmentType.CENTER,fill:PC,after:160,keepNext:true}));
+      children.push(...await walk(body,wTw))}
+    else{bordered=!!pg.querySelector(".tcert,.cert,.gc,.kcov,.cov");children=await walk(pg.firstElementChild||pg,wTw);
+      if(pg.querySelector(".dvi,.dv,.div,[class*='dv']")&&!bordered)children.unshift(P([run("")],{before:1800}))}
+    if(!children.length)children=[P([run("")])];
+    sections.push({properties:{page:{size:land?{orientation:PageOrientation.LANDSCAPE,width:W_P,height:H_P}:{width:W_P,height:H_P},margin:{top:framed?1500:MG,bottom:MG,left:MG,right:MG,header:400,footer:350},borders:bordered?pgBorder:undefined}},
+      headers:framed?{default:mkHeader(wTw)}:undefined,footers:framed?{default:mkFooter()}:undefined,children})}
+  const doc=new Document({creator:"نَسَق",title:cur.spec.title,styles:{default:{document:{run:{font:FONT,size:22,rightToLeft:true}}}},sections});
+  const blob=await Packer.toBlob(doc);
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(cur.spec.title+(PN()?" - "+PN():"")).replace(/[\\/:*?"<>|]/g,"-")+".docx";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
+  toast("تم تصدير ملف Word");
+}
+
+$("#wordBtn").addEventListener("click",()=>exportWord().catch(e=>{console.error(e);toast("تعذّر إنشاء ملف Word")}));
 /* ---------- لوحة الإعدادات (المشرف) ---------- */
 let admTab="pending",admEdit=null,admQ="";
 function startAdmin(){if(unsubUsers)return;unsubUsers=BE.onUsers(l=>{USERS=l;updateTop()})}
@@ -6132,7 +6282,7 @@ function renderAdmin(){
     const list=USERS.filter(u=>!q||[u.name,u.email,u.school,u.title].join(" ").includes(q)).sort((a,b)=>(a.status>b.status?1:-1));
     B.innerHTML=`<input class="search" id="admQ" type="search" placeholder="بحث بالاسم أو المدرسة أو البريد…" value="${esc(admQ)}">
     <div class="tw"><table class="adm"><thead><tr><th>المستخدم</th><th>الصفة / المدرسة</th><th>الحالة</th><th>الصلاحيات</th><th>إجراءات</th></tr></thead><tbody>${list.map(u=>{
-      const p=u.perms||{};const n=u.role==="admin"?"مشرف — الكل":p.all?"جميع الملفات":Object.keys(p).filter(k=>p[k].e||p[k].p).length+" ملف";
+      const p=u.perms||{};const n=(u.role==="admin"?"مشرف — الكل":p.all&&(p.all.e||p.all.p)?"جميع الملفات":Object.keys(p).filter(k=>k!=="all"&&(p[k].e||p[k].p)).length+" ملف")+(u.role!=="admin"&&(p.all&&p.all.w||Object.keys(p).some(k=>p[k]&&p[k].w))?" · Word":"");
       const self=ME&&u.uid===ME.uid;
       return `<tr><td><b>${esc(u.name||"")}</b><div class="muted" dir="ltr">${esc(u.email||"")}</div></td><td>${esc(u.title||"")}<div class="muted">${esc(u.school||"")}</div></td><td><span class="st st-${u.status}">${ST_LBL[u.status]||u.status}</span>${u.role==="admin"?' <span class="st st-admin">مشرف</span>':""}</td><td>${n}</td>
       <td class="acts">${u.status==="pending"?`<button class="btn sm primary" data-act="approve" data-u="${u.uid}">تفعيل</button>`:""}<button class="btn sm" data-act="perms" data-u="${u.uid}">الصلاحيات</button>${self?"":u.status==="active"?`<button class="btn sm" data-act="suspend" data-u="${u.uid}">إيقاف</button>`:u.status!=="pending"?`<button class="btn sm" data-act="activate" data-u="${u.uid}">تفعيل</button>`:""}${self?"":`<button class="btn sm" data-act="admin" data-u="${u.uid}">${u.role==="admin"?"إلغاء الإشراف":"جعله مشرفًا"}</button>`}</td></tr>`}).join("")||`<tr><td colspan="5" class="empty">لا يوجد مستخدمون.</td></tr>`}</tbody></table></div>`;
@@ -6146,15 +6296,18 @@ function renderPermEditor(u){
   $("#admBody").innerHTML=`<div class="pe-head"><button class="btn sm" data-act="back">→ رجوع</button><div><b>صلاحيات: ${esc(u.name||u.email)}</b><div class="muted">${esc(u.title||"")} — ${esc(u.school||"")}</div></div></div>
   <div class="row wrap"><span class="lbl">قوالب سريعة:</span><button class="btn sm" data-pp="role">حسب الوظيفة</button><button class="btn sm" data-pp="all">جميع الملفات</button><button class="btn sm" data-pp="none">إزالة الكل</button></div>
   <label class="allbox"><input type="checkbox" id="pAll" ${all?"checked":""}> منح التعديل والطباعة لجميع الملفات (الحالية والمستقبلية)</label>
-  <div class="tw"><table class="adm pe ${all?"dis":""}"><thead><tr><th>الملف</th><th>تعديل <input type="checkbox" data-col="e" title="تحديد الكل"></th><th>طباعة <input type="checkbox" data-col="p" title="تحديد الكل"></th></tr></thead><tbody>
-  ${cats.map(g=>`<tr class="grp"><td colspan="3">${esc(g.c)}</td></tr>`+g.f.map(f=>`<tr><td>${esc(f.name())}</td><td><input type="checkbox" data-pf="${f.id}" data-k="e" ${p[f.id]&&p[f.id].e?"checked":""}></td><td><input type="checkbox" data-pf="${f.id}" data-k="p" ${p[f.id]&&p[f.id].p?"checked":""}></td></tr>`).join("")).join("")}
+  <label class="allbox"><input type="checkbox" id="pAllW" ${p.all&&p.all.w?"checked":""}> إظهار زر «تصدير Word» في جميع الملفات</label>
+  <div class="tw"><table class="adm pe ${all?"dis":""}"><thead><tr><th>الملف</th><th>تعديل <input type="checkbox" data-col="e" title="تحديد الكل"></th><th>طباعة <input type="checkbox" data-col="p" title="تحديد الكل"></th><th>Word <input type="checkbox" data-col="w" title="تحديد الكل"></th></tr></thead><tbody>
+  ${cats.map(g=>`<tr class="grp"><td colspan="4">${esc(g.c)}</td></tr>`+g.f.map(f=>`<tr><td>${esc(f.name())}</td><td><input type="checkbox" data-pf="${f.id}" data-k="e" ${p[f.id]&&p[f.id].e?"checked":""}></td><td><input type="checkbox" data-pf="${f.id}" data-k="p" ${p[f.id]&&p[f.id].p?"checked":""}></td><td><input type="checkbox" data-pf="${f.id}" data-k="w" ${p[f.id]&&p[f.id].w?"checked":""}></td></tr>`).join("")).join("")}
   </tbody></table></div><div class="row"><button class="btn primary" data-act="saveperms" data-u="${u.uid}">حفظ الصلاحيات</button><button class="btn" data-act="back">إلغاء</button></div>`;
 }
 function readPerms(){
-  if($("#pAll").checked)return{all:{e:true,p:true}};
-  const o={};document.querySelectorAll("#admBody [data-pf]").forEach(c=>{if(c.checked){o[c.dataset.pf]=o[c.dataset.pf]||{e:false,p:false};o[c.dataset.pf][c.dataset.k]=true}});return o;
+  const aw=!!($("#pAllW")&&$("#pAllW").checked);
+  const o={};document.querySelectorAll("#admBody [data-pf]").forEach(c=>{if(c.checked){o[c.dataset.pf]=o[c.dataset.pf]||{e:false,p:false};o[c.dataset.pf][c.dataset.k]=true}});
+  if($("#pAll").checked)return{all:{e:true,p:true,w:aw}};
+  if(aw)o.all={w:true};return o;
 }
-function setPermsUI(o){$("#pAll").checked=!!o.all;$("#admBody .pe").classList.toggle("dis",!!o.all);document.querySelectorAll("#admBody [data-pf]").forEach(c=>c.checked=!!(o[c.dataset.pf]&&o[c.dataset.pf][c.dataset.k]))}
+function setPermsUI(o){$("#pAll").checked=!!(o.all&&(o.all.e||o.all.p));if($("#pAllW"))$("#pAllW").checked=!!(o.all&&o.all.w);$("#admBody .pe").classList.toggle("dis",!!o.all);document.querySelectorAll("#admBody [data-pf]").forEach(c=>c.checked=!!(o[c.dataset.pf]&&o[c.dataset.pf][c.dataset.k]))}
 $("#admM").addEventListener("click",async e=>{
   if(e.target.id==="admM"||e.target.closest("[data-close]"))return $("#admM").classList.remove("open");
   const t=e.target.closest("[data-atab]");if(t){admTab=t.dataset.atab;admEdit=null;return renderAdmin()}
