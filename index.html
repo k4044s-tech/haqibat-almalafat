@@ -1072,6 +1072,187 @@ table.t.ks td.mem{white-space:pre-line;line-height:1.45;font-size:9.5pt;text-ali
 .evv-p{margin:0;font-size:14px;color:var(--fg);text-align:center;white-space:pre-wrap}
 .evv-f{font-size:11px;color:var(--mut-fg);text-align:center}
 body.evmode{overflow:hidden}
+/* ===== أنماط مستوحاة من دليل الهوية البصرية لوزارة التعليم ===== */
+/* مشترك */
+.hx-hd{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:5mm;font-size:8.6pt;line-height:1.6;font-weight:600;color:var(--d)}
+.hx-hd .r{text-align:right}.hx-hd .l{text-align:left;font-weight:500}.hx-hd .l b{color:var(--p)}
+.hx-hd img{height:13mm;width:auto;display:block}
+.hx-dv{display:flex;flex-direction:column;align-items:center;gap:6mm;width:100%}
+.hx-dv .dlist{width:100%;max-width:150mm}
+
+/* 1) الدوائر — من دوائر الشعار المتداخلة */
+.ci{height:100%;display:flex;flex-direction:column;padding:9mm 11mm 6mm;position:relative;overflow:hidden}
+.ci .cibg{position:absolute;left:-34mm;bottom:-38mm;width:110mm;height:110mm;z-index:0;pointer-events:none}
+.ci .hx-hd{position:relative;z-index:1;padding-bottom:3mm}
+.cit{position:relative;z-index:1;display:flex;align-items:center;gap:3mm;padding:2.4mm 0 2.6mm;margin-bottom:3.5mm;border-top:1px solid #dfe7ec}
+.cit::after{content:"";position:absolute;right:0;left:0;bottom:0;height:.5mm;background:linear-gradient(270deg,var(--s),color-mix(in srgb,var(--s) 0%,transparent) 70%)}
+.cit h3{margin:0;font:700 15pt var(--kufi);color:var(--p);line-height:1.45}
+.cich{flex:none;width:15mm;height:9mm}
+.ci .pbody{position:relative;z-index:1}
+.cif{position:relative;z-index:1;display:flex;align-items:center;gap:3mm;padding-top:2.5mm}
+.cif img{height:9mm;width:auto}
+.cif .ln{flex:1;height:1px;background:#d6e0e6}
+.cif .mid{font-size:8pt;color:#6b7f8c;white-space:nowrap}
+.cif .n{width:9mm;height:9mm;border-radius:50%;background:var(--p);color:#fff;display:grid;place-items:center;font-weight:700;font-size:9.5pt;box-shadow:-2.2mm 0 0 -.4mm color-mix(in srgb,var(--s) 75%,transparent)}
+.st-ci table.t th{border-color:var(--p)}
+.st-ci table.t td{border-color:#cfdbe2}
+.st-ci .blk,.st-ci .fld{border-color:#cfdbe2;border-radius:3.5mm}
+.st-ci .blk h4{background:var(--l);border-bottom:0;border-radius:3.5mm 3.5mm 0 0}
+.st-ci .slot{border-radius:4mm;border-color:color-mix(in srgb,var(--s) 55%,#fff)}
+.civ{height:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:16mm 20mm 14mm;background:#fff}
+.civ .cwrap{position:relative;width:118mm;height:84mm;flex:none;margin-bottom:4mm}
+.civ .cbig{width:100%;height:100%;display:block}
+.civ .cnum{position:absolute;left:48.8mm;top:39.7mm;transform:translate(-50%,-50%);color:#fff;font:700 40pt/1 var(--kufi)}
+.civ h2{margin:0;font:700 22pt var(--kufi);color:var(--p);text-align:center;line-height:1.45;max-width:160mm}
+.civ .dlogo{bottom:10mm;right:14mm}
+.cv6{display:block;background:#fff}
+.cv6 .cbig{position:absolute;left:-38mm;top:-34mm;width:178mm;height:178mm;z-index:0}
+.cv6 .c6hd{position:absolute;top:14mm;right:16mm;text-align:right;color:var(--d);font-weight:600;font-size:10pt;line-height:1.7;z-index:2}
+.cv6 .c6logo{position:absolute;top:13mm;left:16mm;height:20mm;z-index:2;background:#fff;padding:2mm 3mm;border-radius:3mm}
+.cv6 .c6t{position:absolute;top:150mm;right:16mm;left:16mm;text-align:right;z-index:2}
+.cv6 .c6t h1{margin:0 0 2mm;font:700 30pt var(--kufi);color:var(--p);line-height:1.35}
+.cv6 .c6t .sub{font:600 16pt var(--kufi);color:var(--s)}
+.cv6 .card{position:absolute;right:16mm;left:16mm;width:auto;bottom:24mm;margin:0;box-shadow:none;border:1px solid #cfdbe2;border-radius:4mm;z-index:2;display:grid;grid-template-columns:1fr 1fr}
+.cv6 .card .rw{border-bottom:1px solid #e3eaee}
+.cv6 .card .rw:nth-child(odd){border-left:1px solid #e3eaee}
+.cv6 .card .rw:nth-last-child(-n+2){border-bottom:0}
+.cv6 .card .k{width:30mm;background:none;color:var(--p);border-radius:0!important;font-size:9.5pt}
+.cv6 .card .v{font-size:10.5pt}
+.cv6 .c6y{position:absolute;bottom:12mm;right:16mm;left:16mm;display:flex;justify-content:space-between;font-size:9pt;color:var(--d);z-index:2}
+
+/* 2) الشريط — شريط جانبي يحمل الهوية */
+.rlx{height:100%;display:flex;position:relative}
+.rlr{flex:none;width:15mm;background:linear-gradient(180deg,var(--p),color-mix(in srgb,var(--p) 70%,var(--s)));color:#fff;display:flex;flex-direction:column;align-items:center;padding:8mm 0 7mm;gap:6mm;position:relative}
+.rlr::after{content:"";position:absolute;top:0;bottom:0;left:0;width:.9mm;background:var(--a)}
+.rlr img{width:11.5mm;height:auto}
+.rlv{writing-mode:vertical-rl;font-size:8.4pt;font-weight:600;letter-spacing:.04em;opacity:.92;flex:1;text-align:center}
+.rln{width:9mm;height:9mm;border-radius:50%;background:#fff;color:var(--p);display:grid;place-items:center;font-weight:700;font-size:9.5pt}
+.rlm{flex:1;min-width:0;display:flex;flex-direction:column;padding:8mm 10mm 6mm 11mm}
+.rlh{display:flex;justify-content:space-between;gap:6mm;font-size:8.4pt;line-height:1.6;color:var(--d);font-weight:600}
+.rlh .l{text-align:left;font-weight:500}.rlh b{color:var(--p)}
+.rlt{margin:4mm 0 5mm;padding-bottom:2.6mm;position:relative;border-bottom:1px solid #dfe7ec}
+.rlt::after{content:"";position:absolute;right:0;bottom:-.9mm;width:22mm;height:1.8mm;background:var(--a)}
+.rlt h3{margin:0;font:700 16pt var(--kufi);color:var(--p);line-height:1.45}
+.rlf{display:flex;justify-content:space-between;align-items:center;padding-top:2.5mm;margin-top:2mm;border-top:1px solid #e3eaee;font-size:8pt;color:#6b7f8c}
+.st-rl table.t th{border-color:var(--p)}
+.st-rl .blk h4{border-right:1.4mm solid var(--a)}
+.rlv2{height:100%;display:flex}
+.rlv2 .big{flex:none;width:66mm;background:linear-gradient(180deg,var(--p),color-mix(in srgb,var(--p) 65%,var(--s)));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:16mm 0 14mm;position:relative}
+.rlv2 .big::after{content:"";position:absolute;top:0;bottom:0;left:0;width:1.6mm;background:var(--a)}
+.rlv2 .big img{width:38mm;height:auto}
+.rlv2 .bn{font:700 88pt/1 var(--kufi)}
+.rlv2 .bl{font-size:10pt;opacity:.85}
+.rlv2 .side{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6mm;padding:14mm 12mm}
+.rlv2 h2{margin:0;font:700 21pt var(--kufi);color:var(--p);line-height:1.45;padding-bottom:3mm;border-bottom:1.8mm solid var(--a);align-self:flex-start}
+.rlv2 .dlist{width:100%;min-width:0}
+.cv7{display:block;background:#fff}
+.cv7 .c7r{position:absolute;top:0;bottom:0;right:0;width:64mm;background:linear-gradient(180deg,var(--p),color-mix(in srgb,var(--p) 65%,var(--s)));color:#fff;display:flex;flex-direction:column;align-items:center;padding:18mm 0 16mm;gap:8mm}
+.cv7 .c7r::after{content:"";position:absolute;top:0;bottom:0;left:0;width:2mm;background:var(--a)}
+.cv7 .c7r img{width:42mm;height:auto}
+.cv7 .c7v{flex:1;writing-mode:vertical-rl;font:600 13pt var(--kufi);letter-spacing:.05em;opacity:.9;text-align:center}
+.cv7 .c7y{font:700 15pt var(--kufi)}
+.cv7 .c7m{position:absolute;top:0;bottom:0;left:0;right:64mm;padding:18mm 14mm 16mm 16mm;display:flex;flex-direction:column;text-align:right}
+.cv7 .c7hd{font-size:10pt;font-weight:600;line-height:1.7;color:var(--d)}
+.cv7 .c7t{margin-top:52mm}
+.cv7 .c7t h1{margin:0 0 3mm;font:700 29pt var(--kufi);color:var(--p);line-height:1.38}
+.cv7 .c7t .sub{font:600 15pt var(--kufi);color:var(--s)}
+.cv7 .c7t::after{content:"";display:block;width:30mm;height:2.2mm;background:var(--a);margin-top:7mm}
+.cv7 .card{margin:auto 0 0;width:100%;box-shadow:none;border:1px solid #cfdbe2;border-radius:2.5mm}
+.cv7 .card .k{background:var(--l);color:var(--p);border-radius:0!important;width:32mm}
+
+/* 3) السدو — نقش سعودي هندسي في إطار رسمي */
+.sd{height:100%;display:flex;flex-direction:column;position:relative}
+.sdb{flex:none;height:6mm;background-repeat:repeat-x;background-size:auto 100%;background-position:center;border-top:.7mm solid var(--a);border-bottom:.7mm solid var(--a)}
+.sdm{flex:1;min-height:0;display:flex;flex-direction:column;padding:5mm 11mm 3mm}
+.sd .hx-hd{padding-bottom:2mm}
+.sdt{display:flex;align-items:center;gap:3mm;margin:2mm 0 5mm}
+.sdt::before,.sdt::after{content:"";flex:1;height:2.4mm;background:linear-gradient(var(--a),var(--a)) center/100% .35mm no-repeat,radial-gradient(circle,var(--p) 0 .9mm,transparent 1mm) left center/2.4mm 2.4mm no-repeat}
+.sdt::before{background:linear-gradient(var(--a),var(--a)) center/100% .35mm no-repeat,radial-gradient(circle,var(--p) 0 .9mm,transparent 1mm) right center/2.4mm 2.4mm no-repeat}
+.sdt h3{margin:0;font:700 15pt var(--kufi);color:var(--p);line-height:1.45;text-align:center;max-width:150mm}
+.sdf{display:flex;align-items:center;justify-content:space-between;gap:4mm;font-size:8pt;color:#6b7f8c;padding-top:2mm}
+.sdn{width:8.5mm;height:8.5mm;display:grid;place-items:center;position:relative;color:#fff;font-weight:700;font-size:9pt}
+.sdn::before{content:"";position:absolute;inset:.9mm;background:var(--p);transform:rotate(45deg);box-shadow:0 0 0 .5mm #fff,0 0 0 .9mm var(--a)}
+.sdn span{position:relative}
+.st-sd table.t th{border-color:var(--p)}
+.st-sd .blk h4{text-align:center}
+.sdv{height:100%;display:flex;flex-direction:column}
+.sdv .sdb{height:13mm;border-width:1.2mm}
+.sdv .mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6mm;padding:10mm 18mm;position:relative}
+.sdv .dia{width:40mm;height:40mm;display:grid;place-items:center;position:relative;margin:6mm 0 4mm}
+.sdv .dia::before{content:"";position:absolute;inset:5.5mm;background:var(--p);transform:rotate(45deg);box-shadow:0 0 0 1.6mm #fff,0 0 0 2.4mm var(--a)}
+.sdv .dia b{position:relative;color:#fff;font:700 30pt var(--kufi)}
+.sdv h2{margin:0;font:700 21pt var(--kufi);color:var(--p);text-align:center;line-height:1.45}
+.sdv .dlogo{position:static;height:15mm;margin-top:2mm}
+.cv8{display:flex;flex-direction:column;background:#fff;align-items:stretch}
+.cv8 .sdb{height:20mm;border-width:1.6mm}
+.cv8 .c8m{flex:1;display:flex;flex-direction:column;align-items:center;padding:12mm 18mm 10mm;text-align:center;border-inline:1.2mm double color-mix(in srgb,var(--a) 70%,#fff);margin:0 9mm}
+.cv8 .c8hd{font-size:10pt;font-weight:600;line-height:1.7;color:var(--d)}
+.cv8 .c8logo{height:26mm;margin:7mm 0 0}
+.cv8 .c8t{margin-top:16mm}
+.cv8 .c8t h1{margin:0 0 3mm;font:700 30pt var(--kufi);color:var(--p);line-height:1.38}
+.cv8 .c8t .sub{font:600 16pt var(--kufi);color:var(--s)}
+.cv8 .sdt{width:110mm;margin:8mm auto 0}
+.cv8 .sdt h3{font-size:11pt;color:var(--d);font-weight:600}
+.cv8 .card{margin:auto 0 0;width:150mm;box-shadow:none;border:1px solid color-mix(in srgb,var(--a) 70%,#fff);border-radius:0}
+.cv8 .card .k{border-radius:0!important}
+
+/* 4) الخطاب — ترويسة المراسلات الرسمية */
+.lt{height:100%;display:flex;flex-direction:column;padding:9mm 12mm 6mm}
+.lt .hx-hd{font-size:8.8pt}
+.lt .hx-hd .r{font-weight:700;color:var(--p)}
+.lt .hx-hd img{height:17mm}
+.ltrule{height:2.4mm;margin:2.5mm 0 3mm;border-top:1.1mm solid var(--p);border-bottom:.35mm solid var(--a)}
+.ltt{text-align:center;margin-bottom:4mm}
+.ltt h3{display:inline-block;margin:0;font:700 14.5pt var(--kufi);color:var(--p);line-height:1.5;padding:0 6mm 1.6mm;border-bottom:.35mm solid var(--p)}
+.ltf{margin-top:2mm;padding-top:2mm;border-top:.35mm solid var(--a);display:flex;justify-content:space-between;align-items:center;gap:4mm;font-size:7.8pt;color:#5f7280}
+.ltf .w{direction:ltr;letter-spacing:.06em;font-family:Arial,Helvetica,sans-serif}
+.ltf .n{font-weight:700;color:var(--p);font-size:9pt}
+.st-lt table.t th{border-color:var(--p)}
+.st-lt .blk,.st-lt .fld{border-radius:0}
+.ltv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6mm;height:100%;padding-bottom:10mm}
+.ltv .sq{width:30mm;height:30mm;border:1.1mm solid var(--p);outline:.35mm solid var(--a);outline-offset:1.4mm;display:grid;place-items:center;font:700 36pt var(--kufi);color:var(--p)}
+.ltv h2{margin:0;font:700 21pt var(--kufi);color:var(--p);text-align:center;line-height:1.45}
+.cv9{display:flex;flex-direction:column;padding:14mm 16mm 12mm;background:#fff;align-items:stretch;text-align:right}
+.cv9 .hx-hd{font-size:10pt}
+.cv9 .hx-hd .r{font-weight:700;color:var(--p)}
+.cv9 .hx-hd img{height:24mm}
+.cv9 .ltrule{margin:5mm 0 0}
+.cv9 .c9box{margin:40mm 8mm 0;padding:14mm 10mm;border:1.1mm solid var(--p);outline:.35mm solid var(--a);outline-offset:2mm;text-align:center}
+.cv9 .c9box h1{margin:0 0 3mm;font:700 29pt var(--kufi);color:var(--p);line-height:1.38}
+.cv9 .c9box .sub{font:600 15pt var(--kufi);color:var(--s)}
+.cv9 .c9f{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:5mm 10mm}
+.cv9 .c9f .fs{border:0;border-bottom:.35mm solid var(--p);border-radius:0;padding:0 0 1.5mm}
+.cv9 .c9f .fs legend{padding:0;font-size:9.5pt}
+.cv9 .c9f .fs>div{text-align:right;font-size:11pt}
+.cv9 .ltf{margin-top:9mm}
+.page.land .cv9 .c9box{margin-top:14mm}
+
+/* لوحة تخصيص الملف */
+.opts .card-c.oc{display:flex;flex-direction:column;gap:1.25rem}
+.oc-sec{display:grid;gap:.6rem}
+.oc-sec>.lb,.oc-row .lb{font-size:.875rem;font-weight:600;line-height:1}
+.oc-sec .hn{font-size:.78rem;color:var(--mut-fg);font-weight:400;margin-inline-start:.4rem}
+.stg{display:grid;grid-template-columns:repeat(auto-fill,minmax(6.4rem,1fr));gap:.6rem}
+.stg button{display:flex;flex-direction:column;align-items:center;gap:.35rem;padding:.5rem .4rem .55rem;border:1px solid var(--bd);border-radius:.6rem;background:var(--card);cursor:pointer;transition:border-color .15s,box-shadow .15s;font:inherit;color:inherit;text-align:center}
+.stg button:hover{border-color:color-mix(in oklab,var(--pri) 45%,var(--bd))}
+.stg button.on{border-color:var(--pri);box-shadow:0 0 0 2px color-mix(in oklab,var(--pri) 30%,transparent)}
+.stg svg{width:4.1rem;height:5.8rem;border-radius:3px;box-shadow:0 0 0 1px rgb(0 0 0/.08),0 2px 6px rgb(0 0 0/.06);background:#fff}
+.stg b{font-size:.84rem;font-weight:600}
+.stg small{font-size:.7rem;color:var(--mut-fg);line-height:1.35}
+.stg .nw{font-size:.62rem;font-weight:700;color:var(--pri);margin-top:-.15rem}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chips button{height:2rem;padding:0 .8rem;border:1px solid var(--inp);border-radius:999px;background:transparent;font:inherit;font-size:.82rem;cursor:pointer}
+.chips button:hover{background:var(--mut)}
+.chips button.on{background:var(--acc);color:var(--acc-fg);border-color:var(--pri);box-shadow:inset 0 0 0 1px var(--pri)}
+.oc-row{display:grid;gap:1.25rem 1.75rem;grid-template-columns:1fr}
+@media (min-width:760px){.oc-row{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}}
+.oc-row>div{display:grid;gap:.6rem;align-content:start;min-width:0}
+.oc-hr{height:1px;background:var(--bd);margin:.1rem 0}
+.swg{display:grid;gap:.45rem}
+.swg small{font-size:.72rem;color:var(--mut-fg)}
+.oc-row .seg{justify-self:start}
+@media (max-width:640px){.stg{grid-template-columns:repeat(4,minmax(0,1fr));gap:.4rem}.stg button{padding:.35rem .2rem .4rem;gap:.2rem}.stg svg{width:100%;max-width:3.4rem;height:auto;aspect-ratio:60/84}.stg b{font-size:.74rem}.stg small{display:none}.oc-sec .hn{display:block;margin:.35rem 0 0}}
+
 @page{size:A4;margin:0}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media print{
@@ -1144,13 +1325,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <div class="fld2 wide certb"><button class="btn primary sm" id="ctSave" type="button">حفظ النص وتطبيقه</button><button class="btn sm ghost" id="ctReset" type="button">النص الافتراضي</button></div></div></div>
         <div class="card opts">
           <div class="card-h"><div class="card-t">تخصيص الملف</div><div class="card-d">يُطبَّق الاختيار على الغلاف وجميع الصفحات، ويُحفظ لبقية الملفات.</div></div>
-          <div class="card-c">
-            <div class="fld2"><span class="lb">الفئة</span><div class="seg" id="gSeg"><button data-g="m" type="button">معلم</button><button data-g="f" type="button">معلمة</button></div></div>
-            <div class="fld2"><span class="lb">نمط الصفحات</span><div class="seg" id="pSeg"><button data-p="id" type="button">الهوية</button><button data-p="rp" type="button">التقرير</button><button data-p="gd" type="button">الدليل</button><button data-p="cl" type="button">كلاسيكي</button></div></div>
-            <div class="fld2 wide"><span class="lb">الغلاف</span><div class="seg" id="cSeg"><button data-c="3" type="button">الهوية</button><button data-c="5" type="button">التقرير</button><button data-c="4" type="button">صورة</button><button data-c="0" type="button">أمواج</button><button data-c="1" type="button">إطار</button><button data-c="2" type="button">مائل</button></div></div>
-            <div class="fld2"><label class="lb" for="fSel">الخط</label><select class="fsel" id="fSel"></select></div>
-            <div class="fld2"><span class="lb">اللون</span><div class="swatches" id="sws"></div></div>
-            <div class="fld2"><span class="lb">عرض الشواهد</span><div class="seg" id="eSeg"><button data-e="img" type="button">صورة</button><button data-e="qr" type="button">باركود</button><button data-e="both" type="button">صورة + باركود</button></div></div>
+          <div class="card-c oc">
+            <div class="oc-sec"><span class="lb">نمط التصميم<span class="hn">يحدد شكل الترويسة والعنوان والتذييل في كل الصفحات</span></span><div class="stg" id="pSeg" role="group" aria-label="نمط التصميم"></div></div>
+            <div class="oc-sec"><span class="lb">الغلاف<span class="hn">يتغيّر تلقائيًا مع النمط، ويمكنك اختيار غيره</span></span><div class="chips" id="cSeg" role="group" aria-label="الغلاف"></div></div>
+            <div class="oc-row"><div><span class="lb">اللون</span><div class="swg" id="sws"></div></div><div><label class="lb" for="fSel">الخط</label><select class="fsel" id="fSel"></select></div></div>
+            <div class="oc-hr"></div>
+            <div class="oc-row"><div><span class="lb">الفئة</span><div class="seg" id="gSeg"><button data-g="m" type="button">معلم</button><button data-g="f" type="button">معلمة</button></div></div><div><span class="lb">عرض الشواهد</span><div class="seg" id="eSeg"><button data-e="img" type="button">صورة</button><button data-e="qr" type="button">باركود</button><button data-e="both" type="button">صورة + باركود</button></div></div></div>
           </div>
           <div class="card-f bt"><div class="hint"><i data-i="info"></i><span>اضغط على أي نص في الصفحات لتعديله مباشرة، واستخدم شريط التنسيق أعلى الصفحات (الخط والحجم والألوان والمحاذاة والصفوف)، واسحب على عدة خلايا أو اضغط «تحديد العمود» لتنسيقها معًا، وعلى مربع الشاهد لإضافة صورة أو زر «رابط» لربط رابط. اختر «باركود» في عرض الشواهد ليتحول كل شاهد إلى رمز QR يُطبع بدل الصورة، وغيّر عدد الشواهد من الشريط أعلى كل صفحة شواهد. يُحفظ ما تكتبه تلقائيًا في هذا المتصفح، ولإخفاء صفحة من الطباعة أزل علامة «ضمن الطباعة» فوقها.</span></div></div>
         </div>
@@ -1402,7 +1582,12 @@ const THEMES=[
   {n:"بنفسجي",p:"#472a6b",s:"#7c55ae",a:"#e7b7cf",l:"#f0eaf7"},
   {n:"وردي هادئ",p:"#95385d",s:"#cf7a9c",a:"#e9c07a",l:"#fbedf2"},
   {n:"سماوي",p:"#185b84",s:"#3f9dd1",a:"#f0c65a",l:"#e8f3fa"},
-  {n:"رمادي أنيق",p:"#2e3640",s:"#5c6b7b",a:"#d9a55a",l:"#eef0f3"}
+  {n:"رمادي أنيق",p:"#2e3640",s:"#5c6b7b",a:"#d9a55a",l:"#eef0f3"},
+  {n:"الهوية الرسمية 2025",p:"#15445a",s:"#0da9a6",a:"#c1b489",l:"#e8f1f2",d:"#15445a",o:1},
+  {n:"أخضر الهوية",p:"#0f5f48",s:"#07a869",a:"#c1b489",l:"#e6f4ed",d:"#15445a",o:1},
+  {n:"أزرق الهوية",p:"#15445a",s:"#3d7eb9",a:"#0da9a6",l:"#e8f0f7",d:"#15445a",o:1},
+  {n:"سماوي الهوية",p:"#3078a6",s:"#69cee3",a:"#c1b489",l:"#e9f5f9",d:"#15445a",o:1},
+  {n:"بنفسجي الهوية",p:"#351375",s:"#7258a4",a:"#7a80ff",l:"#efebf7",d:"#351375",o:1}
 ];
 const T=()=>THEMES[S.theme]||THEMES[0];
 
@@ -2927,7 +3112,88 @@ function frameGd(file,t,pi,title,body,num){
   <div class="pbody gbody">${body}</div>
   <div class="gfoot"><div class="gmf"><span>${esc(file.title)}</span>${num?`<span class="n">${num}</span>`:""}</div><div class="gcurve"></div>${GBAR}</div></div>`;
 }
+/* ===== أنماط الهوية الجديدة: الدوائر، الشريط، السدو، الخطاب ===== */
+const hxHd=(file,withFile)=>`<div class="hx-hd"><div class="r">المملكة العربية السعودية<br>وزارة التعليم<br>${dots(S.dept)}<br>${S.school?esc(S.school):"المدرسة: ................"}</div><img src="${LOGO}" alt="شعار وزارة التعليم"><div class="l">العام الدراسي: <b>${esc(S.year)}</b><br>${esc(S.term)}${withFile?`<br>${esc(file.title)}`:""}</div></div>`;
+// دوائر متداخلة مستوحاة من رمز الشعار (كتاب ونخلة من دوائر)
+function ciCluster(t,big){
+  const c=[[62,52,40,t.p,.92],[100,44,30,t.s,.82],[86,82,22,t.a,.85],[34,92,15,t.s,.55],[120,92,10,t.p,.5]];
+  return `<svg class="${big?"cbig":"cibg"}" viewBox="0 0 150 110" aria-hidden="true">${c.map(([x,y,r,col,o])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${col}" fill-opacity="${o}"/>`).join("")}<circle cx="62" cy="52" r="47" fill="none" stroke="${t.p}" stroke-opacity=".25" stroke-width=".5"/></svg>`;
+}
+const ciRings=t=>`<svg class="cibg" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke-width=".6"><circle cx="40" cy="58" r="38" stroke="${t.p}" stroke-opacity=".10"/><circle cx="66" cy="40" r="26" stroke="${t.s}" stroke-opacity=".16"/><circle cx="58" cy="70" r="16" stroke="${t.a}" stroke-opacity=".28"/></g><circle cx="66" cy="40" r="9" fill="${t.s}" fill-opacity=".06"/></svg>`;
+const ciChain=t=>`<svg class="cich" viewBox="0 0 30 18" aria-hidden="true"><circle cx="21" cy="9" r="8" fill="${t.p}"/><circle cx="11.5" cy="9" r="6" fill="${t.s}" fill-opacity=".85"/><circle cx="4" cy="9" r="3.4" fill="${t.a}"/></svg>`;
+function frameCi(file,t,pi,title,body,num){
+  return `<div class="ci">${ciRings(t)}${hxHd(file)}
+  <div class="cit">${ciChain(t)}${ed(pi+"-h",esc(title),"h3")}</div>
+  <div class="pbody">${body}</div>
+  <div class="cif"><img src="${LOGO}" alt="شعار وزارة التعليم"><span class="ln"></span><span class="mid">${esc(file.title)} — ${esc(S.year)}</span><span class="ln"></span>${num?`<span class="n">${num}</span>`:""}</div></div>`;
+}
+function frameRl(file,t,pi,title,body,num){
+  return `<div class="rlx"><aside class="rlr"><img src="${LOGO_W}" alt="شعار وزارة التعليم"><span class="rlv">المملكة العربية السعودية — وزارة التعليم</span>${num?`<span class="rln">${num}</span>`:""}</aside>
+  <div class="rlm"><div class="rlh"><div>${dots(S.dept)}<br>${S.school?esc(S.school):"المدرسة: ................"}</div><div class="l">العام الدراسي: <b>${esc(S.year)}</b><br>${esc(S.term)}</div></div>
+  <div class="rlt">${ed(pi+"-h",esc(title),"h3")}</div>
+  <div class="pbody">${body}</div>
+  <div class="rlf"><span>${esc(file.title)}</span><span>${S.name?esc(S.name):""}</span></div></div></div>`;
+}
+// شريط السدو: مثلثات ومعيّنات بألوان النمط
+function sadu(t){
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='24' height='10' viewBox='0 0 24 10'><rect width='24' height='10' fill='${t.p}'/><path d='M0 10L6 0L12 10Z' fill='${t.a}'/><path d='M12 0L18 10L24 0Z' fill='${t.s}' fill-opacity='.9'/><path d='M6 5.2L7.3 7.2L6 9.2L4.7 7.2Z' fill='${t.p}'/><path d='M18 .8L19.3 2.8L18 4.8L16.7 2.8Z' fill='#fff'/></svg>`;
+  return `url(&quot;data:image/svg+xml,${encodeURIComponent(svg)}&quot;)`;
+}
+function frameSd(file,t,pi,title,body,num){
+  const b=`<div class="sdb" style="background-image:${sadu(t)}"></div>`;
+  return `<div class="sd">${b}<div class="sdm">${hxHd(file)}
+  <div class="sdt">${ed(pi+"-h",esc(title),"h3")}</div>
+  <div class="pbody">${body}</div>
+  <div class="sdf"><span>${esc(file.title)}</span>${num?`<span class="sdn"><span>${num}</span></span>`:"<span></span>"}<span>${esc(S.year)} — ${esc(S.term)}</span></div></div>${b}</div>`;
+}
+function frameLt(file,t,pi,title,body,num){
+  return `<div class="lt">${hxHd(file)}<div class="ltrule"></div>
+  <div class="ltt">${ed(pi+"-h",esc(title),"h3")}</div>
+  <div class="pbody">${body}</div>
+  <div class="ltf"><span>وزارة التعليم — ${dots(S.dept)}${S.school?" — "+esc(S.school):""}</span><span class="w">WWW.MOE.GOV.SA</span>${num?`<span class="n">${num}</span>`:""}</div></div>`;
+}
+function rDivX(p,t,pi){
+  const st=S.pstyle;
+  if(st==="ci")return `<div class="civ"><div class="cwrap">${ciCluster(t,true)}<b class="cnum">${p.n}</b></div><div class="hx-dv">${ed(pi+"-h",esc(p.title),"h2")}${divBody(p,pi,"dlist")}</div><img class="dlogo" src="${LOGO}" alt="شعار وزارة التعليم"></div>`;
+  if(st==="rl")return `<div class="rlv2"><div class="big"><img src="${LOGO_W}" alt="شعار وزارة التعليم"><div style="text-align:center"><div class="bl">العنصر</div><div class="bn">${p.n}</div></div><div class="bl">${esc(S.year)}</div></div><div class="side">${ed(pi+"-h",esc(p.title),"h2")}${divBody(p,pi,"dlist")}</div></div>`;
+  if(st==="sd"){const b=`<div class="sdb" style="background-image:${sadu(t)}"></div>`;return `<div class="sdv">${b}<div class="mid"><div class="dia"><b>${p.n}</b></div>${ed(pi+"-h",esc(p.title),"h2")}<div class="hx-dv">${divBody(p,pi,"dlist")}</div><img class="dlogo" src="${LOGO}" alt="شعار وزارة التعليم"></div>${b}</div>`}
+  if(st==="lt")return frameLt(cur.spec,t,pi,p.title,`<div class="ltv"><div class="sq">${p.n}</div><div class="hx-dv">${divBody(p,pi,"dlist")}</div></div>`,"");
+  return null;
+}
+function rCoverX(c,file,t,card,lab){
+  const T1=`${ed("c-t",esc(file.title),"h1")}${ed("c-s",esc(file.sub||""),"div","sub")}`;
+  if(c===6)return `<div class="cov cv6">${ciCluster(t,true)}<div class="c6hd">المملكة العربية السعودية<br>وزارة التعليم<br>${dots(S.dept)}</div><img class="c6logo" src="${LOGO}" alt="شعار وزارة التعليم"><div class="c6t">${T1}</div>${card}<div class="c6y"><span>${esc(S.year)} — ${esc(S.term)}</span><span>${S.school?esc(S.school):""}</span></div></div>`;
+  if(c===7)return `<div class="cov cv7"><div class="c7r"><img src="${LOGO_W}" alt="شعار وزارة التعليم"><div class="c7v">المملكة العربية السعودية — وزارة التعليم</div><div class="c7y">${esc(S.year)}</div></div><div class="c7m"><div class="c7hd">${dots(S.dept)}<br>${esc(S.term)}</div><div class="c7t">${T1}</div>${card}</div></div>`;
+  if(c===8){const b=`<div class="sdb" style="background-image:${sadu(t)}"></div>`;return `<div class="cov cv8">${b}<div class="c8m"><div class="c8hd">المملكة العربية السعودية<br>وزارة التعليم<br>${dots(S.dept)}</div><img class="c8logo" src="${LOGO}" alt="شعار وزارة التعليم"><div class="c8t">${T1}</div><div class="sdt"><h3>العام الدراسي ${esc(S.year)} — ${esc(S.term)}</h3></div>${card}</div>${b}</div>`}
+  if(c===9){const fsx=(k,l,v)=>`<fieldset class="fs"><legend>${l}</legend>${ed(k,v)}</fieldset>`;
+    return `<div class="cov cv9">${hxHd(file)}<div class="ltrule"></div><div class="c9box">${T1}</div><div class="c9f">${fsx("c-name",lab,dots(S.name))}${fsx("c-job","العمل / التخصص",dots(S.job))}${fsx("c-sch","المدرسة",dots(S.school))}<fieldset class="fs"><legend>العام الدراسي</legend><div>${esc(S.year)} — ${esc(S.term)}</div></fieldset></div><div class="ltf"><span>وزارة التعليم — ${dots(S.dept)}</span><span class="w">WWW.MOE.GOV.SA</span></div></div>`}
+  return null;
+}
+/* مصغّرات الأنماط في لوحة التخصيص */
+const PSTYLES=[
+  ["id","الهوية","موجات وكبسولات",0],["ci","الدوائر","من رمز الشعار",1],["rl","الشريط","شريط جانبي رسمي",1],["sd","السدو","نقش سعودي",1],
+  ["lt","الخطاب","ترويسة المراسلات",1],["rp","التقرير","شريط علوي داكن",0],["gd","الدليل","شريط عنوان مائل",0],["cl","كلاسيكي","إطار مزدوج",0]];
+const COVER_OF={id:3,rp:5,gd:4,ci:6,rl:7,sd:8,lt:9};
+const COVERS=[[3,"الهوية"],[6,"الدوائر"],[7,"الشريط"],[8,"السدو"],[9,"الخطاب"],[5,"التقرير"],[4,"صورة"],[0,"أمواج"],[1,"إطار"],[2,"مائل"]];
+function stThumb(id,t){
+  const L=(y,w,x)=>`<rect x="${x||8}" y="${y}" width="${w}" height="1.6" rx=".8" fill="#cfd8de"/>`;
+  const lines=(y0)=>[0,1,2,3,4,5].map(i=>L(y0+i*5,i%3===2?26:36,i%3===2?18:8)).join("")+`<rect x="8" y="${y0+31}" width="44" height="14" rx="1.5" fill="none" stroke="#cfd8de" stroke-width=".8"/>`;
+  let s="";
+  if(id==="id")s=`<rect width="60" height="84" fill="${t.l}" opacity=".5"/><rect x="34" y="6" width="18" height="1.5" fill="#9fb0bb"/><rect x="38" y="9" width="14" height="1.5" fill="#9fb0bb"/><rect x="40" y="15" width="12" height="4" rx="2" fill="${t.p}"/><rect x="18" y="15.6" width="20" height="2.8" rx="1" fill="${t.p}" opacity=".7"/><rect x="38" y="21" width="14" height="1" fill="${t.s}"/>${lines(27)}<rect x="8" y="77" width="44" height=".5" fill="#cfd8de"/><rect x="8" y="75.5" width="7" height="3.5" rx="1.75" fill="${t.s}"/>`;
+  if(id==="ci")s=`<circle cx="6" cy="78" r="18" fill="none" stroke="${t.p}" stroke-opacity=".2" stroke-width=".6"/><rect x="36" y="6" width="16" height="1.5" fill="#9fb0bb"/><rect x="38" y="9" width="14" height="1.5" fill="#9fb0bb"/><circle cx="30" cy="9" r="3" fill="${t.s}"/><circle cx="50" cy="17" r="2.6" fill="${t.p}"/><circle cx="46.5" cy="17" r="2" fill="${t.s}" opacity=".85"/><circle cx="44" cy="17" r="1.2" fill="${t.a}"/><rect x="18" y="16" width="23" height="2.4" rx="1" fill="${t.p}"/><rect x="8" y="21.5" width="44" height=".6" fill="${t.s}"/>${lines(27)}<circle cx="10" cy="77" r="2.6" fill="${t.p}"/>`;
+  if(id==="rl")s=`<rect x="51" width="9" height="84" fill="${t.p}"/><rect x="51" width=".8" height="84" fill="${t.a}"/><rect x="53" y="5" width="5" height="3" rx=".6" fill="#fff" opacity=".9"/><rect x="54.6" y="20" width="1.4" height="40" rx=".7" fill="#fff" opacity=".55"/><circle cx="55.5" cy="77" r="2.4" fill="#fff"/><rect x="28" y="6" width="18" height="1.5" fill="#9fb0bb"/><rect x="5" y="6" width="12" height="1.5" fill="#9fb0bb"/><rect x="18" y="14" width="28" height="3" rx="1" fill="${t.p}"/><rect x="5" y="19.5" width="41" height=".5" fill="#cfd8de"/><rect x="36" y="19" width="10" height="1.4" fill="${t.a}"/>${lines(25).replace(/x="8"/g,'x="5"').replace(/width="36"/g,'width="41"').replace(/width="44"/g,'width="41"')}`;
+  if(id==="sd")s=`<g>${[0,1,2,3,4].map(i=>`<rect x="${i*12}" y="0" width="12" height="5" fill="${t.p}"/><path d="M${i*12} 5L${i*12+3} 0L${i*12+6} 5Z" fill="${t.a}"/><path d="M${i*12+6} 0L${i*12+9} 5L${i*12+12} 0Z" fill="${t.s}"/>`).join("")}</g><rect y="5" width="60" height=".6" fill="${t.a}"/><rect x="38" y="9" width="14" height="1.5" fill="#9fb0bb"/><rect x="27" y="8.5" width="6" height="5" rx="1" fill="#9fb0bb" opacity=".6"/><rect x="8" y="9" width="12" height="1.5" fill="#9fb0bb"/><rect x="8" y="19" width="12" height=".5" fill="${t.a}"/><rect x="40" y="19" width="12" height=".5" fill="${t.a}"/><rect x="21" y="17.6" width="18" height="2.8" rx="1" fill="${t.p}"/>${lines(25)}<g transform="translate(0 79)">${[0,1,2,3,4].map(i=>`<rect x="${i*12}" y="0" width="12" height="5" fill="${t.p}"/><path d="M${i*12} 5L${i*12+3} 0L${i*12+6} 5Z" fill="${t.a}"/><path d="M${i*12+6} 0L${i*12+9} 5L${i*12+12} 0Z" fill="${t.s}"/>`).join("")}</g><rect y="78.4" width="60" height=".6" fill="${t.a}"/>`;
+  if(id==="lt")s=`<rect x="36" y="6" width="16" height="1.6" fill="${t.p}"/><rect x="38" y="9" width="14" height="1.6" fill="${t.p}" opacity=".7"/><rect x="26" y="5" width="8" height="7" rx="1" fill="#9fb0bb" opacity=".6"/><rect x="8" y="6" width="12" height="1.5" fill="#9fb0bb"/><rect x="8" y="9" width="10" height="1.5" fill="#9fb0bb"/><rect x="6" y="14.5" width="48" height="1.3" fill="${t.p}"/><rect x="6" y="16.6" width="48" height=".4" fill="${t.a}"/><rect x="20" y="20" width="20" height="2.6" rx="1" fill="${t.p}"/><rect x="18" y="23.6" width="24" height=".4" fill="${t.p}"/>${lines(28)}<rect x="6" y="78" width="48" height=".4" fill="${t.a}"/><rect x="6" y="80" width="20" height="1.2" fill="#9fb0bb"/>`;
+  if(id==="rp")s=`<path d="M0 0H60V18H8Q0 18 0 10Z" fill="${t.p}"/><rect x="24" y="5" width="12" height="7" rx="1" fill="#fff" opacity=".85"/><rect x="18" y="15" width="24" height="6" rx="1" fill="${t.p}"/><rect x="18" y="20.4" width="24" height="1" fill="${t.s}"/>${lines(27)}<rect x="48" y="77" width="5" height="3.5" rx=".8" fill="${t.p}"/>`;
+  if(id==="gd")s=`<path d="M60 4H14Q8 4 8 8Q8 12 14 12H60Z" fill="${t.p}"/><rect x="4" y="4" width="6" height="7" rx="1" fill="#9fb0bb" opacity=".6"/><rect x="8" y="15" width="44" height=".5" fill="#cfd8de"/>${lines(20)}<path d="M0 79H60V84H0Z" fill="${t.p}"/><rect x="8" y="73" width="5" height="3.5" rx=".8" fill="${t.p}"/>`;
+  if(id==="cl")s=`<rect x="3" y="3" width="54" height="78" rx="2" fill="none" stroke="${t.p}" stroke-width=".8"/><rect x="4.4" y="4.4" width="51.2" height="75.2" rx="1.6" fill="none" stroke="${t.a}" stroke-width=".4"/><rect x="38" y="8" width="14" height="1.5" fill="#9fb0bb"/><rect x="26" y="7" width="8" height="6" rx="1" fill="#9fb0bb" opacity=".6"/><rect x="8" y="8" width="12" height="1.5" fill="#9fb0bb"/><rect x="16" y="17" width="28" height="4" rx="1" fill="${t.p}"/>${lines(26)}`;
+  return `<svg viewBox="0 0 60 84" aria-hidden="true">${s}</svg>`;
+}
 function frame(file,t,pi,title,body,num){
+  if(S.pstyle==="ci")return frameCi(file,t,pi,title,body,num);
+  if(S.pstyle==="rl")return frameRl(file,t,pi,title,body,num);
+  if(S.pstyle==="sd")return frameSd(file,t,pi,title,body,num);
+  if(S.pstyle==="lt")return frameLt(file,t,pi,title,body,num);
   if(S.pstyle==="id")return frameId(file,t,pi,title,body,num);
   if(S.pstyle==="rp")return frameRp(file,t,pi,title,body,num);
   if(S.pstyle==="gd")return frameGd(file,t,pi,title,body,num);
@@ -2947,6 +3213,7 @@ function rCover(file,t){
   const hd=`<div class="hd"><div>المملكة العربية السعودية<br>وزارة التعليم<br>${dots(S.dept)}</div><div style="text-align:left">العام الدراسي ${esc(S.year)}<br>${esc(S.term)}</div></div>`;
   const ttl=(light)=>`<div class="ttl">${light?`<span class="plate"><img class="logo" src="${LOGO}" alt="شعار وزارة التعليم"></span>`:`<img class="logo" src="${LOGO}" alt="شعار وزارة التعليم">`}${ed("c-t",esc(file.title),"h1")}${ed("c-s",esc(file.sub||""),"div","sub")}</div>`;
   const c=+S.cover;
+  {const X=rCoverX(c,file,t,card,lab);if(X)return X;}
   if(c===4){
     const img=store.get("hq3:coverimg",null);
     const bg=`linear-gradient(170deg,${hexA(t.p,.45)} 0%,${hexA(t.s,.72)} 55%,${hexA(t.p,.92)} 100%)`+(img?`,url("${img}") center/cover`:`,${star("#fff",.12,56)},linear-gradient(135deg,${t.s},${t.p})`);
@@ -2993,6 +3260,7 @@ function divBody(p,pi,cls){
    `<div class="${cls}"><b><i class="tgt"></i>المحتوى والشواهد</b>${ed(pi+"-l2",list)}</div>`;
 }
 function rDiv(p,t,pi){
+  {const X=rDivX(p,t,pi);if(X)return X;}
   if(S.pstyle==="rp")return frameRp(cur.spec,t,pi,p.title,`<div class="rpdv"><div class="dnum">${p.n}</div>${divBody(p,pi,"dlist")}</div>`,"");
   if(S.pstyle==="gd")return `<div class="gdv"><svg class="gclip" viewBox="0 0 40 34" aria-hidden="true"><path d="M8 14 L4 2 L36 2 L32 14" fill="none" stroke="#4b5563" stroke-width="2.2" stroke-linejoin="round"/><rect x="6" y="14" width="28" height="16" rx="2" fill="#374151"/><rect x="6" y="14" width="28" height="4" fill="#6b7280"/></svg><div class="gline"></div><div class="gcirc"><div class="gn">${p.n}</div>${ed(pi+"-h",esc(p.title),"h2")}</div>${divBody(p,pi,"dlist")}<img class="dlogo" src="${LOGO}" alt="شعار وزارة التعليم"><div class="gabs"><div class="gcurve"></div>${GBAR}</div></div>`;
   if(S.pstyle==="id")return `<div class="dvi">${capsules(t)}<div class="dnum">${p.n}</div><div class="arrowt">${ed(pi+"-h",esc(p.title),"h2")}</div>${divBody(p,pi,"dlist")}<img class="dlogo" src="${LOGO}" alt="شعار وزارة التعليم"></div>`;
@@ -3165,10 +3433,12 @@ function render(){
 function syncControls(){
   document.querySelectorAll("#eSeg button").forEach(b=>b.classList.toggle("on",b.dataset.e===(S.evmode||"img")));
   document.querySelectorAll("#gSeg button").forEach(b=>b.classList.toggle("on",b.dataset.g===S.gender));
-  document.querySelectorAll("#pSeg button").forEach(b=>b.classList.toggle("on",b.dataset.p===S.pstyle));
-  document.querySelectorAll("#cSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.c===+S.cover));
+  {const t=T();$("#pSeg").innerHTML=PSTYLES.map(([id,n,d,nw])=>`<button type="button" data-p="${id}" class="${id===S.pstyle?"on":""}" aria-pressed="${id===S.pstyle}">${stThumb(id,t)}<b>${n}</b><small>${d}</small>${nw?`<span class="nw">جديد</span>`:""}</button>`).join("");
+  $("#cSeg").innerHTML=COVERS.map(([c,n])=>`<button type="button" data-c="${c}" class="${c===+S.cover?"on":""}" aria-pressed="${c===+S.cover}">${n}</button>`).join("");}
   $("#fSel").innerHTML=FONTS.map(f=>`<option value="${f.id}"${f.id===F().id?" selected":""}>${f.n}</option>`).join("");
-  $("#sws").innerHTML=THEMES.map((t,i)=>`<button class="sw${i===+S.theme?" on":""}" data-t="${i}" title="${t.n}" aria-label="${t.n}" style="background:linear-gradient(135deg,${t.p} 50%,${t.a} 50%)"></button>`).join("");
+  {const sw=(t,i)=>`<button type="button" class="sw${i===+S.theme?" on":""}" data-t="${i}" title="${t.n}" aria-label="${t.n}" style="background:linear-gradient(135deg,${t.p} 50%,${t.s} 50% 75%,${t.a} 75%)"></button>`;
+  const off=THEMES.map((t,i)=>[t,i]).filter(x=>x[0].o),oth=THEMES.map((t,i)=>[t,i]).filter(x=>!x[0].o);
+  $("#sws").innerHTML=`<small>ألوان دليل الهوية البصرية للوزارة</small><div class="swatches">${off.map(x=>sw(...x)).join("")}</div><small>ألوان إضافية</small><div class="swatches">${oth.map(x=>sw(...x)).join("")}</div>`;}
 }
 
 /* edits persistence */
@@ -3785,7 +4055,7 @@ if(IOS_FIT&&window.ResizeObserver)new ResizeObserver(()=>fitH()).observe(pagesEl
 
 /* controls */
 $("#gSeg").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;S.gender=b.dataset.g;saveS();render()});
-$("#pSeg").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;S.pstyle=b.dataset.p;S.cover={id:3,rp:5,gd:4}[S.pstyle]??(+S.cover>=3?0:S.cover);saveS();render();toast({id:"نمط الهوية",rp:"نمط التقرير",gd:"نمط الدليل",cl:"النمط الكلاسيكي"}[S.pstyle])});
+$("#pSeg").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;S.pstyle=b.dataset.p;S.cover=COVER_OF[S.pstyle]??(+S.cover>=3?0:S.cover);saveS();keepY(render);toast("نمط "+((PSTYLES.find(x=>x[0]===S.pstyle)||[])[1]||""))});
 /* ---------- قائمة أسماء الطلاب (للكشوف) ---------- */
 function ksFitTables(){
   let fail=false;
