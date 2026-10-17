@@ -709,6 +709,7 @@ table.t.tall td{height:44mm;vertical-align:top;padding-top:2mm}
 .ix2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;align-items:start}
 .ix2 table.t td{font-size:8.6pt;padding:.5mm 1mm;height:6.2mm}
 .ix2 table.t th{font-size:8.6pt}
+.page.land .ix2 table.t td{height:5.4mm;padding:.3mm 1mm;font-size:8.2pt}
 .blk.sm .tx{font-size:10pt;line-height:1.75;min-height:0!important;padding:2mm 4mm}
 .blk.sm{margin-bottom:3mm}
 .blk.sm h4{font-size:11.5pt;padding:1.5mm 4mm}
@@ -1258,6 +1259,48 @@ body.evmode{overflow:hidden}
 .cv9 .c9f .fs>div{text-align:right;font-size:11pt}
 .cv9 .ltf{margin-top:9mm}
 .page.land .cv9 .c9box{margin-top:14mm}
+/* أغلفة أفقية: ملف كامل بالاتجاه الأفقي */
+.page.land :is(.cv0,.cv1,.cv2,.cv4,.cv8) .card{width:236mm;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.page.land :is(.cv0,.cv1,.cv2,.cv4,.cv8) .card .rw{border-bottom:1px solid var(--l)}
+.page.land :is(.cv0,.cv1,.cv2,.cv4,.cv8) .card .rw:nth-last-child(-n+2){border-bottom:0}
+.page.land :is(.cv0,.cv1,.cv2,.cv4,.cv8) .card .k{border-radius:0!important;width:36mm}
+.page.land .cov .ttl{margin-top:4mm}
+.page.land .cov .ttl img.logo{width:auto;height:27mm}
+.page.land .cov .ttl h1{font-size:28pt;margin:3mm 0 2mm}
+.page.land .cov .ttl .sub{font-size:17pt}
+.page.land .cov .card{margin-bottom:20mm}
+.page.land .cv0 .hd{padding-top:7mm}
+.page.land .cv0 .wv{width:100%}
+.page.land .cv0 .wv.t{height:46mm}
+.page.land .cv0 .wv.b{height:28mm}
+.page.land .cv0 .card{margin-bottom:30mm}
+.page.land .cv1 .hd{padding:17mm 22mm 0}
+.page.land .cv1 .card{margin-bottom:22mm}
+.page.land .cv2 .diag{clip-path:polygon(0 0,100% 0,100% 50%,0 68%)}
+.page.land .cv2 .card{margin-bottom:17mm}
+.page.land .cv3 .c3t{top:50mm;left:110mm}
+.page.land .cv3 .card{top:104mm;width:120mm}
+.page.land .cv3 .c3logo{top:14mm;bottom:auto;right:auto;left:18mm}
+.page.land .cv4 .c4logo{top:11mm;height:24mm}
+.page.land .cv4 .c4hd{top:38mm}
+.page.land .cv4 .c4t{top:54mm}
+.page.land .cv4 .c4t h1{font-size:29pt}
+.page.land .cv4 .c4card{width:236mm;bottom:24mm}
+.page.land .c5band{height:120mm}
+.page.land .c5hd{padding-top:11mm}
+.page.land .c5t{top:50mm}
+.page.land .c5t h1{font-size:29pt}
+.page.land .c5grid{top:132mm;left:24mm;right:24mm;gap:4mm 10mm}
+.page.land .c5logo{bottom:9mm;height:15mm}
+.page.land .cv6 .cbig{width:150mm;height:150mm;left:-30mm;top:-30mm}
+.page.land .cv6 .c6t{top:84mm;left:16mm}
+.page.land .cv7 .c7t{margin-top:26mm}
+.page.land .cv8 .sdb{height:13mm}
+.page.land .cv8 .c8m{padding:7mm 18mm 8mm}
+.page.land .cv8 .c8logo{height:19mm;margin-top:3mm}
+.page.land .cv8 .c8t{margin-top:6mm}
+.page.land .cv8 .c8t h1{font-size:27pt}
+.page.land .cv8 .sdt{margin-top:4mm}
 
 /* لوحة تخصيص الملف */
 .opts .card-c.oc{display:flex;flex-direction:column;gap:1.25rem}
@@ -2705,14 +2748,14 @@ const FILES=[
     {t:"ev",title:"شواهد خطة التحسين"}
   ];
     const cut={"الربط بين مجالات الممارسات الإشرافية ومجالات التقويم المدرسي":[19],"بطاقة الأهداف ومؤشرات قياس العناصر المراد تحسينها بحسب الأولوية":[11],"إجراءات خطة التحسين في مجالات الممارسات الإشرافية":[5,13],"إجراءات خطة التحسين — الجدول التنفيذي":[7,14],"بطاقة متابعة برامج وأنشطة خطة التحسين وفق مجالات الممارسات الإشرافية":[9]};
-    return {title:"خطة التحسين المدرسية",sub:"وفق المجالات والممارسات الإشرافية — "+S.year,pages:pages.flatMap(pg=>cut[pg.title]?SPL(pg,cut[pg.title]):[pg])}}},
+    return {title:"خطة التحسين المدرسية",sub:"وفق المجالات والممارسات الإشرافية — "+S.year,land:true,pages:pages.flatMap(pg=>cut[pg.title]?SPL(pg,cut[pg.title]):[pg])}}},
   {id:"imp-eval",cat:"الخطط",ic:"ح",name:()=>"خطة تحسين الأداء المدرسي وفق نتائج التقويم",build:()=>{
     const B="(برشورات، مسابقات، عروض، رسائل، إذاعة مدرسية)";
     const C=(dom,dn,std,sn,code,ind,rows)=>({t:"ipc",land:true,title:"خطة تحسين وتطوير مجال "+dom+" — المؤشر "+code,goal:"تحسين مستوى الأداء لمؤشرات "+dom,dom,dn,std,sn,code,ind,rows});
     const QV="غرس القيم الإسلامية والهوية الوطنية وتعزيز الانتماء للوطن والولاء للقيادة الرشيدة";
     const EM="تعزيز المهارات العاطفية الشخصية والاجتماعية";
     const SF="تعزيز ثقافة الأمن والسلامة بالمدرسة";
-    return {title:"خطة مقترحة لتحسين الأداء المدرسي",sub:"وفق نتائج التقويم — "+S.year,pages:[
+    return {title:"خطة مقترحة لتحسين الأداء المدرسي",sub:"وفق نتائج التقويم — "+S.year,land:true,pages:[
     {t:"text",title:"المقدمة",blocks:[["المقدمة","استجابةً للقرار الوزاري بشأن اعتماد تنفيذ التقويم المدرسي الذاتي، وعملًا بالإجراءات التطبيقية للتقويم الذاتي الواردة في الدليل الإجرائي للتقويم الذاتي وتحقيقًا لأهدافه، باشر فريق التقويم الذاتي عمله في المدرسة منجزًا المرحلة الأولى (التهيئة) والمرحلة الثانية (التنفيذ)، وكان من مستخلصات تلك المرحلتين استخراج تقرير الأداء المدرسي للتقويم الذاتي.\n\nوفي ضوء نتائج دراسة وتحليل تقرير الأداء المدرسي للتقويم الذاتي التي أجراها الفريق؛ تم تطوير هذه الخطة التنفيذية لتحسين مؤشرات الأداء ذات الأولوية (مستوى الانطلاق – التقدم)، ليتم تنفيذها بإذن الله في المدى القصير (الفصل الأول)، وسوف تتبعها خطة استراتيجية طويلة المدى يتم إعدادها لتستهدف تحسين المؤشرات ذات المستوى المنخفض وتطوير المؤشرات ذات الأداء المرتفع.\n\nوقد روعي في إعداد هذه الخطة الشمولية والتكامل والعمل على استثمار الفرص المتاحة ومواطن القوة التي تحظى بها المدرسة للتغلب على المشكلات والحد من المخاطر ورفع كفاءة المخرجات ونواتج التعلم.\n\nوستخضع الخطة وعمليات التنفيذ –بإذن الله– لمتابعة وتقويم مستمرة للتحقق من فاعليتها وقياس أثرها ومدى مواءمتها للمستهدفات."]]},
     {t:"flow",title:"مسار بناء خطة التحسين",steps:["أين كنت: بداية التقويم المدرسي ونشر ثقافة الاعتماد المدرسي والتقويم","دعم إدارة التعليم للمدارس في خطط التحسين من خلال الفرق التنفيذية ومشرفي الدعم","أين يجب أن تكون: مرحلة التقويم (الدورة الأولى) وتقارير التقويم الذاتي والخارجي","استمرار إدارة التعليم بتجويد وتحسين ممارسات التقويم والاعتماد المدرسي","لا بد أن تكون: طموح المدرسة من طموح إدارة التعليم","مرحلة التقويم الثانية: تقرير التقويم الذاتي","بناء خطة التحسين"]},
     {t:"text",title:"كيف تبني خطة تحسين ناجحة",small:true,blocks:[["خطوات البناء","١. الاجتماع بالفريق (لجنة التميز) واستعراض تقرير المدرسة في التقويم.\n٢. تحليل وتشخيص الواقع ومراجعة مؤشرات الأداء والأرقام في التقرير، وجعل التحسين للأولويات العاجلة.\n٣. لتكون لديك خطة تحسين ناجحة ومكتملة لا بد من مراجعة ومعرفة مجالات التقويم والاعتماد المدرسي ومعايير كل مجال.\n٤. لا بد أن تكون خطة التحسين شاملة لجميع المجالات."],["مجال الإدارة المدرسية","التخطيط – قيادة العملية التعليمية – المجتمع المدرسي – التطوير المؤسسي – حقوق المتعلم وحمايته."],["مجال التعليم والتعلم","بناء خبرات التعلم – تقويم التعلم."],["مجال نواتج التعلم","التحصيل التعليمي – التطور الشخصي والصحي والاجتماعي."],["مجال البيئة المدرسية","المبنى المدرسي – الأمن والسلامة."]]},
@@ -3605,7 +3648,7 @@ function rCover(file,t){
 }
 function rIndex(file,t,list,num){
   const tb=(part,off)=>`<table class="t ixt${list.length>18?" dense":""}"><colgroup><col style="width:11%"><col style="width:71%"><col style="width:18%"></colgroup><thead><tr><th>م</th><th>المحتوى</th><th>الصفحة</th></tr></thead><tbody>${part.map((x,i)=>`<tr><td class="c">${i+1+off}</td><td>${esc(x[0])}</td><td class="c">${x[1]}</td></tr>`).join("")}</tbody></table>`;
-  if(list.length<=26)return frame(file,t,"ix","الفهرس",tb(list,0),num);
+  if(list.length<=(file.land?17:26))return frame(file,t,"ix","الفهرس",tb(list,0),num);
   const half=Math.ceil(list.length/2);
   return frame(file,t,"ix","الفهرس",`<div class="ix2">${tb(list.slice(0,half),0)}${tb(list.slice(half),half)}</div>`,num);
 }
@@ -3786,10 +3829,11 @@ function render(){
   // page numbers: cover=1, index=2
   const B0=spec.bare?1:3;const idx=[]; let n=B0;
   spec.pages.forEach(p=>{const tt=p.title||"صفحة";idx.push([p.t==="div"?"— "+tt:tt,n]);n++});
+  if(spec.land)spec.pages.forEach(p=>p.land=true);const LC=spec.land?"land":"";
   const out=[];EVN=0;
   const wrap=(key,label,inner,cls,x)=>`<div class="pwrap${skip.has(key)?" skip":""}" data-pg="${key}"><div class="pbar"><span>${label}</span>${x||""}<label><input type="checkbox" ${skip.has(key)?"":"checked"} data-skip="${key}"> ضمن الطباعة</label></div><div class="page st-${S.pstyle} f-${F().id} ${cls||""}" style="--p:${t.p};--s:${t.s};--a:${t.a};--l:${t.l};--d:${t.d||t.p};--body:${esc(F().b+FB)};--kufi:${esc(F().h+FB)}">${inner}</div></div>`;
-  if(!spec.bare){out.push(wrap("cv","الغلاف",rCover(spec,t)));
-  out.push(wrap("ix","صفحة ٢ — الفهرس",rIndex(spec,t,idx,2)));}
+  if(!spec.bare){out.push(wrap("cv","الغلاف",rCover(spec,t),LC));
+  out.push(wrap("ix","صفحة ٢ — الفهرس",rIndex(spec,t,idx,2),LC));}
   spec.pages.forEach((p,i)=>{
     const pi=p.kpg!=null?p.kpg:"p"+i,num=i+B0; let h="";
     if(p.t==="div")h=rDiv(p,t,pi);
@@ -3819,6 +3863,7 @@ function render(){
   pz.textContent=spec.pages.some(x=>x.land)?"@page{size:A4 landscape;margin:0}":"";
   restore();
   if(EMBED)try{demoFill()}catch(e){console.error(e)}
+  if(spec.land)landFit();
   if(typeof BE!=="undefined")try{applyAccess()}catch(e){}
   syncControls(); renderList(); fit(); try{ksCalcAll()}catch(e){console.error(e)} ksFitTables(); renderKsCard(); renderCertCard();
   if(typeof ftbCells!=="undefined"){ftbCells.clear();ftbHost=null;ftbVis()}
@@ -4453,6 +4498,13 @@ if(IOS_FIT&&window.ResizeObserver)new ResizeObserver(()=>fitH()).observe(pagesEl
 $("#gSeg").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;S.gender=b.dataset.g;saveS();render()});
 $("#pSeg").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;S.pstyle=b.dataset.p;S.cover=COVER_OF[S.pstyle]??(+S.cover>=3?0:S.cover);saveS();keepY(render);toast("نمط "+((PSTYLES.find(x=>x[0]===S.pstyle)||[])[1]||""))});
 /* ---------- قائمة أسماء الطلاب (للكشوف) ---------- */
+/* ملاءمة تلقائية لصفحات الملفات الأفقية بالكامل: تصغير طفيف للمحتوى عند تجاوزه حدود الصفحة */
+function landFit(){
+  pagesEl.querySelectorAll(".page.land .pbody").forEach(bd=>{
+    const kids=[...bd.children];kids.forEach(k=>k.style.zoom="");
+    for(let z=.97;z>=.8&&bd.scrollHeight>bd.clientHeight+1;z-=.03)kids.forEach(k=>k.style.zoom=z.toFixed(2));
+  });
+}
 function ksFitTables(){
   let fail=false;
   pagesEl.querySelectorAll("table.kfit").forEach(t=>{
