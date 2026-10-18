@@ -1304,7 +1304,7 @@ table.t.rh14 td{height:18.5mm;vertical-align:middle}
 .ai-prog{display:flex;flex-direction:column;gap:6px;margin:6px 0 10px;font-size:13px;color:var(--mut,#55636c)}.ai-prog .bar{height:8px;border-radius:8px;background:#eef2f4;overflow:hidden}.ai-prog .bar i{display:block;height:100%;width:5%;background:linear-gradient(90deg,#15445a,#0da9a6);transition:width .4s}
 .ai-steps{display:flex;gap:8px;margin:2px 0 12px;flex-wrap:wrap}.ai-steps span{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#7a8791;cursor:pointer;padding:5px 10px;border-radius:20px;background:#f3f5f7}.ai-steps i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#dfe5e9;font-size:11px}.ai-steps span.on{background:#e7f1f6;color:#15445a}.ai-steps span.on i{background:#15445a;color:#fff}.ai-steps span.dn i{background:#0da9a6;color:#fff}
 .ai-f select.inp{appearance:auto}.aic{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}.chips{display:flex;flex-wrap:wrap;gap:6px}.ai-dlg .chip{border:1px solid #d6dee3;background:#fff;border-radius:18px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;color:#33434b}.ai-dlg .chip{box-shadow:none!important}.ai-dlg .chip.on{background:#15445a!important;border-color:#15445a!important;color:#fff!important}.ai-dlg .chip.on::before{content:"✓ "}
-.ai-ref{border:1.5px dashed #0da9a6;background:#f2fbfa;border-radius:12px;padding:10px 12px;margin-bottom:12px;display:flex;flex-direction:column;gap:6px}.ai-ref b{color:#15445a;font-size:14px}.ai-ref small{color:#5a6b73;font-size:12.5px;line-height:1.7}.ai-docs{display:flex;flex-wrap:wrap;gap:6px}.ai-docs .chip{cursor:default;display:inline-flex;gap:6px;align-items:center}.ai-docs .chip.bad{background:#fde8e8!important;color:#a32020!important;border-color:#f3b4b4!important}.ai-docs small{color:inherit!important;opacity:.85;font-size:11.5px}.ai-sv{display:flex;gap:8px;align-items:flex-start;background:#fff;border:1px solid #bfe6e3;border-radius:10px;padding:7px 9px;font-size:13px}.ai-sv span{flex:1;line-height:1.7}.ai-sv a{color:#a32020;cursor:pointer;font-size:12.5px;white-space:nowrap}.ai-docs a{cursor:pointer;font-weight:700;padding:0 2px}.ai-sh{font-weight:700;font-size:13.5px;margin:10px 0 6px;color:#15445a}.ai-sec{border:1px solid #e3e8eb;border-radius:12px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:7px}.ai-sec b{font-size:13.5px}.ai-sec .aio,.aic .aio{font-size:13px}
+.wd-dlg .wd-o{display:flex;flex-direction:column;gap:4px;width:100%;text-align:start;border:1.5px solid var(--bd,#dfe6ea);background:var(--card,#fff);color:inherit;border-radius:12px;padding:12px 14px;margin:0 0 10px;cursor:pointer;font:inherit}.wd-dlg .wd-o:hover{border-color:#0da9a6;background:#f2fbfa}.wd-dlg .wd-o b{font-size:15px}.wd-dlg .wd-o span{font-size:13px;opacity:.8;line-height:1.7}.ai-ref{border:1.5px dashed #0da9a6;background:#f2fbfa;border-radius:12px;padding:10px 12px;margin-bottom:12px;display:flex;flex-direction:column;gap:6px}.ai-ref b{color:#15445a;font-size:14px}.ai-ref small{color:#5a6b73;font-size:12.5px;line-height:1.7}.ai-docs{display:flex;flex-wrap:wrap;gap:6px}.ai-docs .chip{cursor:default;display:inline-flex;gap:6px;align-items:center}.ai-docs .chip.bad{background:#fde8e8!important;color:#a32020!important;border-color:#f3b4b4!important}.ai-docs small{color:inherit!important;opacity:.85;font-size:11.5px}.ai-sv{display:flex;gap:8px;align-items:flex-start;background:#fff;border:1px solid #bfe6e3;border-radius:10px;padding:7px 9px;font-size:13px}.ai-sv span{flex:1;line-height:1.7}.ai-sv a{color:#a32020;cursor:pointer;font-size:12.5px;white-space:nowrap}.ai-docs a{cursor:pointer;font-weight:700;padding:0 2px}.ai-sh{font-weight:700;font-size:13.5px;margin:10px 0 6px;color:#15445a}.ai-sec{border:1px solid #e3e8eb;border-radius:12px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:7px}.ai-sec b{font-size:13.5px}.ai-sec .aio,.aic .aio{font-size:13px}
 .ai-dlg .dlg-b .aipf{margin-inline-start:auto}
 .tx-dlg{max-width:560px}.tx-list{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:6px;margin:10px 0}.tx-u{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:right;border:1px solid #e1e7eb;background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;font:inherit}.tx-u span{font-size:12.5px;color:#55636c}.tx-u small{font-size:11.5px;color:#8a9aa3}.tx-u.on{border-color:#15445a;background:#eef5f8;box-shadow:0 0 0 2px #15445a33}
 .tx-ck{display:flex;align-items:center;gap:8px;font-size:13px;margin:4px 0 8px}.tx-note{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}.tx-sz{font-size:12px;margin-top:6px}
@@ -6294,6 +6294,45 @@ async function exportWord(){
 }
 
 
+/* ---------- Word مطابق للتصميم: كل صفحة تُصدَّر كما تظهر في الطباعة تمامًا ---------- */
+const H2I_URL="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js";
+function printCSS(){let out="";const walkR=(rules)=>{for(const r of rules){if(r.media&&/print/.test(r.media.mediaText)&&!/screen/.test(r.media.mediaText)){for(const x of r.cssRules)out+=x.cssText+"\n"}else if(r.cssRules&&!(r instanceof CSSStyleRule))walkR(r.cssRules)}};
+  for(const sh of document.styleSheets){try{walkR(sh.cssRules)}catch(e){}}return out}
+async function exportWordExact(){
+  if(!WORD&&!isAdmin())return toast("تصدير Word غير متاح لحسابك، تواصل مع المشرف");
+  if(!cur||!cur.spec)return;
+  ftbFlush();keepY(render);
+  let D;toast("جارٍ تجهيز ملف Word مطابق للتصميم… قد يستغرق دقيقة");
+  try{D=await loadDocx();if(!window.htmlToImage)await loadScript(H2I_URL)}catch(e){return toast("تعذّر تحميل أدوات التصدير، تحقق من الاتصال بالإنترنت")}
+  const {Document,Packer,Paragraph,ImageRun,PageOrientation,AlignmentType}=D;
+  const st=document.createElement("style");st.id="xprint";st.textContent=printCSS()+"\n.pwrap{display:block!important}.page{box-shadow:none!important;margin:0!important}";
+  document.head.appendChild(st);document.body.classList.add("xporting");
+  const wraps=[...pagesEl.querySelectorAll(".pwrap")].filter(w=>!w.classList.contains("skip")&&!w.classList.contains("evx"));
+  const sections=[];const W_P=11906,H_P=16838;
+  try{await (document.fonts&&document.fonts.ready);
+    for(let i=0;i<wraps.length;i++){const pg=wraps[i].querySelector(".page");if(!pg)continue;const land=pg.classList.contains("land");
+      if(i%3===0)toast(`جارٍ تصدير الصفحة ${i+1} من ${wraps.length}…`);
+      const r=pg.getBoundingClientRect();
+      const url=await window.htmlToImage.toJpeg(pg,{quality:.92,pixelRatio:2,backgroundColor:"#ffffff",width:Math.round(r.width),height:Math.round(r.height),cacheBust:false,
+        filter:n=>!(n.classList&&(n.classList.contains("x")||n.classList.contains("lk")||n.classList.contains("rsz")))});
+      const bin=atob(url.split(",")[1]),buf=new Uint8Array(bin.length);for(let j=0;j<bin.length;j++)buf[j]=bin.charCodeAt(j);
+      const wpx=land?1122:793,hpx=land?793:1122;
+      sections.push({properties:{page:{size:land?{orientation:PageOrientation.LANDSCAPE,width:W_P,height:H_P}:{width:W_P,height:H_P},margin:{top:0,bottom:0,left:0,right:0,header:0,footer:0}}},
+        children:[new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:0},children:[new ImageRun({type:"jpg",data:buf,transformation:{width:wpx,height:hpx-2}})]})]})}
+  }catch(e){console.error(e);st.remove();document.body.classList.remove("xporting");return toast("تعذّر إنشاء ملف Word المطابق")}
+  st.remove();document.body.classList.remove("xporting");
+  const doc=new Document({creator:"نَسَق",title:cur.spec.title,sections});
+  const blob=await Packer.toBlob(doc);
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(cur.spec.title+(PN()?" - "+PN():"")).replace(/[\\/:*?"<>|]/g,"-")+".docx";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
+  toast("تم تصدير ملف Word مطابق للتصميم");
+}
+function wordChoice(){return new Promise(res=>{let m=document.getElementById("wdDlg");if(!m){m=document.createElement("div");m.className="modal";m.id="wdDlg";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");document.body.appendChild(m)}
+  m.innerHTML=`<div class="dialog ui-dlg wd-dlg"><div class="dlg-h"><h3>تصدير Word</h3><p>اختر نوع الملف:</p></div>
+   <button type="button" class="wd-o" data-v="x"><b>🎨 مطابق للتصميم تمامًا</b><span>الغلاف والألوان والإطارات كما في الطباعة بالضبط. كل صفحة صورة؛ للطباعة والإرسال.</span></button>
+   <button type="button" class="wd-o" data-v="e"><b>✏️ قابل للتعديل</b><span>نصوص وجداول تعدّلها في Word، بتنسيق مبسّط قريب من التصميم.</span></button>
+   <div class="dlg-b"><button class="btn" type="button" data-v="">إلغاء</button></div></div>`;
+  m.classList.add("open");const done=v=>{m.classList.remove("open");res(v)};
+  m.onclick=e=>{const b=e.target.closest("[data-v]");if(b)return done(b.dataset.v||null);if(e.target===m)done(null)}})}
 /* ---------- التجهيز الذكي (Claude) ---------- */
 const AI_ERR={no_permission:"التجهيز الذكي غير متوفر لحسابك في هذا الملف. اطلبه من المشرف.",limit:"استنفدت عدد مرات التجهيز الذكي المسموحة لهذا الملف.",not_configured:"خدمة التجهيز الذكي لم تُفعَّل بعد على الخادم.",disabled:"خدمة التجهيز الذكي متوقفة مؤقتًا.",job_expired:"انتهت مهلة العملية، أعد المحاولة.",upstream:"تعذّر الاتصال بخدمة Claude، أعد المحاولة بعد قليل.",auth:"سجّل الدخول أولًا.",too_many_parts:"الملف كبير جدًا، أعد المحاولة.",net:"تعذّر الاتصال بالخادم، تحقق من الإنترنت.",server:"حدث خطأ في الخادم، أعد المحاولة.",doc_size:"الملف المرجعي أكبر من 5 ميجابايت.",doc_unreadable:"تعذّرت قراءة الملف المرجعي."};
 /* أسئلة التجهيز الذكي — تُبنى حسب الملف: أساسيات بقوائم اختيار، ثم «ما نفّذته» من عناصر الملف نفسه أو من خيارات مخصصة لنوعه */
@@ -6606,7 +6645,7 @@ async function receiveFile(id){const t=INBOX.find(x=>x.id===id);if(!t)return;
   catch(e){console.error(e);toast("تعذّر استلام الملف")}}
 $("#sendBtn").addEventListener("click",()=>sendFileDlg());
 
-$("#wordBtn").addEventListener("click",()=>exportWord().catch(e=>{console.error(e);toast("تعذّر إنشاء ملف Word")}));
+$("#wordBtn").addEventListener("click",async()=>{const v=await wordChoice();if(!v)return;(v==="x"?exportWordExact():exportWord()).catch(e=>{console.error(e);toast("تعذّر إنشاء ملف Word")})});
 /* ---------- لوحة الإعدادات (المشرف) ---------- */
 let admTab="pending",admEdit=null,admQ="";
 function startAdmin(){if(unsubUsers)return;unsubUsers=BE.onUsers(l=>{USERS=l;updateTop()})}
