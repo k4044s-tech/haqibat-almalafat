@@ -1306,6 +1306,10 @@ table.t.rh14 td{height:18.5mm;vertical-align:middle}
 .ai-f select.inp{appearance:auto}.aic{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}.chips{display:flex;flex-wrap:wrap;gap:6px}.ai-dlg .chip{border:1px solid #d6dee3;background:#fff;border-radius:18px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;color:#33434b}.ai-dlg .chip{box-shadow:none!important}.ai-dlg .chip.on{background:#15445a!important;border-color:#15445a!important;color:#fff!important}.ai-dlg .chip.on::before{content:"✓ "}
 .ai-sh{font-weight:700;font-size:13.5px;margin:10px 0 6px;color:#15445a}.ai-sec{border:1px solid #e3e8eb;border-radius:12px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:7px}.ai-sec b{font-size:13.5px}.ai-sec .aio,.aic .aio{font-size:13px}
 .ai-dlg .dlg-b .aipf{margin-inline-start:auto}
+.tx-dlg{max-width:560px}.tx-list{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:6px;margin:10px 0}.tx-u{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:right;border:1px solid #e1e7eb;background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;font:inherit}.tx-u span{font-size:12.5px;color:#55636c}.tx-u small{font-size:11.5px;color:#8a9aa3}.tx-u.on{border-color:#15445a;background:#eef5f8;box-shadow:0 0 0 2px #15445a33}
+.tx-ck{display:flex;align-items:center;gap:8px;font-size:13px;margin:4px 0 8px}.tx-note{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}.tx-sz{font-size:12px;margin-top:6px}
+.inbox-card{position:fixed;bottom:18px;left:18px;z-index:90;width:min(360px,calc(100vw - 36px));background:#fff;border:1px solid #d8e2e7;border-radius:14px;box-shadow:0 12px 32px rgba(15,40,55,.18);padding:12px 14px;display:flex;flex-direction:column;gap:8px}.ib-h{display:flex;justify-content:space-between;align-items:center;font-size:14px}.ib-x{border:0;background:none;font-size:20px;cursor:pointer;color:#7a8791}.ib-i{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #eef2f4;padding-top:8px}.ib-i>div{display:flex;flex-direction:column;gap:1px}.ib-i span{font-size:12.5px;color:#33434b}.ib-i small{font-size:11px;color:#8a9aa3}
+@media print{.inbox-card{display:none!important}}
 .ai-note{font-size:12.5px;color:#55636c;background:#f6f8f9;border-radius:10px;padding:9px 11px;margin-top:4px}
 .ai-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 12px}.ai-sum>div{border:1px solid #e3e8eb;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:2px}.ai-sum b{font-size:20px}.ai-sum span{font-size:12px;color:#6b7a84}
 @media (max-width:640px){.ai-f{grid-template-columns:1fr}.ai-sum{grid-template-columns:1fr 1fr}}
@@ -1443,7 +1447,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <div class="vacts">
             <button class="btn" id="resetBtn" type="button" title="حذف ما كتبته في هذا الملف"><i data-i="rotate"></i>مسح التعديلات</button>
             <button class="btn" id="setBtn" type="button" hidden><i data-i="user"></i>بيانات الملف</button>
-            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button>
+            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button><button class="btn" id="sendBtn" type="button" hidden>📤 إرسال لمستخدم</button>
           </div>
         </div>
         <div class="access" id="access" role="status" hidden></div>
@@ -5915,6 +5919,10 @@ function demoBackend(){
     async listOrders(){return store.get("hq:demo:orders",[]).map(o=>Object.assign({},o,{receipt:undefined}))},
     async aiPrepare(b){if(typeof window.__AI_MOCK!=="function")throw{code:"ai/not_configured"};const u=me();if(!u)throw{code:"ai/auth"};const r=await window.__AI_MOCK(b);const L=store.get("hq:demo:ai",[]);if(!b.job)L.unshift({id:Date.now(),uid:u.uid,file_id:b.file,created_at:new Date().toISOString(),parts:1,input_tokens:r.usage?r.usage[0]:0,output_tokens:r.usage?r.usage[1]:0,cost_usd:r.cost||0,status:"done"});store.set("hq:demo:ai",L);return Object.assign({job:b.job||Date.now()},r)},
     async aiJobs(){return store.get("hq:demo:ai",[])},
+    async sendFile(o){const u=me();if(!u||u.role!=="admin")throw{code:"perm"};const L=store.get("hq:demo:tx",[]);L.unshift({id:Date.now(),from_uid:u.uid,to_uid:o.to,file_id:o.file,file_name:o.name,note:o.note||null,payload:o.payload,created_at:new Date().toISOString(),received_at:null});if(!store.set("hq:demo:tx",L))throw{code:"quota"}},
+    async inbox(){const u=me();if(!u)return[];return store.get("hq:demo:tx",[]).filter(t=>t.to_uid===u.uid&&!t.received_at).map(t=>Object.assign({},t,{payload:undefined}))},
+    async getTransfer(id){return store.get("hq:demo:tx",[]).find(t=>t.id===id)||null},
+    async markReceived(id){const L=store.get("hq:demo:tx",[]);const t=L.find(x=>x.id===id);if(t){t.received_at=new Date().toISOString();t.payload={}}store.set("hq:demo:tx",L)},
     async getReceipt(id){const o=store.get("hq:demo:orders",[]).find(x=>x.id===id);return o&&o.receipt},
     async decideOrder(id,ok,note){const L=store.get("hq:demo:orders",[]),o=L.find(x=>x.id===id);if(!o)throw{code:"nf"};const was=o.status;o.status=ok?"approved":"rejected";o.admin_note=note||null;o.decided_at=Date.now();store.set("hq:demo:orders",L);
       if(ok&&was!=="approved"&&o.coupon){const C=store.get("hq:demo:coupons",[]),x=C.find(k=>k.code===o.coupon);if(x){x.used=(x.used||0)+1;store.set("hq:demo:coupons",C)}}
@@ -5989,6 +5997,10 @@ async function sbBackend(cfg){
     async getReceipt(id){const r=ck(await sb.from("orders").select("receipt").eq("id",id).maybeSingle());return r&&r.receipt},
     async decideOrder(id,ok,note){ck(await sb.rpc("decide_order",{oid:id,ok,note:note||null}));if(reloadUsers)reloadUsers()},
     async aiPrepare(body){const {data,error}=await sb.functions.invoke("ai-prepare",{body});if(error){let d=null;try{d=await error.context.json()}catch(e){}throw{code:"ai/"+(d&&d.error||"net"),limit:d&&d.limit}}return data},
+    async sendFile(o){ck(await sb.from("file_transfers").insert({from_uid:uid,to_uid:o.to,file_id:o.file,file_name:o.name,note:o.note||null,payload:o.payload}))},
+    async inbox(){if(!uid)return[];return ck(await sb.from("file_transfers").select("id,file_id,file_name,note,created_at").eq("to_uid",uid).is("received_at",null).order("created_at",{ascending:false}))},
+    async getTransfer(id){return ck(await sb.from("file_transfers").select("id,file_id,file_name,payload").eq("id",id).maybeSingle())},
+    async markReceived(id){ck(await sb.from("file_transfers").update({received_at:new Date().toISOString(),payload:{}}).eq("id",id))},
     async aiJobs(){return ck(await sb.from("ai_jobs").select("id,uid,file_id,created_at,parts,input_tokens,output_tokens,cost_usd,status").order("created_at",{ascending:false}).limit(300))}
   };
 }
@@ -6035,7 +6047,7 @@ async function fbBackend(cfg){
 
 /* ---------- تطبيق الصلاحيات على الصفحات ---------- */
 function applyAccess(){
-  EDIT=perm(S.file,"e");PRINT=perm(S.file,"p");WORD=perm(S.file,"w");{const wb=$("#wordBtn");if(wb)wb.hidden=!WORD}try{renderAiBtn()}catch(e){}
+  EDIT=perm(S.file,"e");PRINT=perm(S.file,"p");WORD=perm(S.file,"w");{const wb=$("#wordBtn");if(wb)wb.hidden=!WORD}try{renderAiBtn();renderSendBtn()}catch(e){}
   document.body.classList.toggle("ro",!EDIT);
   document.body.classList.toggle("np",!PRINT);
   if(!EDIT)pagesEl.querySelectorAll('[contenteditable="true"]').forEach(el=>el.setAttribute("contenteditable","false"));
@@ -6476,6 +6488,60 @@ async function runAi(){
 }
 $("#aiBtn").addEventListener("click",()=>{if(!ME)return needAuth("edit");if(!aiAvail())return toast(AI_ERR.no_permission);runAi()});
 
+/* ---------- إرسال ملف مجهَّز إلى مستخدم ---------- */
+const TX_NO=new Set(["ks-marks","ks-groups","certs"]);
+function txCollect(fid){const out={},g=S.gender;
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
+    if(k.startsWith("hq3:e:"+fid+":"+g)||k.startsWith("hq3:i:"+fid+":")||k.startsWith("hq3:q:"+fid+":")||k==="hq3:n:"+fid)out[k.replace("hq3:e:"+fid+":"+g,"hq3:e:"+fid+":{g}")]=localStorage.getItem(k)}}catch(e){}
+  return out}
+function renderSendBtn(){const b=$("#sendBtn");if(b)b.hidden=EMBED||!isAdmin()||TX_NO.has(S.file)||!!(cur&&cur.f&&cur.f.stu)}
+async function sendFileDlg(){
+  if(!isAdmin()||!BE||!BE.sendFile)return toast("إرسال الملفات غير متاح حاليًا");
+  ftbFlush();const f=cur.f,payload=txCollect(f.id),n=Object.keys(payload).length;
+  if(!n)return toast("الملف فارغ: عبّئه أولًا ثم أرسله");
+  const size=JSON.stringify(payload).length;if(size>9e6)return toast("حجم الملف كبير جدًا للإرسال (الصور كثيرة)، احذف بعض الصور ثم أعد المحاولة");
+  let m=document.getElementById("txDlg");if(!m){m=document.createElement("div");m.className="modal";m.id="txDlg";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");document.body.appendChild(m)}
+  const L=USERS.filter(u=>u.status==="active"&&u.role!=="admin");
+  m.innerHTML=`<div class="dialog ui-dlg tx-dlg"><div class="dlg-h"><h3>📤 إرسال «${esc((cur.spec.title&&cur.spec.title!==f.name()?cur.spec.title+" — ":"")+f.name())}» إلى مستخدم</h3><p>يصل الملف إلى حساب المستخدم بكل ما فيه من نصوص وصور، فيستلمه ويعدّله ويطبعه من حسابه.</p></div>
+   <input class="inp" id="txQ" type="search" placeholder="ابحث بالاسم أو المدرسة أو البريد…">
+   <div class="tx-list" id="txL"></div>
+   <label class="ck tx-ck"><input type="checkbox" id="txPerm" checked> منحه صلاحية التعديل والطباعة لهذا الملف</label>
+   <label class="tx-note"><span>رسالة للمستخدم (اختياري)</span><input class="inp" id="txNote" placeholder="مثال: جهّزنا ملفك، راجعه قبل الطباعة"></label>
+   <div class="muted tx-sz">حجم الملف: ${size<1048576?Math.max(1,Math.round(size/1024))+" كيلوبايت":(size/1048576).toFixed(1)+" ميجابايت"}</div>
+   <div class="dlg-b"><button class="btn primary" id="txGo" type="button" disabled>إرسال</button><button class="btn" id="txNo" type="button">إلغاء</button></div></div>`;
+  m.classList.add("open");let sel=null;
+  const draw=()=>{const q=$("#txQ").value.trim();const R=L.filter(u=>!q||[u.name,u.email,u.school,u.title].join(" ").includes(q)).slice(0,60);
+    $("#txL").innerHTML=R.length?R.map(u=>`<button type="button" class="tx-u${sel===u.uid?" on":""}" data-u="${u.uid}"><b>${esc(u.name||u.email)}</b><span>${esc(u.title||"")}${u.school?" — "+esc(u.school):""}</span><small dir="ltr">${esc(u.email||"")}</small></button>`).join(""):`<p class="empty">لا يوجد مستخدمون مفعّلون${q?" بهذا البحث":""}.</p>`};
+  draw();$("#txQ").oninput=draw;
+  $("#txL").onclick=e=>{const b=e.target.closest("[data-u]");if(!b)return;sel=b.dataset.u;draw();$("#txGo").disabled=false};
+  $("#txNo").onclick=()=>m.classList.remove("open");m.onclick=e=>{if(e.target===m)m.classList.remove("open")};
+  $("#txGo").onclick=async()=>{if(!sel)return;const u=L.find(x=>x.uid===sel);const go=$("#txGo");go.disabled=true;go.textContent="جارٍ الإرسال…";
+    try{await BE.sendFile({to:sel,file:f.id,name:(cur.spec.title&&cur.spec.title!==f.name()?cur.spec.title+" — ":"")+f.name(),note:$("#txNote").value.trim(),payload});
+      if($("#txPerm").checked){const p=Object.assign({},u.perms||{});const o=Object.assign({},p[f.id]||{});o.e=true;o.p=true;p[f.id]=o;await BE.update(sel,{perms:p})}
+      m.classList.remove("open");toast(`أُرسل الملف إلى ${u.name||u.email}، وسيظهر له عند دخوله`)}
+    catch(err){console.error(err);go.disabled=false;go.textContent="إرسال";toast("تعذّر الإرسال: "+(errMsg?errMsg(err):"حاول مرة أخرى"))}};
+}
+let INBOX=[];
+async function checkInbox(){if(!ME||!BE||!BE.inbox||EMBED)return;try{INBOX=(await BE.inbox())||[]}catch(e){INBOX=[]}renderInbox()}
+function renderInbox(){let c=document.getElementById("inboxCard");
+  if(!INBOX.length){if(c)c.remove();return}
+  if(!c){c=document.createElement("div");c.id="inboxCard";c.className="inbox-card";document.body.appendChild(c)}
+  c.innerHTML=`<div class="ib-h"><b>📥 ${INBOX.length>1?"وصلتك ملفات جاهزة":"وصلك ملف جاهز"}</b><button type="button" class="ib-x" aria-label="إخفاء">×</button></div>${INBOX.map(t=>`<div class="ib-i"><div><b>${esc(t.file_name||fileName(t.file_id))}</b>${t.note?`<span>${esc(t.note)}</span>`:""}<small>${esc(new Date(t.created_at).toLocaleDateString("ar-SA-u-nu-latn"))}</small></div><button type="button" class="btn sm primary" data-rx="${t.id}">استلام</button></div>`).join("")}`;
+  c.querySelector(".ib-x").onclick=()=>c.remove();
+  c.querySelectorAll("[data-rx]").forEach(b=>b.onclick=()=>receiveFile(+b.dataset.rx))}
+async function receiveFile(id){const t=INBOX.find(x=>x.id===id);if(!t)return;
+  let full=t;if(!t.payload&&BE.getTransfer)full=await BE.getTransfer(id);const P=full&&full.payload;if(!P)return toast("تعذّر تحميل الملف");
+  const has=Object.keys(localStorage).some(k=>k.startsWith("hq3:e:"+t.file_id+":"+S.gender)||k.startsWith("hq3:i:"+t.file_id+":"));
+  if(has&&!await uiConfirm(`لديك بيانات سابقة في «${t.file_name||fileName(t.file_id)}». سيستبدلها الملف المستلَم. هل تريد المتابعة؟`,{title:"استلام الملف",ok:"استلام واستبدال",danger:false}))return;
+  try{Object.keys(localStorage).filter(k=>k.startsWith("hq3:e:"+t.file_id+":"+S.gender)||k.startsWith("hq3:i:"+t.file_id+":")||k.startsWith("hq3:q:"+t.file_id+":")||k==="hq3:n:"+t.file_id).forEach(k=>localStorage.removeItem(k));
+    let fail=false;for(const [k,v] of Object.entries(P)){try{localStorage.setItem(k.replace("{g}",S.gender),v)}catch(e){fail=true}}
+    Object.keys(memImg).filter(k=>k.startsWith(t.file_id)).forEach(k=>delete memImg[k]);
+    await BE.markReceived(id);INBOX=INBOX.filter(x=>x.id!==id);renderInbox();
+    if(fail)toast("استُلم الملف، لكن بعض الصور لم تُحفظ لامتلاء مساحة التخزين في المتصفح");else toast("تم استلام الملف، راجعه قبل الطباعة");
+    location.hash="#/f/"+t.file_id;if(S.file===t.file_id)render()}
+  catch(e){console.error(e);toast("تعذّر استلام الملف")}}
+$("#sendBtn").addEventListener("click",()=>sendFileDlg());
+
 $("#wordBtn").addEventListener("click",()=>exportWord().catch(e=>{console.error(e);toast("تعذّر إنشاء ملف Word")}));
 /* ---------- لوحة الإعدادات (المشرف) ---------- */
 let admTab="pending",admEdit=null,admQ="";
@@ -6570,7 +6636,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#authM").classLi
     try{const bk=sessionStorage.getItem("nq:back");if(bk&&ME&&ME.status&&ME.status!=="noprofile"){sessionStorage.removeItem("nq:back");location.href=bk;return}}catch(e){}
     if(isAdmin())startAdmin();else stopAdmin();
     if(isActive()&&!S.name&&ME.name){S.name=ME.name;S.school=S.school||ME.school||"";S.dept=ME.dept||S.dept;S.job=S.job||ME.title||"";S.gender=ME.gender||S.gender;saveS();render();return}
-    applyAccess();
+    applyAccess();checkInbox();
     if(CURV==="cards"){cdDraw();renderMyCards()}
     if(CURV==="store")renderStore();if(CURV==="account")renderMyOrders();if(CURV==="orders")renderOrdersAdmin();
     if(isAdmin())shopPending();
