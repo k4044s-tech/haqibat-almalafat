@@ -294,7 +294,7 @@ html.dark .okmsg{color:oklch(.792 .209 151.711)}
 .pbar{display:flex;flex-wrap:wrap;gap:4px 8px;justify-content:space-between;align-items:center;width:210mm;font-size:calc(12px*min(var(--iz,1),2.6));color:var(--mut-fg);padding:12px 2px 6px}
 .pbar label{display:flex;align-items:center;gap:6px;cursor:pointer}
 .pbar input{accent-color:var(--pri)}
-.pwrap.skip .page{opacity:.35}
+.pwrap.skip .page{opacity:.35}.pwrap.evx .page{opacity:.6}.evxn{font-style:normal;font-size:12px;color:#a35a00;background:#fff4e0;border:1px solid #f3d3a0;border-radius:20px;padding:1px 9px;margin-inline:8px}
 .ft{padding:1rem;text-align:center;font-size:.75rem;color:var(--mut-fg);line-height:1.8}
 .lockc{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.75rem;padding:3rem 1.5rem}
 .lockc .fic{width:3rem;height:3rem}
@@ -1395,7 +1395,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   html,body{height:auto;background:#fff!important;color:#000}
   html.dark{color-scheme:light}
   .page td.csel{box-shadow:none!important;outline:0!important}
-  .sb,.sb-gap,.sb-ov,.hdr,.vhead,.opts,.ksr,.certc,#vCards,#vStore,#vOrders,.cvv,.ftb,.kd-dlg,.access,.hint,.pbar,.toast,.modal,.auth,.sheet,.dd,.ft,#vDash,#admM,#vAccount,.pwrap.skip{display:none!important}
+  .sb,.sb-gap,.sb-ov,.hdr,.vhead,.opts,.ksr,.certc,#vCards,#vStore,#vOrders,.pwrap.evx,.cvv,.ftb,.kd-dlg,.access,.hint,.pbar,.toast,.modal,.auth,.sheet,.dd,.ft,#vDash,#admM,#vAccount,.pwrap.skip{display:none!important}
   .sbw,.sb-inset,.mn,.pframe,#vFile{display:block!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:none!important;max-width:none!important;min-height:0!important;border-radius:0!important;overflow:visible!important}
   .pages{padding:0;gap:0;zoom:1!important;transform:none!important;width:auto!important;margin:0!important}
   .page{box-shadow:none;break-after:page;page-break-after:always;opacity:1!important}
@@ -1447,7 +1447,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <div class="vacts">
             <button class="btn" id="resetBtn" type="button" title="حذف ما كتبته في هذا الملف"><i data-i="rotate"></i>مسح التعديلات</button>
             <button class="btn" id="setBtn" type="button" hidden><i data-i="user"></i>بيانات الملف</button>
-            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button><button class="btn" id="sendBtn" type="button" hidden>📤 إرسال لمستخدم</button>
+            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button><button class="btn" id="impBtn" type="button" hidden title="استيراد ملف جاهز (.json)">📥 استيراد ملف جاهز</button><input type="file" id="impIn" accept=".json,application/json" hidden><button class="btn" id="sendBtn" type="button" hidden>📤 إرسال لمستخدم</button>
           </div>
         </div>
         <div class="access" id="access" role="status" hidden></div>
@@ -4042,14 +4042,18 @@ function render(){
   $("#fMeta").textContent=catOf(f)+" · "+(spec.pages.length+(spec.bare?0:2))+" صفحة · "+t.n;
   // page numbers: cover=1, index=2
   const B0=spec.bare?1:3;const idx=[]; let n=B0;
-  spec.pages.forEach(p=>{const tt=p.title||"صفحة";idx.push([p.t==="div"?"— "+tt:tt,n]);n++});
+  /* صفحات الشواهد الفارغة (بلا صور ولا روابط) لا تُطبع، وتُستبعد من الفهرس والترقيم */
+  const PK=(p,i)=>p.kpg!=null?p.kpg:"p"+i,NK=store.get(nKey(),{});
+  const EVX=new Set(spec.pages.map((p,i)=>{if(p.t!=="ev")return null;const k=PK(p,i),m=Math.min(8,Math.max(1,+(NK[k]||p.n||4)));
+    for(let j=0;j<m;j++){if(slotImg(k+"-i"+j))return null;const q=store.get(qKey(k+"-i"+j),null);if(q&&q.link)return null}return k}).filter(Boolean));
+  const NUM={};spec.pages.forEach((p,i)=>{const k=PK(p,i);if(skip.has(k)||EVX.has(k))return;NUM[k]=n;const tt=p.title||"صفحة";idx.push([p.t==="div"?"— "+tt:tt,n]);n++});
   if(spec.land)spec.pages.forEach(p=>p.land=true);const LC=spec.land?"land":"";
   const out=[];EVN=0;
-  const wrap=(key,label,inner,cls,x)=>`<div class="pwrap${skip.has(key)?" skip":""}" data-pg="${key}"><div class="pbar"><span>${label}</span>${x||""}<label><input type="checkbox" ${skip.has(key)?"":"checked"} data-skip="${key}"> ضمن الطباعة</label></div><div class="page st-${S.pstyle} f-${F().id} ${cls||""}" style="--p:${t.p};--s:${t.s};--a:${t.a};--l:${t.l};--d:${t.d||t.p};--body:${esc(F().b+FB)};--kufi:${esc(F().h+FB)}">${inner}</div></div>`;
+  const wrap=(key,label,inner,cls,x)=>`<div class="pwrap${skip.has(key)?" skip":""}${EVX.has(key)?" evx":""}" data-pg="${key}"><div class="pbar"><span>${label}</span>${EVX.has(key)?'<em class="evxn">لن تُطبع — لا توجد شواهد مرفقة</em>':""}${x||""}<label><input type="checkbox" ${skip.has(key)?"":"checked"} data-skip="${key}"> ضمن الطباعة</label></div><div class="page st-${S.pstyle} f-${F().id} ${cls||""}" style="--p:${t.p};--s:${t.s};--a:${t.a};--l:${t.l};--d:${t.d||t.p};--body:${esc(F().b+FB)};--kufi:${esc(F().h+FB)}">${inner}</div></div>`;
   if(!spec.bare){out.push(wrap("cv","الغلاف",rCover(spec,t),LC));
   out.push(wrap("ix","صفحة ٢ — الفهرس",rIndex(spec,t,idx,2),LC));}
   spec.pages.forEach((p,i)=>{
-    const pi=p.kpg!=null?p.kpg:"p"+i,num=i+B0; let h="";
+    const pi=p.kpg!=null?p.kpg:"p"+i,num=NUM[pi]||""; let h="";
     if(p.t==="div")h=rDiv(p,t,pi);
     else if(p.t==="table")h=rTable(spec,t,p,pi,num);
     else if(p.t==="fields")h=rFields(spec,t,p,pi,num);
@@ -4124,7 +4128,7 @@ function qrSvg(txt){
   catch(e){return ""}
 }
 const slotImg=k=>memImg[SK()+k]||store.get(iKey(k),null);
-function paintSlot(el){
+function paintSlot(el){{const w=el&&el.closest&&el.closest(".pwrap.evx");if(w&&slotImg(el.dataset.img)){w.classList.remove("evx");const n=w.querySelector(".evxn");if(n)n.remove()}}
   const k=el.dataset.img,img=slotImg(k),q=store.get(qKey(k),null),m=isStu()?"img":(S.evmode||"qr");
   el.style.backgroundImage="";el.classList.remove("has","isqr","both","pend");
   el.querySelectorAll(".qrv,.qrc").forEach(x=>x.remove());
@@ -4681,7 +4685,7 @@ pagesEl.addEventListener("keydown",e=>{const im=e.target.closest("[data-img]");i
 pagesEl.addEventListener("change",e=>{
   const c=e.target.closest("[data-skip]"); if(!c)return;
   const k=c.dataset.skip; c.checked?skip.delete(k):skip.add(k);
-  c.closest(".pwrap").classList.toggle("skip",!c.checked);
+  c.closest(".pwrap").classList.toggle("skip",!c.checked);keepY(render);
 });
 $("#fileIn").addEventListener("change",e=>{
   const file=e.target.files[0]; if(!file||!pendingImg)return;
@@ -4947,9 +4951,10 @@ $("#resetBtn").addEventListener("click",async()=>{
   Object.keys(memImg).filter(k=>k.startsWith(SK())).forEach(k=>delete memImg[k]);
   render();toast("تم مسح التعديلات");
 });
+addEventListener("beforeprint",()=>{try{if(CURV==="file"&&cur)keepY(render)}catch(e){}});
 $("#printBtn").addEventListener("click",()=>{
   if(!PRINT)return needAuth("print");
-  try{window.print()}catch(e){toast("افتح الصفحة في نافذة مستقلة ثم اضغط Ctrl+P")}
+  try{keepY(render);window.print()}catch(e){toast("افتح الصفحة في نافذة مستقلة ثم اضغط Ctrl+P")}
 });
 
 /* settings modal */
@@ -6270,7 +6275,7 @@ async function exportWord(){
       new TableCell({children:[P([run(v.trim().replace(/^\.+$/,"................"),{size:24})],{after:0})],width:{size:w2,type:WidthType.DXA},verticalAlign:VerticalAlign.CENTER,margins:{top:120,bottom:120,left:140,right:140}})]}))}))}
     return out}
   const sections=[];
-  const wraps=[...pagesEl.querySelectorAll(".pwrap")].filter(w=>!w.classList.contains("skip"));
+  const wraps=[...pagesEl.querySelectorAll(".pwrap")].filter(w=>!w.classList.contains("skip")&&!w.classList.contains("evx"));
   for(const w of wraps){const pg=w.querySelector(".page");if(!pg)continue;const land=pg.classList.contains("land");const wTw=(land?H_P:W_P)-2*MG;
     const key=w.dataset.pg,body=pg.querySelector(".pbody");let children=[],framed=false,bordered=false;
     if(key==="cv"){children=await coverOf(pg,wTw);bordered=true}
@@ -6541,7 +6546,7 @@ function txCollect(fid){const out={},g=S.gender;
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
     if(k.startsWith("hq3:e:"+fid+":"+g)||k.startsWith("hq3:i:"+fid+":")||k.startsWith("hq3:q:"+fid+":")||k==="hq3:n:"+fid)out[k.replace("hq3:e:"+fid+":"+g,"hq3:e:"+fid+":{g}")]=localStorage.getItem(k)}}catch(e){}
   return out}
-function renderSendBtn(){const b=$("#sendBtn");if(b)b.hidden=EMBED||!isAdmin()||TX_NO.has(S.file)||!!(cur&&cur.f&&cur.f.stu)}
+function renderSendBtn(){const b=$("#sendBtn");if(b)b.hidden=EMBED||!isAdmin()||TX_NO.has(S.file)||!!(cur&&cur.f&&cur.f.stu);const ib=$("#impBtn");if(ib)ib.hidden=EMBED||!isAdmin()}
 async function sendFileDlg(){
   if(!isAdmin()||!BE||!BE.sendFile)return toast("إرسال الملفات غير متاح حاليًا");
   ftbFlush();const f=cur.f,payload=txCollect(f.id),n=Object.keys(payload).length;
@@ -6576,13 +6581,22 @@ function renderInbox(){let c=document.getElementById("inboxCard");
   c.innerHTML=`<div class="ib-h"><b>📥 ${INBOX.length>1?"وصلتك ملفات جاهزة":"وصلك ملف جاهز"}</b><button type="button" class="ib-x" aria-label="إخفاء">×</button></div>${INBOX.map(t=>`<div class="ib-i"><div><b>${esc(t.file_name||fileName(t.file_id))}</b>${t.note?`<span>${esc(t.note)}</span>`:""}<small>${esc(new Date(t.created_at).toLocaleDateString("ar-SA-u-nu-latn"))}</small></div><button type="button" class="btn sm primary" data-rx="${t.id}">استلام</button></div>`).join("")}`;
   c.querySelector(".ib-x").onclick=()=>c.remove();
   c.querySelectorAll("[data-rx]").forEach(b=>b.onclick=()=>receiveFile(+b.dataset.rx))}
+function txApply(fid,P){Object.keys(localStorage).filter(k=>k.startsWith("hq3:e:"+fid+":"+S.gender)||k.startsWith("hq3:i:"+fid+":")||k.startsWith("hq3:q:"+fid+":")||k==="hq3:n:"+fid).forEach(k=>localStorage.removeItem(k));
+  let fail=false;for(const [k,v] of Object.entries(P)){if(!(k.startsWith("hq3:e:"+fid+":")||k.startsWith("hq3:i:"+fid+":")||k.startsWith("hq3:q:"+fid+":")||k==="hq3:n:"+fid))continue;try{localStorage.setItem(k.replace("{g}",S.gender),typeof v==="string"?v:JSON.stringify(v))}catch(e){fail=true}}
+  Object.keys(memImg).filter(k=>k.startsWith(fid)).forEach(k=>delete memImg[k]);return fail}
+/* استيراد ملف جاهز (.json) يحتوي بيانات ملف كاملة */
+$("#impBtn").addEventListener("click",()=>{if(!isAdmin())return;$("#impIn").value="";$("#impIn").click()});
+$("#impIn").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;let o;try{o=JSON.parse(await f.text())}catch(x){return toast("الملف غير صالح")}
+  if(!o||o.nasaq!==1||!o.file_id||!o.payload||typeof o.payload!=="object"||!FILES.some(x=>x.id===o.file_id))return toast("هذا ليس ملفًا جاهزًا من نَسَق");
+  const nm=o.file_name||fileName(o.file_id);
+  if(!await uiConfirm(`سيُستورد «${nm}» ويستبدل أي بيانات حالية في هذا الملف على جهازك. هل تريد المتابعة؟`,{title:"استيراد ملف جاهز",ok:"استيراد",danger:false}))return;
+  const fail=txApply(o.file_id,o.payload);toast(fail?"استُورد الملف، لكن بعض الصور لم تُحفظ لامتلاء مساحة التخزين":"تم استيراد الملف، راجعه قبل الطباعة");
+  if(S.file===o.file_id)render();else location.hash="#/f/"+o.file_id});
 async function receiveFile(id){const t=INBOX.find(x=>x.id===id);if(!t)return;
   let full=t;if(!t.payload&&BE.getTransfer)full=await BE.getTransfer(id);const P=full&&full.payload;if(!P)return toast("تعذّر تحميل الملف");
   const has=Object.keys(localStorage).some(k=>k.startsWith("hq3:e:"+t.file_id+":"+S.gender)||k.startsWith("hq3:i:"+t.file_id+":"));
   if(has&&!await uiConfirm(`لديك بيانات سابقة في «${t.file_name||fileName(t.file_id)}». سيستبدلها الملف المستلَم. هل تريد المتابعة؟`,{title:"استلام الملف",ok:"استلام واستبدال",danger:false}))return;
-  try{Object.keys(localStorage).filter(k=>k.startsWith("hq3:e:"+t.file_id+":"+S.gender)||k.startsWith("hq3:i:"+t.file_id+":")||k.startsWith("hq3:q:"+t.file_id+":")||k==="hq3:n:"+t.file_id).forEach(k=>localStorage.removeItem(k));
-    let fail=false;for(const [k,v] of Object.entries(P)){try{localStorage.setItem(k.replace("{g}",S.gender),v)}catch(e){fail=true}}
-    Object.keys(memImg).filter(k=>k.startsWith(t.file_id)).forEach(k=>delete memImg[k]);
+  try{const fail=txApply(t.file_id,P);
     await BE.markReceived(id);INBOX=INBOX.filter(x=>x.id!==id);renderInbox();
     if(fail)toast("استُلم الملف، لكن بعض الصور لم تُحفظ لامتلاء مساحة التخزين في المتصفح");else toast("تم استلام الملف، راجعه قبل الطباعة");
     location.hash="#/f/"+t.file_id;if(S.file===t.file_id)render()}
