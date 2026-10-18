@@ -1447,7 +1447,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <div class="vacts">
             <button class="btn" id="resetBtn" type="button" title="حذف ما كتبته في هذا الملف"><i data-i="rotate"></i>مسح التعديلات</button>
             <button class="btn" id="setBtn" type="button" hidden><i data-i="user"></i>بيانات الملف</button>
-            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button><button class="btn" id="impBtn" type="button" hidden title="استيراد ملف جاهز (.json)">📥 استيراد ملف جاهز</button><input type="file" id="impIn" accept=".json,application/json" hidden><button class="btn" id="sendBtn" type="button" hidden>📤 إرسال لمستخدم</button>
+            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button><button class="btn" id="impBtn" type="button" hidden title="استيراد ملف جاهز (PDF أو JSON)">📥 استيراد ملف جاهز</button><input type="file" id="impIn" accept=".json,.pdf,application/json,application/pdf" hidden><button class="btn" id="sendBtn" type="button" hidden>📤 إرسال لمستخدم</button>
           </div>
         </div>
         <div class="access" id="access" role="status" hidden></div>
@@ -6586,7 +6586,10 @@ function txApply(fid,P){Object.keys(localStorage).filter(k=>k.startsWith("hq3:e:
   Object.keys(memImg).filter(k=>k.startsWith(fid)).forEach(k=>delete memImg[k]);return fail}
 /* استيراد ملف جاهز (.json) يحتوي بيانات ملف كاملة */
 $("#impBtn").addEventListener("click",()=>{if(!isAdmin())return;$("#impIn").value="";$("#impIn").click()});
-$("#impIn").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;let o;try{o=JSON.parse(await f.text())}catch(x){return toast("الملف غير صالح")}
+$("#impIn").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;let o;try{const u8=new Uint8Array(await f.arrayBuffer());let txt;
+    if(u8[0]===0x25&&u8[1]===0x50){/* ملف PDF جاهز: البيانات مضمّنة بعد العلامة %NASAQ: */let t="";const st=Math.max(0,u8.length-4e6);for(let i=st;i<u8.length;i++)t+=String.fromCharCode(u8[i]);
+      const m=t.match(/%NASAQ:([A-Za-z0-9+\/=]+)/);if(!m)return toast("ملف PDF هذا لا يحتوي بيانات قابلة للاستيراد");const bin=atob(m[1]),b=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)b[i]=bin.charCodeAt(i);txt=new TextDecoder().decode(b)}
+    else txt=new TextDecoder().decode(u8);o=JSON.parse(txt)}catch(x){return toast("الملف غير صالح")}
   if(!o||o.nasaq!==1||!o.file_id||!o.payload||typeof o.payload!=="object"||!FILES.some(x=>x.id===o.file_id))return toast("هذا ليس ملفًا جاهزًا من نَسَق");
   const nm=o.file_name||fileName(o.file_id);
   if(!await uiConfirm(`سيُستورد «${nm}» ويستبدل أي بيانات حالية في هذا الملف على جهازك. هل تريد المتابعة؟`,{title:"استيراد ملف جاهز",ok:"استيراد",danger:false}))return;
