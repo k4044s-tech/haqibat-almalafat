@@ -1305,6 +1305,7 @@ table.t.rh14 td{height:18.5mm;vertical-align:middle}
 .ai-steps{display:flex;gap:8px;margin:2px 0 12px;flex-wrap:wrap}.ai-steps span{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#7a8791;cursor:pointer;padding:5px 10px;border-radius:20px;background:#f3f5f7}.ai-steps i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#dfe5e9;font-size:11px}.ai-steps span.on{background:#e7f1f6;color:#15445a}.ai-steps span.on i{background:#15445a;color:#fff}.ai-steps span.dn i{background:#0da9a6;color:#fff}
 .ai-f select.inp{appearance:auto}.aic{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}.chips{display:flex;flex-wrap:wrap;gap:6px}.ai-dlg .chip{border:1px solid #d6dee3;background:#fff;border-radius:18px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;color:#33434b}.ai-dlg .chip{box-shadow:none!important}.ai-dlg .chip.on{background:#15445a!important;border-color:#15445a!important;color:#fff!important}.ai-dlg .chip.on::before{content:"✓ "}
 .ai-sh{font-weight:700;font-size:13.5px;margin:10px 0 6px;color:#15445a}.ai-sec{border:1px solid #e3e8eb;border-radius:12px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:7px}.ai-sec b{font-size:13.5px}.ai-sec .aio,.aic .aio{font-size:13px}
+.ai-dlg .dlg-b .aipf{margin-inline-start:auto}
 .ai-note{font-size:12.5px;color:#55636c;background:#f6f8f9;border-radius:10px;padding:9px 11px;margin-top:4px}
 .ai-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 12px}.ai-sum>div{border:1px solid #e3e8eb;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:2px}.ai-sum b{font-size:20px}.ai-sum span{font-size:12px;color:#6b7a84}
 @media (max-width:640px){.ai-f{grid-template-columns:1fr}.ai-sum{grid-template-columns:1fr 1fr}}
@@ -6374,7 +6375,7 @@ function aiDialog(){return new Promise(res=>{
    <div class="ai-steps">${steps.map((s,i)=>`<span data-st="${i}"><i>${i+1}</i>${s[0]}</span>`).join("")}</div>
    ${steps.map((s,i)=>`<div class="ai-pane" data-pane="${i}" ${i?"hidden":""}>${s[1]}</div>`).join("")}
    <div class="ai-prog" id="aiProg" hidden><div class="bar"><i></i></div><span></span></div>
-   <div class="dlg-b"><button class="btn primary" id="aiNext" type="button">التالي</button><button class="btn primary" id="aiGo" type="button" hidden>جهّز الآن</button><button class="btn" id="aiBack" type="button" hidden>السابق</button><button class="btn" id="aiNo" type="button">إلغاء</button></div></div>`;
+   <div class="dlg-b"><button class="btn primary" id="aiNext" type="button">التالي</button><button class="btn primary" id="aiGo" type="button" hidden>جهّز الآن</button><button class="btn" id="aiBack" type="button" hidden>السابق</button><button class="btn ghost aipf" id="aiPrint" type="button" title="اطبع الأسئلة لتعبئتها بالقلم">🖨 طباعة النموذج ورقيًا</button><button class="btn" id="aiNo" type="button">إلغاء</button></div></div>`;
   m.classList.add("open");let st=0;
   const show=i=>{st=i;m.querySelectorAll("[data-pane]").forEach(p=>p.hidden=+p.dataset.pane!==i);m.querySelectorAll("[data-st]").forEach(s=>{s.classList.toggle("on",+s.dataset.st===i);s.classList.toggle("dn",+s.dataset.st<i)});
     m.querySelector("#aiNext").hidden=i===2;m.querySelector("#aiGo").hidden=i!==2;m.querySelector("#aiBack").hidden=i===0;m.querySelector(".ai-dlg").scrollTop=0};
@@ -6383,7 +6384,7 @@ function aiDialog(){return new Promise(res=>{
   m.addEventListener("click",e=>{const c=e.target.closest(".chip");if(c){c.classList.toggle("on");return}const s=e.target.closest("[data-st]");if(s)show(+s.dataset.st);if(e.target===m)done(null)});
   m.addEventListener("change",e=>{if(e.target.tagName==="SELECT"){const o=e.target.parentElement.querySelector(".aio");if(o)o.hidden=e.target.value!=="__o"}});
   m.querySelector("#aiImgs").addEventListener("change",e=>{const n=e.target.files.length;m.querySelector("#aiImgN").textContent=n?(n>12?"سيُستخدم أول 12 صورة فقط":n+" صورة — سيضع Claude كل صورة في الصفحة المناسبة"):""});
-  m.querySelector("#aiNext").onclick=()=>show(Math.min(2,st+1));m.querySelector("#aiBack").onclick=()=>show(Math.max(0,st-1));m.querySelector("#aiNo").onclick=()=>done(null);
+  m.querySelector("#aiNext").onclick=()=>show(Math.min(2,st+1));m.querySelector("#aiBack").onclick=()=>show(Math.max(0,st-1));m.querySelector("#aiNo").onclick=()=>done(null);m.querySelector("#aiPrint").onclick=()=>aiPrintForm();
   m.querySelector("#aiGo").onclick=()=>{
     const info={"الملف":f?f.name():"","الاسم":PN()||"","المدرسة":S.school||"","الجنس":S.gender==="f"?"أنثى":"ذكر","الصفة":stu?"طالب":(S.job||"")};const base=Object.keys(info).length;
     const val=(g,n)=>{const el=m.querySelector(`[data-q="${g}:${n}"]`),q=P[g][n];if(!el)return "";
@@ -6397,6 +6398,46 @@ function aiDialog(){return new Promise(res=>{
     if(!Object.keys(info).slice(base).filter(k=>!/^(أسلوب الكتابة|المرحلة|عناصر لم يحدد فيها شيئًا)$/.test(k)).length&&!m.querySelector("#aiImgs").files.length){toast("حدّد بعض الخيارات أو اكتب معلومة واحدة على الأقل ليجهّز Claude ملفك");show(1);return}
     res({m,info,files:[...m.querySelector("#aiImgs").files].slice(0,12),replace:m.querySelector("#aiRep").checked})};
 })}
+/* طباعة أسئلة التجهيز الذكي نموذجًا ورقيًا بفراغات كافية للكتابة */
+function aiPrintForm(){
+  const f=cur&&cur.f;if(!f)return;const P=aiQs(f),t=T(),stu=!!f.stu;
+  const box=o=>`<span class="ck"><i></i>${esc(o)}</span>`;
+  const lines=n=>`<div class="ln" style="height:${n*9}mm"></div>`;
+  const q=x=>{
+    if(x.t==="s")return `<div class="q"><h4>${esc(x.l)}</h4><div class="opts">${x.o.map(box).join("")}${box("أخرى: ....................")}</div></div>`;
+    if(x.t==="c")return `<div class="q"><h4>${esc(x.l)} <small>(ضع ✓ أمام كل ما ينطبق)</small></h4><div class="opts">${x.o.map(box).join("")}</div><div class="oth">أخرى: ${lines(1)}</div></div>`;
+    if(x.t==="t")return `<div class="q"><h4>${esc(x.l)}</h4>${x.ph?`<small class="ph">${esc(x.ph)}</small>`:""}${lines(4)}</div>`;
+    return `<div class="q in"><h4>${esc(x.l)}:</h4><span class="fl">${esc(x.d||"")}</span></div>`};
+  const secs=(P.sec||[]).map((s,i)=>`<div class="sec"><div class="sh"><b>${i+1}</b>${esc(s.t)}</div><div class="opts">${s.o.map(box).join("")}</div><div class="oth">تفاصيل أو شواهد أخرى: ${lines(2)}</div></div>`).join("");
+  const head=`<div class="hd"><div><b>المملكة العربية السعودية</b><br>وزارة التعليم<br>${esc(S.dept||"")}<br>${esc(S.school||"المدرسة: ..................")}</div><img src="${LOGO}" alt=""><div>العام الدراسي: ${esc(S.year||"")}<br>${esc(S.term||"")}</div></div>`;
+  const who=stu?[["الاسم",""],["الصف",""],["المدرسة",S.school||""]]:[["الاسم",""],["الوظيفة / التخصص",""],["المدرسة",S.school||""],["التاريخ",""]];
+  const html=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><\x74itle>نموذج بيانات — ${esc(f.name())}</\x74itle>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
+<style>@page{size:A4;margin:12mm}*{box-sizing:border-box}body{margin:0;font:11pt/1.6 Tajawal,"IBM Plex Sans Arabic",Tahoma,sans-serif;color:#1f2a2c;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.hd{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:9.5pt;border-bottom:2px solid ${t.p};padding-bottom:3mm}.hd>div:last-child{text-align:left}.hd img{height:20mm}
+h1{font-size:17pt;color:${t.p};text-align:center;margin:5mm 0 1mm}.sub{text-align:center;color:#55636c;font-size:10pt;margin-bottom:4mm}
+.who{display:grid;grid-template-columns:1fr 1fr;gap:2mm 8mm;margin:3mm 0 5mm;padding:3mm 4mm;border:1px solid #cfd9df;border-radius:3mm}.who div{display:flex;gap:2mm;align-items:flex-end}.who b{white-space:nowrap}.who span{flex:1;border-bottom:1px dotted #8a9aa3;min-height:6mm}
+.part{background:${t.p};color:#fff;font-weight:800;padding:1.5mm 4mm;border-radius:2mm;margin:5mm 0 3mm;font-size:12pt;break-after:avoid}
+.q{margin:0 0 4mm;break-inside:avoid}.q h4{margin:0 0 1.5mm;font-size:11pt}.q h4 small,.ph{font-weight:400;color:#7a8791;font-size:9pt}.ph{display:block;margin-bottom:1mm}
+.q.in{display:flex;align-items:flex-end;gap:3mm}.q.in h4{white-space:nowrap;margin:0}.q.in .fl{flex:1;border-bottom:1px solid #9fb0b9;min-height:8mm;padding:0 2mm;font-size:11pt}
+.ln{background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(9mm - 1px),#9fb0b9 calc(9mm - 1px),#9fb0b9 9mm)}
+.opts{display:flex;flex-wrap:wrap;gap:1.6mm 5mm}.ck{display:inline-flex;align-items:center;gap:1.6mm;font-size:10.5pt}.ck i{width:4mm;height:4mm;border:1.3px solid #33434b;border-radius:.8mm;display:inline-block;flex:none}
+.oth{display:flex;align-items:flex-end;gap:2mm;margin-top:2mm;font-size:10pt;color:#55636c}.oth .ln{flex:1}
+.sec{border:1px solid #d6dee3;border-radius:3mm;padding:3mm 4mm;margin-bottom:3mm;break-inside:avoid}.sh{display:flex;align-items:center;gap:2mm;font-weight:800;color:${t.p};margin-bottom:2mm}.sh b{background:${t.s};color:#fff;width:6mm;height:6mm;border-radius:50%;display:grid;place-items:center;font-size:9pt}
+.ft{margin-top:6mm;padding-top:3mm;border-top:1px solid #cfd9df;font-size:9pt;color:#7a8791;display:flex;justify-content:space-between}
+.sig{display:grid;grid-template-columns:1fr 1fr;gap:10mm;margin-top:6mm}.sig div{border-top:1px dotted #8a9aa3;padding-top:1.5mm;text-align:center;font-size:10pt}</style></head><body>
+${head}<h1>نموذج جمع بيانات: ${esc(f.name())}</h1><div class="sub">${esc(P.h)}</div>
+<div class="who">${who.map(([k,v])=>`<div><b>${k}:</b><span>${esc(v)}</span></div>`).join("")}</div>
+<div class="part">أولًا: البيانات الأساسية</div>${P.b.map(q).join("")}
+<div class="part">ثانيًا: ${stu?"اهتماماتك ومشاركاتك":"ما نفّذته فعلًا"}</div>${P.x.map(q).join("")}
+${secs?`<div class="part">ثالثًا: عناصر الملف — ضع ✓ أمام ما نفّذته في كل عنصر</div>${secs}`:""}
+<div class="part">${secs?"رابعًا":"ثالثًا"}: الشواهد</div><div class="q"><h4>الصور والمستندات التي سترفقها (اذكرها)</h4>${lines(3)}</div>
+<div class="sig"><div>${stu?"توقيع الطالب":"التوقيع"}</div><div>التاريخ: ..... / ..... / ............ هـ</div></div>
+<div class="ft"><span>نَسَق — نموذج ورقي للتجهيز الذكي</span><span>${esc(f.name())}</span></div>
+<script>document.fonts&&document.fonts.ready.then(()=>setTimeout(()=>{print()},150));setTimeout(()=>{try{print()}catch(e){}},2500)<\/script></body></html>`;
+  let fr=document.getElementById("aiPrintFr");if(fr)fr.remove();fr=document.createElement("iframe");fr.id="aiPrintFr";fr.setAttribute("aria-hidden","true");fr.style.cssText="position:fixed;width:0;height:0;border:0;left:-9999px;bottom:0";document.body.appendChild(fr);
+  window.__aiForm=html;fr.srcdoc=html;
+}
 async function runAi(){
   if(!ME)return needAuth("edit");
   if(!aiAvail())return toast(AI_ERR.no_permission);
