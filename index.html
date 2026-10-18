@@ -1304,7 +1304,7 @@ table.t.rh14 td{height:18.5mm;vertical-align:middle}
 .ai-prog{display:flex;flex-direction:column;gap:6px;margin:6px 0 10px;font-size:13px;color:var(--mut,#55636c)}.ai-prog .bar{height:8px;border-radius:8px;background:#eef2f4;overflow:hidden}.ai-prog .bar i{display:block;height:100%;width:5%;background:linear-gradient(90deg,#15445a,#0da9a6);transition:width .4s}
 .ai-steps{display:flex;gap:8px;margin:2px 0 12px;flex-wrap:wrap}.ai-steps span{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#7a8791;cursor:pointer;padding:5px 10px;border-radius:20px;background:#f3f5f7}.ai-steps i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#dfe5e9;font-size:11px}.ai-steps span.on{background:#e7f1f6;color:#15445a}.ai-steps span.on i{background:#15445a;color:#fff}.ai-steps span.dn i{background:#0da9a6;color:#fff}
 .ai-f select.inp{appearance:auto}.aic{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}.chips{display:flex;flex-wrap:wrap;gap:6px}.ai-dlg .chip{border:1px solid #d6dee3;background:#fff;border-radius:18px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;color:#33434b}.ai-dlg .chip{box-shadow:none!important}.ai-dlg .chip.on{background:#15445a!important;border-color:#15445a!important;color:#fff!important}.ai-dlg .chip.on::before{content:"✓ "}
-.ai-sh{font-weight:700;font-size:13.5px;margin:10px 0 6px;color:#15445a}.ai-sec{border:1px solid #e3e8eb;border-radius:12px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:7px}.ai-sec b{font-size:13.5px}.ai-sec .aio,.aic .aio{font-size:13px}
+.ai-ref{border:1.5px dashed #0da9a6;background:#f2fbfa;border-radius:12px;padding:10px 12px;margin-bottom:12px;display:flex;flex-direction:column;gap:6px}.ai-ref b{color:#15445a;font-size:14px}.ai-ref small{color:#5a6b73;font-size:12.5px;line-height:1.7}.ai-docs{display:flex;flex-wrap:wrap;gap:6px}.ai-docs .chip{cursor:default;display:inline-flex;gap:6px;align-items:center}.ai-docs .chip.bad{background:#fde8e8!important;color:#a32020!important;border-color:#f3b4b4!important}.ai-docs small{color:inherit!important;opacity:.85;font-size:11.5px}.ai-docs a{cursor:pointer;font-weight:700;padding:0 2px}.ai-sh{font-weight:700;font-size:13.5px;margin:10px 0 6px;color:#15445a}.ai-sec{border:1px solid #e3e8eb;border-radius:12px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:7px}.ai-sec b{font-size:13.5px}.ai-sec .aio,.aic .aio{font-size:13px}
 .ai-dlg .dlg-b .aipf{margin-inline-start:auto}
 .tx-dlg{max-width:560px}.tx-list{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:6px;margin:10px 0}.tx-u{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:right;border:1px solid #e1e7eb;background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;font:inherit}.tx-u span{font-size:12.5px;color:#55636c}.tx-u small{font-size:11.5px;color:#8a9aa3}.tx-u.on{border-color:#15445a;background:#eef5f8;box-shadow:0 0 0 2px #15445a33}
 .tx-ck{display:flex;align-items:center;gap:8px;font-size:13px;margin:4px 0 8px}.tx-note{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}.tx-sz{font-size:12px;margin-top:6px}
@@ -6290,7 +6290,7 @@ async function exportWord(){
 
 
 /* ---------- التجهيز الذكي (Claude) ---------- */
-const AI_ERR={no_permission:"التجهيز الذكي غير متوفر لحسابك في هذا الملف. اطلبه من المشرف.",limit:"استنفدت عدد مرات التجهيز الذكي المسموحة لهذا الملف.",not_configured:"خدمة التجهيز الذكي لم تُفعَّل بعد على الخادم.",disabled:"خدمة التجهيز الذكي متوقفة مؤقتًا.",job_expired:"انتهت مهلة العملية، أعد المحاولة.",upstream:"تعذّر الاتصال بخدمة Claude، أعد المحاولة بعد قليل.",auth:"سجّل الدخول أولًا.",too_many_parts:"الملف كبير جدًا، أعد المحاولة.",net:"تعذّر الاتصال بالخادم، تحقق من الإنترنت.",server:"حدث خطأ في الخادم، أعد المحاولة."};
+const AI_ERR={no_permission:"التجهيز الذكي غير متوفر لحسابك في هذا الملف. اطلبه من المشرف.",limit:"استنفدت عدد مرات التجهيز الذكي المسموحة لهذا الملف.",not_configured:"خدمة التجهيز الذكي لم تُفعَّل بعد على الخادم.",disabled:"خدمة التجهيز الذكي متوقفة مؤقتًا.",job_expired:"انتهت مهلة العملية، أعد المحاولة.",upstream:"تعذّر الاتصال بخدمة Claude، أعد المحاولة بعد قليل.",auth:"سجّل الدخول أولًا.",too_many_parts:"الملف كبير جدًا، أعد المحاولة.",net:"تعذّر الاتصال بالخادم، تحقق من الإنترنت.",server:"حدث خطأ في الخادم، أعد المحاولة.",doc_size:"الملف المرجعي أكبر من 5 ميجابايت.",doc_unreadable:"تعذّرت قراءة الملف المرجعي."};
 /* أسئلة التجهيز الذكي — تُبنى حسب الملف: أساسيات بقوائم اختيار، ثم «ما نفّذته» من عناصر الملف نفسه أو من خيارات مخصصة لنوعه */
 const AI_NONE=new Set(["ks-marks","ks-groups","certs","stu-certs","stu-cards"]);
 const AO={
@@ -6380,7 +6380,7 @@ function aiDialog(){return new Promise(res=>{
     return `<label><span>${esc(q.l)}</span><input class="inp" ${a} value="${esc(q.d||"")}" placeholder="${esc(q.ph)}"></label>`};
   const secs=(P.sec||[]).map((s,n)=>`<div class="ai-sec" data-sec="${n}"><b>${esc(s.t)}</b><div class="chips">${s.o.map(o=>`<button type="button" class="chip">${esc(o)}</button>`).join("")}</div><input class="inp aio" placeholder="تفاصيل تريد ذكرها في هذا العنصر (اختياري)"></div>`).join("");
   const steps=[["الأساسيات",`<div class="ai-f">${P.b.map((q,n)=>fld(q,n,"b")).join("")}</div>`],
-    ["ما نفّذته",`<div class="ai-f">${P.x.map((q,n)=>fld(q,n,"x")).join("")}</div>${secs?`<div class="ai-sh">عناصر الملف — اختر ما نفّذته فعلًا في كل عنصر</div>${secs}`:""}`],
+    ["ما نفّذته",`${stu?"":`<div class="ai-ref"><b>📎 ملفات مرجعية (اختياري)</b><small>أرفق تقارير المدرسة بصيغة PDF: بطاقات نافس، تقرير التقويم المدرسي، تقرير التقويم الذاتي، نتائج الاختبارات… يقرؤها Claude ويستخدم أرقامها ونسبها ونقاط القوة والضعف فيها كما هي. حتى 4 ملفات، 5 ميجابايت للملف.</small><input type="file" id="aiDocs" accept="application/pdf,.pdf" multiple><div id="aiDocN" class="ai-docs"></div></div>`}<div class="ai-f">${P.x.map((q,n)=>fld(q,n,"x")).join("")}</div>${secs?`<div class="ai-sh">عناصر الملف — اختر ما نفّذته فعلًا في كل عنصر</div>${secs}`:""}`],
     ["الصور والخيارات",`<div class="ai-f"><label class="w"><span>${stu?"صور أعمالك ومشاركاتك":"صور الشواهد"} (حتى 12 صورة)</span><input type="file" id="aiImgs" accept="image/*" multiple><small id="aiImgN" class="muted">يقرأ Claude الصور ويضع كل صورة في الصفحة المناسبة مع وصف قصير.</small></label>
       <label class="w ck"><input type="checkbox" id="aiRep"> استبدال النصوص المكتوبة مسبقًا (الافتراضي: تعبئة الخانات الفارغة فقط)</label></div><div class="ai-note">سيكتب Claude عمّا اخترته وكتبته فقط، ولن يضيف أسماء أو تواريخ أو أرقامًا لم تذكرها. راجع الملف بعد التجهيز قبل الطباعة.</div>`]];
   m.innerHTML=`<div class="dialog ui-dlg ai-dlg"><div class="dlg-h"><h3>✨ التجهيز الذكي — ${esc(f?f.name():"")}</h3><p>${esc(P.h)}</p></div>
@@ -6396,6 +6396,10 @@ function aiDialog(){return new Promise(res=>{
   m.addEventListener("click",e=>{const c=e.target.closest(".chip");if(c){c.classList.toggle("on");return}const s=e.target.closest("[data-st]");if(s)show(+s.dataset.st);if(e.target===m)done(null)});
   m.addEventListener("change",e=>{if(e.target.tagName==="SELECT"){const o=e.target.parentElement.querySelector(".aio");if(o)o.hidden=e.target.value!=="__o"}});
   m.querySelector("#aiImgs").addEventListener("change",e=>{const n=e.target.files.length;m.querySelector("#aiImgN").textContent=n?(n>12?"سيُستخدم أول 12 صورة فقط":n+" صورة — سيضع Claude كل صورة في الصفحة المناسبة"):""});
+  let docs=[];const dIn=m.querySelector("#aiDocs");
+  const paintDocs=()=>{const b=m.querySelector("#aiDocN");if(!b)return;b.innerHTML=docs.map((d,i)=>`<span class="chip on${d.size>5242880?" bad":""}">📄 ${esc(d.name)} <small>${(d.size/1048576).toFixed(1)} م.ب${d.size>5242880?" — كبير جدًا":""}</small><a data-dx="${i}" title="إزالة">✕</a></span>`).join("")};
+  if(dIn){dIn.addEventListener("change",e=>{for(const f of e.target.files){if(!/pdf$/i.test(f.type||f.name))continue;if(docs.length>=4){toast("الحد 4 ملفات مرجعية");break}if(!docs.some(d=>d.name===f.name&&d.size===f.size))docs.push(f)}e.target.value="";paintDocs()});
+    m.querySelector("#aiDocN").addEventListener("click",e=>{const x=e.target.closest("[data-dx]");if(!x)return;e.stopPropagation();docs.splice(+x.dataset.dx,1);paintDocs()})}
   m.querySelector("#aiNext").onclick=()=>show(Math.min(2,st+1));m.querySelector("#aiBack").onclick=()=>show(Math.max(0,st-1));m.querySelector("#aiNo").onclick=()=>done(null);m.querySelector("#aiPrint").onclick=()=>aiPrintForm();
   m.querySelector("#aiGo").onclick=()=>{
     const info={"الملف":f?f.name():"","الاسم":PN()||"","المدرسة":S.school||"","الجنس":S.gender==="f"?"أنثى":"ذكر","الصفة":stu?"طالب":(S.job||"")};const base=Object.keys(info).length;
@@ -6407,8 +6411,8 @@ function aiDialog(){return new Promise(res=>{
     const el=[...m.querySelectorAll("[data-sec]")].map(d=>{const s=P.sec[+d.dataset.sec],on=[...d.querySelectorAll(".chip.on")].map(x=>x.textContent),t=d.querySelector(".aio").value.trim();return on.length||t?{"العنصر":s.t,"ما نُفّذ":on,"تفاصيل":t}:null}).filter(Boolean);
     if(el.length)info["ما نفّذه المستخدم في عناصر الملف (اكتب عنها فقط)"]=el;
     if(P.sec&&P.sec.length)info["عناصر لم يحدد فيها شيئًا"]=P.sec.map(s=>s.t).filter(t=>!el.some(x=>x["العنصر"]===t));
-    if(!Object.keys(info).slice(base).filter(k=>!/^(أسلوب الكتابة|المرحلة|عناصر لم يحدد فيها شيئًا)$/.test(k)).length&&!m.querySelector("#aiImgs").files.length){toast("حدّد بعض الخيارات أو اكتب معلومة واحدة على الأقل ليجهّز Claude ملفك");show(1);return}
-    res({m,info,files:[...m.querySelector("#aiImgs").files].slice(0,12),replace:m.querySelector("#aiRep").checked})};
+    if(!Object.keys(info).slice(base).filter(k=>!/^(أسلوب الكتابة|المرحلة|عناصر لم يحدد فيها شيئًا)$/.test(k)).length&&!m.querySelector("#aiImgs").files.length&&!docs.length){toast("حدّد بعض الخيارات أو اكتب معلومة واحدة على الأقل ليجهّز Claude ملفك");show(1);return}
+    res({m,info,files:[...m.querySelector("#aiImgs").files].slice(0,12),docs:docs.filter(d=>d.size<=5242880),replace:m.querySelector("#aiRep").checked})};
 })}
 /* طباعة أسئلة التجهيز الذكي نموذجًا ورقيًا بفراغات كافية للكتابة */
 function aiPrintForm(){
@@ -6450,6 +6454,7 @@ ${secs?`<div class="part">ثالثًا: عناصر الملف — ضع ✓ أم�
   let fr=document.getElementById("aiPrintFr");if(fr)fr.remove();fr=document.createElement("iframe");fr.id="aiPrintFr";fr.setAttribute("aria-hidden","true");fr.style.cssText="position:fixed;width:0;height:0;border:0;left:-9999px;bottom:0";document.body.appendChild(fr);
   window.__aiForm=html;fr.srcdoc=html;
 }
+function aiB64(f){return new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(",")[1]||"");r.onerror=()=>no({code:"ai/doc_unreadable"});r.readAsDataURL(f)})}
 async function runAi(){
   if(!ME)return needAuth("edit");
   if(!aiAvail())return toast(AI_ERR.no_permission);
@@ -6466,8 +6471,15 @@ async function runAi(){
     if(!fields.length&&!small.length){step(1,"");m.classList.remove("open");return toast("لا توجد خانات فارغة لتعبئتها. فعّل «استبدال النصوص» لإعادة الكتابة.")}
     const CH=110,parts=[];for(let i=0;i<fields.length;i+=CH)parts.push(fields.slice(i,i+CH));if(!parts.length)parts.push([]);
     let job=null,applied=0,res=null;const title=cur.spec.title+(cur.spec.sub?" — "+cur.spec.sub:"");
+    const dg=[],dFail=[];
+    for(let i=0;i<(r.docs||[]).length;i++){const d=r.docs[i];
+      step(.05+.25*i/r.docs.length,`يقرأ Claude الملف المرجعي «${d.name}» (${i+1} من ${r.docs.length})…`);
+      try{const b64=await aiB64(d);const x=await BE.aiPrepare({file:S.file,title,job,mode:"digest",doc:b64,docName:d.name});job=x.job||job;if(x.digest)dg.push({"الملف":d.name,"البيانات":x.digest})}
+      catch(e){const c=String(e&&e.code||"").replace(/^ai\//,"");if(/^(limit|no_permission|disabled|auth|not_configured)$/.test(c))throw e;dFail.push(d.name)}}
+    if(dg.length)r.info["ملخص الملفات المرجعية (بيانات رسمية — استخدم أرقامها كما هي)"]=dg;
+    if(r.docs&&r.docs.length&&!dg.length&&!fields.length)throw{code:"ai/doc_unreadable"};
     for(let i=0;i<parts.length;i++){
-      step(.1+.85*i/parts.length,`يكتب Claude محتوى الملف… (الجزء ${i+1} من ${parts.length})`);
+      step((dg.length||dFail.length?.32:.1)+(dg.length||dFail.length?.63:.85)*i/parts.length,`يكتب Claude محتوى الملف… (الجزء ${i+1} من ${parts.length})`);
       res=await BE.aiPrepare({file:S.file,title,job,info:r.info,replace:r.replace,fields:parts[i],slots:i===0?slots:[],images:i===0?small:[],last:i===parts.length-1});
       job=res.job;
       for(const [k,v] of Object.entries(res.fills||{})){if(typeof v!=="string"||!v.trim())continue;const el=pagesEl.querySelector(`[data-k="${CSS.escape(k)}"]`);if(!el||el.getAttribute("contenteditable")!=="true")continue;el.textContent=v.trim();markDirty(el);applied++}
@@ -6481,7 +6493,7 @@ async function runAi(){
     }
     ftbFlush();step(1,"اكتمل التجهيز");
     setTimeout(()=>m.classList.remove("open"),400);
-    toast(`تم التجهيز: عُبّئت ${applied} خانة${full.length?" ووُزّعت "+full.length+" صورة":""}. راجع الملف قبل الطباعة.`+(res&&res.limit?` (المتبقي ${Math.max(0,res.limit-res.used)} من ${res.limit})`:""));
+    toast(`تم التجهيز: عُبّئت ${applied} خانة${full.length?" ووُزّعت "+full.length+" صورة":""}. راجع الملف قبل الطباعة.`+(dg.length?` استُفيد من ${dg.length} ملف مرجعي.`:"")+(dFail.length?` تعذّرت قراءة: ${dFail.join("، ")}.`:"")+(res&&res.limit?` (المتبقي ${Math.max(0,res.limit-res.used)} من ${res.limit})`:""));
     keepY(render);
   }catch(e){console.error(e);go.disabled=false;m.querySelectorAll(".ai-dlg input,.ai-dlg textarea,.ai-dlg select,.ai-dlg .chip,#aiBack").forEach(x=>x.disabled=false);prog.hidden=true;
     const c=String(e&&e.code||"").replace(/^ai\//,"");toast(AI_ERR[c]||AI_ERR.server)}
