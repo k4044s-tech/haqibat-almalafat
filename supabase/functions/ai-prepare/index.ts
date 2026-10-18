@@ -32,15 +32,16 @@ const MAX_PARTS = 24;
 const MAX_IMAGES = 12;
 const MAX_IMG_B64 = 450_000;
 const MAX_FIELDS = 400;
-const MAX_DOC_B64 = 7_000_000; // ملف مرجعي PDF حتى 5 ميجابايت تقريبًا
+const MAX_DOC_IMGS = 40; // صفحات مصوّرة من الملفات المرجعية (تُصغَّر على جهاز المستخدم)
+const MAX_DOC_TEXT = 120_000;
 
-const DIGEST = `اقرأ هذا الملف المرجعي (تقرير تقويم مدرسي، أو بطاقة نافس، أو تقرير تقويم ذاتي، أو ما شابه) واستخرج منه ملخصًا عربيًا دقيقًا منظمًا يُستخدم لاحقًا في إعداد خطط المدرسة وملفاتها:
+const DIGEST = `فيما سبق ملفات مرجعية لمدرسة (تقارير تقويم مدرسي، بطاقات نافس، تقارير تقويم ذاتي، أو ما شابه)؛ بعض الصفحات نص مستخرج آليًا وبعضها صور للصفحات. لخّص كل ملف تحت عنوان باسمه، واستخرج ملخصًا عربيًا دقيقًا منظمًا يُستخدم لاحقًا في إعداد خطط المدرسة وملفاتها:
 - بيانات المدرسة الأساسية (الاسم، المرحلة، الجنس، الإدارة، العام) إن وُجدت.
 - النتائج حسب كل مجال ومعيار ومؤشر مع المستوى أو التقدير أو النسبة كما هي حرفيًا.
 - نتائج نافس لكل صف ومادة ومجال: نسبة الإتقان، والمتوسط، ومقدار التغير، والمقارنة بالمستويات الأعلى إن وُجدت.
 - أعلى المؤشرات أداءً (نقاط القوة) وأدناها (فرص التحسين) مرتبة.
 - التوصيات الواردة في الملف.
-قواعد: انقل الأرقام والنسب كما هي دون تقريب أو تخمين، ولا تذكر أسماء الطلاب، ولا تضف شيئًا غير موجود في الملف. اكتب نقاطًا مختصرة لا تتجاوز 900 كلمة. ابدأ بسطر يحدد نوع الملف.`;
+قواعد: انقل الأرقام والنسب كما هي دون تقريب أو تخمين، ولا تذكر أسماء الطلاب، ولا تضف شيئًا غير موجود في الملف. عند تعارض النص المستخرج مع صورة الصفحة اعتمد الصورة. اكتب نقاطًا مختصرة لا تتجاوز 700 كلمة لكل ملف.`;
 
 const SYSTEM = `أنت «مجهّز نَسَق»: خبير في إعداد الملفات المدرسية الرسمية لوزارة التعليم في المملكة العربية السعودية (ملفات شواهد الأداء الوظيفي، الخطط، السجلات، ملفات الإدارة والطلاب).
 مهمتك تعبئة خانات ملف واحد بصياغة عربية فصحى رسمية واضحة ومختصرة، مناسبة لمادة المستخدم ومرحلته وبياناته.
@@ -113,21 +114,31 @@ Deno.serve(async (req) => {
 
     // قراءة ملف مرجعي (PDF) واستخراج ملخص بياناته
     if (body.mode === "digest") {
-      const doc = String(body.doc || "");
-      if (!doc || doc.length > MAX_DOC_B64) {
-        if (!job.parts) await sb.from("ai_jobs").update({ status: "failed" }).eq("id", job.id);
-        return j({ error: "doc_size", job: job.parts ? job.id : null }, 413);
+      const docs = (Array.isArray(body.docs) ? body.docs : []).slice(0, 6);
+      const content: unknown[] = [];
+      let imgN = 0, txtN = 0;
+      for (const d of docs) {
+        const name = String(d?.name || "ملف").slice(0, 120);
+        content.push({ type: "text", text: `===== الملف: ${name} =====` });
+        const t = String(d?.text || "").slice(0, Math.max(0, MAX_DOC_TEXT - txtN));
+        txtN += t.length;
+        if (t) content.push({ type: "text", text: t });
+        for (const im of (Array.isArray(d?.imgs) ? d.imgs : [])) {
+          if (imgN >= MAX_DOC_IMGS || typeof im !== "string" || im.length > MAX_IMG_B64) continue;
+          imgN++;
+          content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: im } });
+        }
       }
-      const c = await callClaude(KEY, model, [
-        { type: "document", source: { type: "base64", media_type: "application/pdf", data: doc }, title: String(body.docName || "ملف مرجعي").slice(0, 120) },
-        { type: "text", text: DIGEST },
-      ], 3000);
-      if (!c.ok) {
-        if (!job.parts) await sb.from("ai_jobs").update({ status: "failed" }).eq("id", job.id);
-        return j({ error: c.status === 400 ? "doc_unreadable" : "upstream", detail: c.err, job: job.parts ? job.id : null }, 502);
-      }
+      const fail = async (e: string, st: number, detail?: unknown) => {
+        if (!job!.parts) await sb.from("ai_jobs").update({ status: "failed" }).eq("id", job!.id);
+        return j({ error: e, detail, job: job!.parts ? job!.id : null }, st);
+      };
+      if (!txtN && !imgN) return fail("doc_unreadable", 400);
+      content.push({ type: "text", text: DIGEST });
+      const c = await callClaude(KEY, model, content, 6000);
+      if (!c.ok) return fail(c.status === 400 ? "doc_unreadable" : "upstream", 502, c.err);
       await bill(c.it, c.ot, false);
-      return j({ job: job.id, digest: c.text.slice(0, 9000) });
+      return j({ job: job.id, digest: c.text.slice(0, 16000) });
     }
 
     // التحقق من الحجم
@@ -145,7 +156,7 @@ Deno.serve(async (req) => {
       type: "text",
       text: `الملف: ${String(body.title || "").slice(0, 200)}
 بيانات المستخدم وما يقوله عن عمله:
-${JSON.stringify(info).slice(0, 30000)}
+${JSON.stringify(info).slice(0, 40000)}
 استبدال النصوص الموجودة: ${body.replace ? "نعم" : "لا"}
 
 خانات الشواهد المتاحة لتوزيع الصور (المفتاح، الصفحة):
