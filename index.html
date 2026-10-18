@@ -6419,10 +6419,10 @@ function aiPrintForm(){
     if(x.t==="s")return `<div class="q"><h4>${esc(x.l)}</h4><div class="opts">${x.o.map(box).join("")}${box("أخرى: ....................")}</div></div>`;
     if(x.t==="c")return `<div class="q"><h4>${esc(x.l)} <small>(ضع ✓ أمام كل ما ينطبق)</small></h4><div class="opts">${x.o.map(box).join("")}</div><div class="oth">أخرى: ${lines(1)}</div></div>`;
     if(x.t==="t")return `<div class="q"><h4>${esc(x.l)}</h4>${x.ph?`<small class="ph">${esc(x.ph)}</small>`:""}${lines(4)}</div>`;
-    return `<div class="q in"><h4>${esc(x.l)}:</h4><span class="fl">${esc(x.d||"")}</span></div>`};
+    return `<div class="q in"><h4>${esc(x.l)}:</h4><span class="fl"></span></div>`};
   const secs=(P.sec||[]).map((s,i)=>`<div class="sec"><div class="sh"><b>${i+1}</b>${esc(s.t)}</div><div class="opts">${s.o.map(box).join("")}</div><div class="oth">تفاصيل أو شواهد أخرى: ${lines(2)}</div></div>`).join("");
   const head=`<div class="hd"><div><b>المملكة العربية السعودية</b><br>وزارة التعليم<br>${esc(S.dept||"")}<br>${esc(S.school||"المدرسة: ..................")}</div><img src="${LOGO}" alt=""><div>العام الدراسي: ${esc(S.year||"")}<br>${esc(S.term||"")}</div></div>`;
-  const who=stu?[["الاسم",""],["الصف",""],["المدرسة",S.school||""]]:[["الاسم",""],["الوظيفة / التخصص",""],["المدرسة",S.school||""],["التاريخ",""]];
+  const who=stu?[["الاسم",""],["الصف",""],["المدرسة",""]]:[["الاسم",""],["الوظيفة / التخصص",""],["المدرسة",""],["التاريخ",""]];
   const html=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><\x74itle>نموذج بيانات — ${esc(f.name())}</\x74itle>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
 <style>@page{size:A4;margin:12mm}*{box-sizing:border-box}body{margin:0;font:11pt/1.6 Tajawal,"IBM Plex Sans Arabic",Tahoma,sans-serif;color:#1f2a2c;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -6446,7 +6446,7 @@ ${secs?`<div class="part">ثالثًا: عناصر الملف — ضع ✓ أم�
 <div class="part">${secs?"رابعًا":"ثالثًا"}: الشواهد</div><div class="q"><h4>الصور والمستندات التي سترفقها (اذكرها)</h4>${lines(3)}</div>
 <div class="sig"><div>${stu?"توقيع الطالب":"التوقيع"}</div><div>التاريخ: ..... / ..... / ............ هـ</div></div>
 <div class="ft"><span>نَسَق — نموذج ورقي للتجهيز الذكي</span><span>${esc(f.name())}</span></div>
-<script>document.fonts&&document.fonts.ready.then(()=>setTimeout(()=>{print()},150));setTimeout(()=>{try{print()}catch(e){}},2500)<\/script></body></html>`;
+<script>let done=false;const go=()=>{if(done)return;done=true;print()};document.fonts&&document.fonts.ready.then(()=>setTimeout(go,150));setTimeout(go,2500)<\/script></body></html>`;
   let fr=document.getElementById("aiPrintFr");if(fr)fr.remove();fr=document.createElement("iframe");fr.id="aiPrintFr";fr.setAttribute("aria-hidden","true");fr.style.cssText="position:fixed;width:0;height:0;border:0;left:-9999px;bottom:0";document.body.appendChild(fr);
   window.__aiForm=html;fr.srcdoc=html;
 }
