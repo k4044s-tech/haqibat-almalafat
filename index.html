@@ -6354,12 +6354,20 @@ function aiLabel(el){const b=el.closest(".blk");if(b&&b.querySelector("h4"))retu
   const fs=el.closest("fieldset");if(fs&&fs.querySelector("legend"))return fs.querySelector("legend").innerText;
   const p=el.previousElementSibling;return p?p.innerText:""}
 function aiCollect(replace){
-  const fields=[],slots=[],emptyish=v=>!v||/^[.\s…]+$/.test(v);
+  const fields=[],slots=[],emptyish=v=>!v||!String(v).replace(/[0-9٠-٩]+\s*[.)\-]/g,"").replace(/[\s.…\-–—•·:،_]+/g,"");
   for(const w of [...pagesEl.querySelectorAll(".pwrap")]){if(w.classList.contains("skip"))continue;const key=w.dataset.pg;if(key==="cv"||key==="ix")continue;
     const pg=w.querySelector(".page");if(!pg)continue;const tEl=pg.querySelector(`[data-k="${key}-h"]`);const title=((tEl?tEl.innerText:(w.querySelector(".pbar span")||{}).textContent)||"").trim().slice(0,90);
     pg.querySelectorAll("[data-img]").forEach(el=>{if(!slotImg(el.dataset.img))slots.push({k:el.dataset.img,p:title})});
     pg.querySelectorAll("table.t").forEach(tb=>{if(tb.classList.contains("ks")||tb.classList.contains("ixt"))return;const H=dmHeaders(tb);let n=0;
-      [...(tb.tBodies[0]||{rows:[]}).rows].forEach(tr=>{if(n>=8)return;const cells=[...tr.cells];let add=false;
+      const NC=H.length;
+      /* خانات الاختيار (درجة التحقق ●): يختار Claude درجة واحدة لكل صف */
+      [...(tb.tBodies[0]||{rows:[]}).rows].forEach(tr=>{const D=[...tr.querySelectorAll("td.dg")];if(!D.length)return;const off=NC-tr.cells.length;
+        const G={};D.forEach(td=>{const g=td.dataset.g||"0";(G[g]=G[g]||[]).push(td)});
+        Object.values(G).forEach(C=>{if(C.some(td=>td.textContent.trim())&&!replace)return;let o=C.map(td=>H[td.cellIndex+off]||"");
+          const pre=o[0].split(" ");let k=0;while(k<pre.length-1&&o.every(x=>x.split(" ")[k]===pre[k]))k++;o=o.map(x=>x.split(" ").slice(k).join(" ")||x);
+          const lead=[...tr.cells].filter(c=>!c.classList.contains("dg")).map(c=>c.innerText.trim()).filter(Boolean).join(" — ").slice(0,90);
+          fields.push({k:"@"+C[0].dataset.k,p:title,l:(H[C[0].cellIndex+off]||"").split(" ").slice(0,k).join(" ")||"اختر",r:lead,t:"g",o})})});
+      [...(tb.tBodies[0]||{rows:[]}).rows].forEach(tr=>{if(n>=25)return;const cells=[...tr.cells];let add=false;
         cells.forEach((td,ci)=>{if(td.getAttribute("contenteditable")!=="true"||!td.dataset.k)return;const h=H[ci]||"";if(/توقيع|^م$/.test(h))return;const v=td.innerText.trim();if(!emptyish(v)&&!replace)return;
           const lead=cells[0]&&cells[0]!==td?cells[0].innerText.trim().slice(0,50):"";fields.push({k:td.dataset.k,p:title,l:h.slice(0,50),r:lead,v:v.slice(0,80),t:"s"});add=true});if(add)n++})});
     pg.querySelectorAll('[contenteditable="true"][data-k]').forEach(el=>{if(el.closest("table"))return;const k=el.dataset.k;
@@ -6382,7 +6390,7 @@ function aiDialog(){return new Promise(res=>{
   const steps=[["الأساسيات",`<div class="ai-f">${P.b.map((q,n)=>fld(q,n,"b")).join("")}</div>`],
     ["ما نفّذته",`${stu?"":`<div class="ai-ref"><b>📎 ملفات مرجعية (اختياري)</b><div id="aiRefSaved"></div><small>أرفق تقارير المدرسة بصيغة PDF: بطاقات نافس، تقرير التقويم المدرسي، تقرير التقويم الذاتي… تُقرأ مرة واحدة فقط، ويُحفظ ملخص بياناتها ليُستخدم مجانًا في كل ملفاتك بعد ذلك. حتى 4 ملفات، 15 ميجابايت للملف.</small><input type="file" id="aiDocs" accept="application/pdf,.pdf" multiple><div id="aiDocN" class="ai-docs"></div></div>`}<div class="ai-f">${P.x.map((q,n)=>fld(q,n,"x")).join("")}</div>${secs?`<div class="ai-sh">عناصر الملف — اختر ما نفّذته فعلًا في كل عنصر</div>${secs}`:""}`],
     ["الصور والخيارات",`<div class="ai-f"><label class="w"><span>${stu?"صور أعمالك ومشاركاتك":"صور الشواهد"} (حتى 12 صورة)</span><input type="file" id="aiImgs" accept="image/*" multiple><small id="aiImgN" class="muted">يقرأ Claude الصور ويضع كل صورة في الصفحة المناسبة مع وصف قصير.</small></label>
-      <label class="w ck"><input type="checkbox" id="aiRep"> استبدال النصوص المكتوبة مسبقًا (الافتراضي: تعبئة الخانات الفارغة فقط)</label></div><div class="ai-note">سيكتب Claude عمّا اخترته وكتبته فقط، ولن يضيف أسماء أو تواريخ أو أرقامًا لم تذكرها. راجع الملف بعد التجهيز قبل الطباعة.</div>`]];
+      <label class="w ck"><input type="checkbox" id="aiRep"> استبدال النصوص المكتوبة مسبقًا (الافتراضي: تعبئة الخانات الفارغة فقط)</label></div><div class="ai-note">يعبّئ Claude الملف كاملًا جاهزًا: النصوص والقوائم ودرجات التحقق وترتيب الأولويات، ويبني ذلك على ما اخترته وعلى أرقام الملفات المرجعية. لا يضيف أسماء أشخاص أو تواريخ لم تذكرها. راجع الملف قبل الطباعة.</div>`]];
   m.innerHTML=`<div class="dialog ui-dlg ai-dlg"><div class="dlg-h"><h3>✨ التجهيز الذكي — ${esc(f?f.name():"")}</h3><p>${esc(P.h)}</p></div>
    <div class="ai-steps">${steps.map((s,i)=>`<span data-st="${i}"><i>${i+1}</i>${s[0]}</span>`).join("")}</div>
    ${steps.map((s,i)=>`<div class="ai-pane" data-pane="${i}" ${i?"hidden":""}>${s[1]}</div>`).join("")}
@@ -6412,9 +6420,8 @@ function aiDialog(){return new Promise(res=>{
       return el.value.trim()};
     ["b","x"].forEach(g=>P[g].forEach((q,n)=>{const v=val(g,n);if(v)info[q.l]=v}));
     const el=[...m.querySelectorAll("[data-sec]")].map(d=>{const s=P.sec[+d.dataset.sec],on=[...d.querySelectorAll(".chip.on")].map(x=>x.textContent),t=d.querySelector(".aio").value.trim();return on.length||t?{"العنصر":s.t,"ما نُفّذ":on,"تفاصيل":t}:null}).filter(Boolean);
-    if(el.length)info["ما نفّذه المستخدم في عناصر الملف (اكتب عنها فقط)"]=el;
+    if(el.length)info["ما نفّذه المستخدم في عناصر الملف (ركّز عليه)"]=el;
     if(P.sec&&P.sec.length)info["عناصر لم يحدد فيها شيئًا"]=P.sec.map(s=>s.t).filter(t=>!el.some(x=>x["العنصر"]===t));
-    if(!Object.keys(info).slice(base).filter(k=>!/^(أسلوب الكتابة|المرحلة|عناصر لم يحدد فيها شيئًا)$/.test(k)).length&&!m.querySelector("#aiImgs").files.length&&!docs.length&&!(m.querySelector("#aiUseRef")||{}).checked){toast("حدّد بعض الخيارات أو اكتب معلومة واحدة على الأقل ليجهّز Claude ملفك");show(1);return}
     res({m,info,files:[...m.querySelector("#aiImgs").files].slice(0,12),docs:docs.filter(d=>d.size<=15728640),useRef:!!(m.querySelector("#aiUseRef")||{}).checked,replace:m.querySelector("#aiRep").checked})};
 })}
 /* طباعة أسئلة التجهيز الذكي نموذجًا ورقيًا بفراغات كافية للكتابة */
@@ -6490,7 +6497,8 @@ async function runAi(){
     const full=[],small=[];for(const f of r.files){const u=await readURL(f);if(!u)continue;const big=await aiShrink(u,1400,.82),sm=await aiShrink(u,768,.7);if(big&&sm){full.push(big);small.push(sm.split(",")[1])}}
     const {fields,slots}=aiCollect(r.replace);
     if(!fields.length&&!small.length){step(1,"");m.classList.remove("open");return toast("لا توجد خانات فارغة لتعبئتها. فعّل «استبدال النصوص» لإعادة الكتابة.")}
-    const CH=110,parts=[];for(let i=0;i<fields.length;i+=CH)parts.push(fields.slice(i,i+CH));if(!parts.length)parts.push([]);
+    const CH=80,parts=[];{let cp=[],pg=null;const byP=[];fields.forEach(x=>{if(x.p!==pg||!byP.length){byP.push([]);pg=x.p}byP[byP.length-1].push(x)});
+      byP.forEach(g=>{if(cp.length&&cp.length+g.length>CH){parts.push(cp);cp=[]}while(g.length>CH){parts.push(g.splice(0,CH))}cp=cp.concat(g)});if(cp.length)parts.push(cp)}if(!parts.length)parts.push([]);
     let job=null,applied=0,res=null;const title=cur.spec.title+(cur.spec.sub?" — "+cur.spec.sub:"");
     const dg=[],dFail=[];let sv=store.get(AIREF,null);if(!(r.useRef&&sv&&sv.digest))sv=null;if(sv)dg.push(sv.digest);let nRead=0;
     if(r.docs&&r.docs.length){const rd=[];
@@ -6506,7 +6514,10 @@ async function runAi(){
       step((dg.length||dFail.length?.32:.1)+(dg.length||dFail.length?.63:.85)*i/parts.length,`يكتب Claude محتوى الملف… (الجزء ${i+1} من ${parts.length})`);
       res=await BE.aiPrepare({file:S.file,title,job,info:r.info,replace:r.replace,fields:parts[i],slots:i===0?slots:[],images:i===0?small:[],last:i===parts.length-1});
       job=res.job;
-      for(const [k,v] of Object.entries(res.fills||{})){if(typeof v!=="string"||!v.trim())continue;const el=pagesEl.querySelector(`[data-k="${CSS.escape(k)}"]`);if(!el||el.getAttribute("contenteditable")!=="true")continue;el.textContent=v.trim();markDirty(el);applied++}
+      for(const [k,v] of Object.entries(res.fills||{})){if(typeof v!=="string"||!v.trim())continue;
+        if(k[0]==="@"){const f0=pagesEl.querySelector(`td.dg[data-k="${CSS.escape(k.slice(1))}"]`),fd=fields.find(x=>x.k===k);if(!f0||!fd)continue;
+          const C=[...f0.parentElement.querySelectorAll("td.dg")].filter(c=>(c.dataset.g||"0")===(f0.dataset.g||"0")),w=v.trim(),j=fd.o.findIndex(o=>o===w||o.replace(/[اأإآ]/g,"ا").replace(/ًا$/,"ا")===w.replace(/[اأإآ]/g,"ا").replace(/ًا$/,"ا"));if(j<0||!C[j])continue;
+          C.forEach((c,ci)=>{const nv=ci===j?"●":"";if(c.textContent.trim()!==nv){c.textContent=nv;markDirty(c)}});applied++;continue}const el=pagesEl.querySelector(`[data-k="${CSS.escape(k)}"]`);if(!el||el.getAttribute("contenteditable")!=="true")continue;el.textContent=v.trim();markDirty(el);applied++}
       if(i===0&&full.length){const used=new Set(),free=slots.map(s=>s.k);
         const put=(idx,slot,cap)=>{const el=pagesEl.querySelector(`[data-img="${CSS.escape(slot)}"]`);if(!el||used.has(slot)||idx==null||!full[idx])return false;used.add(slot);
           memImg[SK()+slot]=full[idx];store.set(iKey(slot),full[idx]);paintSlot(el);
