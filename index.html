@@ -1883,6 +1883,23 @@ const FONTS=[
 const FB=',"Segoe UI",Tahoma,Arial,sans-serif';
 const F=()=>FONTS.find(x=>x.id===S.font)||FONTS[0];
 const LET="حرر بتاريخ:      /      / 1448هـ";
+/* صفحات اختيارية من الدليل الإرشادي لإدارة الأداء الوظيفي (الإصدار الثاني): خطة تحسين فجوة الأداء + خطة التطوير الفردية IDP
+   تظهر في المعاينة مُطفأة، ويفعّلها المستخدم بعلامة «ضمن الطباعة» */
+function GAP_IDP(){
+  const R=(n,c)=>Array.from({length:n},()=>Array(c).fill(""));
+  return [
+  {t:"multi",opt:true,title:"خطة تحسين فجوة الأداء",parts:[
+    {h:"أولاً: البيانات الأساسية لشاغل الوظيفة التعليمية",cols:[["البيان",17],["القيمة",33],["البيان",17],["القيمة",33]],rows:[["الاسم",S.name||"","جهة العمل",S.school||""],["الإدارة","","المسمى الوظيفي",S.job||""],["التخصص","","المدير المباشر",S.leader||""],["العام الدراسي",S.year||"","الفترة الزمنية",""]]},
+    {text:"ثانيًا: الخطة التحسينية — يتم تحديد كل معيار من المعايير في نموذج تقييم أداء شاغل الوظيفة التعليمية وتُعد له خطة تطوير خاصة به تشمل ما يلي:"},
+    {h:"أ- تحديد الفجوة",cols:[["المعيار المستهدف تطويره",40],["1",12],["2",12],["3",12],["4",12],["5",12]],center:[1,2,3,4,5],rows:R(3,6)},
+    {h:"ب- تحليل مستوى الأداء الحالي",cols:[["درجة التمكن من الأداء حالياً",25],["أسباب الحصول على هذه الدرجة",25],["نقاط القوة",25],["الجوانب التي بحاجة للتحسين",25]],rows:R(3,4)}]},
+  {t:"table",opt:true,title:"خطة تحسين فجوة الأداء — ج- خطة العمل لإنجاز عملية التحسين للأداء",cols:[["م",5],["الخطوات الإجرائية",19],["زمن التنفيذ",9],["الاحتياجات",11],["المكلف",9],["المسؤول",9],["المساند",9],["مؤشر الأداء",10],["شواهد الإنجاز",10],["الحالة",9]],num:true,center:[0],rows:12},
+  {t:"multi",opt:true,title:"خطة التطوير الفردية (IDP)",parts:[
+    {text:"تهدف خطة التطوير الفردية إلى تطوير مهارات ومعارف الفرد من أجل ضمان كفاءة الأداء، وتطوير الإمكانات المطلوبة للأدوار المستقبلية. وتكتمل بالاتفاق بين المدير المباشر والموظف في مرحلة التخطيط، وتتضمن خطوات محددة الأولوية ومؤقتة زمنيًا لبعض أو كل عناصر التقييم."},
+    {h:"نموذج خطة التطوير الفردية",cols:[["البيان",25],["القيمة",75]],rows:[["الاسم",S.name||""],["الجهة",S.school||""],["تاريخ بداية الخطة",""],["تاريخ نهاية الخطة",""]]},
+    {h:"مجالات التطوير المهني",cols:[["الأهداف",19],["التعلم من خلال التجارب والخبرات (70%) — مثال: مجتمعات التعلم المهنية",27],["التعلم من خلال الآخرين (20%) — مثال: دورات وندوات تعليمية",27],["التعلم المباشر (10%) — مثال: تعلم نظامي، التعلم الذاتي، الاطلاع والقراءة",27]],rows:[["الهدف الأول","","",""],["الهدف الثاني","","",""],["الهدف الثالث","","",""]]}]},
+  {t:"multi",opt:true,title:"خطة التطوير الفردية (IDP) — الأهداف والأنشطة",parts:[{h:"الأهداف التطويرية حسب الأولوية",merge:[0],cols:[["الأولوية",8],["الأهداف التطويرية",18],["الأنشطة بناءً على ⁦70-20-10⁩",18],["تاريخ الانتهاء من الهدف",12],["الداعم الرئيسي",13],["الإجراءات التفصيلية",16],["معايير النجاح",15]],center:[0],rows:[["1","","","","","",""],["1","","","","","",""],["2","","","","","",""],["2","","","","","",""],["3","","","","","",""],["3","","","","","",""]]}],sig:["الموظف","المدير المباشر"]}];
+}
 function perfFile(id,ic,roleM,roleF,items){
   return ()=>{
     const role=g(roleM,roleF);
@@ -1895,7 +1912,7 @@ function perfFile(id,ic,roleM,roleF,items){
       pages.push({t:"div",n:i+1,title:it[0],list:(it[2]||["نماذج وسجلات موثقة","صور من التنفيذ","تقارير ومحاضر","خطابات شكر وشهادات"]).join("\n")});
       pages.push({t:"ev",title:"شواهد: "+it[0]});
     });
-    return {title:"ملف شواهد الأداء الوظيفي",sub:role,pages};
+    return {title:"ملف شواهد الأداء الوظيفي",sub:role,pages:pages.concat(GAP_IDP())};
   };
 }
 const TEACH=[
@@ -4128,7 +4145,7 @@ const $=s=>document.querySelector(s);
 if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed");
 if(VIEW)document.documentElement.classList.add("embed","viewer");
 const pagesEl=$("#pages");
-let cur=null, skip=new Set();
+let cur=null, skip=new Set(), OPTDONE=null;
 
 function render(){
   const f=FILES.find(x=>x.id===S.file)||FILES[0];
@@ -4145,6 +4162,7 @@ function render(){
   const B0=spec.bare?1:3;const idx=[]; let n=B0;
   /* صفحات الشواهد الفارغة (بلا صور ولا روابط) لا تُطبع، وتُستبعد من الفهرس والترقيم */
   const PK=(p,i)=>p.kpg!=null?p.kpg:"p"+i,NK=store.get(nKey(),{});
+  if(OPTDONE!==S.file){OPTDONE=S.file;spec.pages.forEach((p,i)=>{if(p.opt)skip.add(PK(p,i))})}
   const EVX=new Set(spec.pages.map((p,i)=>{if(p.t!=="ev")return null;const k=PK(p,i),m=Math.min(8,Math.max(1,+(NK[k]||p.n||4)));
     for(let j=0;j<m;j++){if(slotImg(k+"-i"+j))return null;const q=store.get(qKey(k+"-i"+j),null);if(q&&q.link)return null}return k}).filter(Boolean));
   const NUM={};spec.pages.forEach((p,i)=>{const k=PK(p,i);if(skip.has(k)||EVX.has(k))return;NUM[k]=n;const tt=p.title||"صفحة";idx.push([p.t==="div"?"— "+tt:tt,n]);n++});
@@ -4179,7 +4197,7 @@ function render(){
     else if(p.t==="gcard")h=rGcards(spec,t,p,pi);
     else if(p.t==="min")h=rMin(spec,t,p,pi,num);
     else if(p.t==="grid")h=rGrid(spec,t,p,pi,num);
-    out.push(wrap(pi,"صفحة "+num+" — "+p.title,h,p.land?"land":"",p.t==="ev"?evCtl(pi):""));
+    out.push(wrap(pi,(p.opt?"⭐ صفحة اختيارية"+(num?" "+num:"")+" — "+p.title:"صفحة "+num+" — "+p.title),h,p.land?"land":"",p.t==="ev"?evCtl(pi):""));
   });
   pagesEl.innerHTML=out.join("");
   let pz=document.getElementById("pgsz");if(!pz){pz=document.createElement("style");pz.id="pgsz";document.head.appendChild(pz)}
@@ -6727,7 +6745,7 @@ function snapApply(fid,P,withSet){
   if(P.roster&&Array.isArray(P.roster.classes)){const r=roster();P.roster.classes.forEach(c=>{const i=r.classes.findIndex(x=>x.id===c.id);if(i>=0)r.classes[i]=c;else r.classes.push(c)});if(P.roster.cur)r.cur=P.roster.cur;store.set("hq:roster",r)}
   if(withSet&&P.set)Object.assign(S,P.set);
   if(S.file!==fid){S.file=fid}saveS();
-  skip.clear();(P.skip||[]).forEach(k=>skip.add(k));
+  skip.clear();(P.skip||[]).forEach(k=>skip.add(k));OPTDONE=S.file;
   return fail}
 function svChip(){const h=$("#fMeta");if(!h)return;let c=$("#svChip");const cu=S.file?store.get(svKey(S.file),null):null;
   if(!cu||EMBED||VIEW){if(c)c.remove();return}
@@ -6769,7 +6787,7 @@ async function savesDlg(){
     const q=x=>m.querySelector(x);q("#svClose").onclick=()=>m.classList.remove("open");q("#svSaveNow").onclick=()=>{m.classList.remove("open");saveDlg()};
     q("#svQ").oninput=e=>{qs=e.target.value.trim();const p=e.target.selectionStart;paint();const i=q("#svQ");i.focus();i.setSelectionRange(p,p)};
     m.querySelectorAll("[data-only]").forEach(b=>b.onclick=()=>{only=b.dataset.only==="1";paint()});
-    q("#svBlank").onclick=async()=>{if(!await svLeave())return;txApply(S.file,{});store.del(svKey(S.file));skip.clear();m.classList.remove("open");keepY(render);toast("بدأت ملفًا جديدًا فارغًا")};
+    q("#svBlank").onclick=async()=>{if(!await svLeave())return;txApply(S.file,{});store.del(svKey(S.file));skip.clear();OPTDONE=null;m.classList.remove("open");keepY(render);toast("بدأت ملفًا جديدًا فارغًا")};
     m.querySelectorAll("[data-op]").forEach(b=>b.onclick=async()=>{const id=isNaN(+b.dataset.id)?b.dataset.id:+b.dataset.id,x=L.find(r=>r.id===id);if(!x)return;const op=b.dataset.op;
       try{
         if(op==="open"){if(!await svLeave(x.file_id))return;b.disabled=true;b.textContent="…";const P=await BE.saveGet(id);if(!P)throw 0;
@@ -6889,7 +6907,7 @@ async function viewBoot(){
   if(!r||!r.payload||!FILES.some(f=>f.id===r.file_id)){ld.innerHTML=`<span>هذا الرابط غير متاح، أو أوقفه صاحب الملف.</span>`;return}
   const P=r.payload;Object.assign(S,P.set||{},{file:r.file_id,evmode:"img"});
   for(const [k,v] of Object.entries(P.data||{}))MEMST[k.replace("{g}",S.gender)]=v;
-  skip.clear();(P.skip||[]).forEach(k=>skip.add(k));
+  skip.clear();(P.skip||[]).forEach(k=>skip.add(k));OPTDONE=S.file;
   document.title=(r.title||"ملف")+(r.owner?" — "+r.owner:"")+" | نَسَق";
   hydrateIcons();applyTheme();applyLayout();
   location.hash="#/f/"+r.file_id;route();
