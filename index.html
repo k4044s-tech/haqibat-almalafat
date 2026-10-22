@@ -1523,7 +1523,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <div class="vacts">
             <button class="btn svb" id="saveBtn" type="button" hidden title="حفظ نسخة من هذا الملف للرجوع إليها لاحقًا">💾 حفظ</button><button class="btn" id="savesBtn" type="button" hidden title="ملفاتي المحفوظة">📂 ملفاتي المحفوظة</button><button class="btn" id="resetBtn" type="button" title="حذف ما كتبته في هذا الملف"><i data-i="rotate"></i>مسح التعديلات</button>
             <button class="btn" id="setBtn" type="button" hidden><i data-i="user"></i>بيانات الملف</button>
-            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button><button class="btn pubb" id="pubBtn" type="button" hidden title="نشر الملف كموقع برابط">🌐 نشر كموقع</button><button class="btn" id="impBtn" type="button" hidden title="استيراد ملف جاهز (PDF أو JSON)">📥 استيراد ملف جاهز</button><input type="file" id="impIn" accept=".json,.pdf,application/json,application/pdf" hidden><button class="btn" id="sendBtn" type="button" hidden>📤 إرسال لمستخدم</button>
+            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button><button class="btn pubb" id="pubBtn" type="button" hidden title="نشر الملف كموقع برابط">🌐 نشر كموقع</button><button class="btn" id="rdyBtn" type="button" hidden title="تعبئة الملف بالمحتوى الجاهز (الخطط والتحليل والنصوص)">📄 النسخة الجاهزة</button><button class="btn" id="rdyPub" type="button" hidden title="اعتماد محتوى هذا الملف نسخةً جاهزة لجميع المشتركين">⭐ اعتماد كنسخة جاهزة</button><button class="btn" id="impBtn" type="button" hidden title="استيراد ملف جاهز (PDF أو JSON)">📥 استيراد ملف جاهز</button><input type="file" id="impIn" accept=".json,.pdf,application/json,application/pdf" hidden><button class="btn" id="sendBtn" type="button" hidden>📤 إرسال لمستخدم</button>
           </div>
         </div>
         <div class="access" id="access" role="status" hidden></div>
@@ -4297,6 +4297,7 @@ function render(){
   pz.textContent=spec.pages.some(x=>x.land)?"@page{size:A4 landscape;margin:0}":"";
   restore();
   if(EMBED)try{demoFill()}catch(e){console.error(e)}
+  setTimeout(()=>{try{rdyAuto()}catch(e){}},0);
   if(spec.land)landFit();
   if(f.stu)stuSync();
   if(typeof BE!=="undefined")try{applyAccess()}catch(e){}
@@ -6147,6 +6148,8 @@ function demoBackend(){
     async sendFile(o){const u=me();if(!u||u.role!=="admin")throw{code:"perm"};const L=store.get("hq:demo:tx",[]);L.unshift({id:Date.now(),from_uid:u.uid,to_uid:o.to,file_id:o.file,file_name:o.name,note:o.note||null,payload:o.payload,created_at:new Date().toISOString(),received_at:null});if(!store.set("hq:demo:tx",L))throw{code:"quota"}},
     async inbox(){const u=me();if(!u)return[];return store.get("hq:demo:tx",[]).filter(t=>t.to_uid===u.uid&&!t.received_at).map(t=>Object.assign({},t,{payload:undefined}))},
     async getTransfer(id){return store.get("hq:demo:tx",[]).find(t=>t.id===id)||null},
+    async readyGet(fid){const M=store.get("hq:demo:ready",{});return M[fid]||null},
+    async readySave(fid,o){const M=store.get("hq:demo:ready",{});if(o)M[fid]=o;else delete M[fid];if(!store.set("hq:demo:ready",M))throw{code:"size"}},
     async savesList(){const u=me();if(!u)return[];return store.get("hq:demo:saves",[]).filter(x=>x.uid===u.uid).map(x=>({id:x.id,file_id:x.file_id,name:x.name,size:x.size,updated_at:x.updated_at,created_at:x.created_at}))},
     async saveGet(id){const r=store.get("hq:demo:saves",[]).find(x=>x.id===id);return r?r.payload:null},
     async saveNew(o){const u=me();if(!u)throw{code:"auth"};const L=store.get("hq:demo:saves",[]);const now=new Date().toISOString();const id=Date.now();L.unshift({id,uid:u.uid,file_id:o.file,name:o.name,size:o.size,payload:o.payload,created_at:now,updated_at:now});if(!store.set("hq:demo:saves",L))throw{code:"size"};return id},
@@ -6235,6 +6238,8 @@ async function sbBackend(cfg){
     async sendFile(o){ck(await sb.from("file_transfers").insert({from_uid:uid,to_uid:o.to,file_id:o.file,file_name:o.name,note:o.note||null,payload:o.payload}))},
     async inbox(){if(!uid)return[];return ck(await sb.from("file_transfers").select("id,file_id,file_name,note,created_at").eq("to_uid",uid).is("received_at",null).order("created_at",{ascending:false}))},
     async getTransfer(id){return ck(await sb.from("file_transfers").select("id,file_id,file_name,payload").eq("id",id).maybeSingle())},
+    async readyGet(fid){const d=ck(await sb.from("ready_templates").select("data,updated_at").eq("file_id",fid).maybeSingle());return d?Object.assign({v:1,file:fid,updated_at:d.updated_at},d.data):null},
+    async readySave(fid,o){if(!o){ck(await sb.from("ready_templates").delete().eq("file_id",fid));return}ck(await sb.from("ready_templates").upsert({file_id:fid,data:o,updated_at:new Date().toISOString()}))},
     async savesList(){if(!uid)return[];return ck(await sb.from("saved_files").select("id,file_id,name,size,updated_at,created_at").eq("uid",uid).order("updated_at",{ascending:false}).limit(300))},
     async saveGet(id){const d=ck(await sb.from("saved_files").select("payload").eq("id",id).maybeSingle());return d?d.payload:null},
     async saveNew(o){if(!uid)throw{code:"auth"};const d=ck(await sb.from("saved_files").insert({uid,file_id:o.file,name:o.name,size:o.size,payload:o.payload}).select("id").single());return d.id},
@@ -7012,7 +7017,7 @@ function txCollect(fid){const out={},g=S.gender;
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
     if(k.startsWith("hq3:e:"+fid+":"+g)||k.startsWith("hq3:i:"+fid+":")||k.startsWith("hq3:q:"+fid+":")||k==="hq3:n:"+fid)out[k.replace("hq3:e:"+fid+":"+g,"hq3:e:"+fid+":{g}")]=localStorage.getItem(k)}}catch(e){}
   return out}
-function renderSendBtn(){const b=$("#sendBtn");if(b)b.hidden=EMBED||!isAdmin()||TX_NO.has(S.file)||!!(cur&&cur.f&&cur.f.stu);const ib=$("#impBtn");if(ib)ib.hidden=EMBED||!isAdmin()}
+function renderSendBtn(){const b=$("#sendBtn");if(b)b.hidden=EMBED||!isAdmin()||TX_NO.has(S.file)||!!(cur&&cur.f&&cur.f.stu);const ib=$("#impBtn");if(ib)ib.hidden=EMBED||!isAdmin();const rp=$("#rdyPub");if(rp)rp.hidden=EMBED||VIEW||!isAdmin();rdyBtnSync()}
 async function sendFileDlg(){
   if(!isAdmin()||!BE||!BE.sendFile)return toast("إرسال الملفات غير متاح حاليًا");
   ftbFlush();const f=cur.f,payload=txCollect(f.id),n=Object.keys(payload).length;
@@ -7050,6 +7055,57 @@ function renderInbox(){let c=document.getElementById("inboxCard");
 function txApply(fid,P){Object.keys(localStorage).filter(k=>k.startsWith("hq3:e:"+fid+":"+S.gender)||k.startsWith("hq3:i:"+fid+":")||k.startsWith("hq3:q:"+fid+":")||k==="hq3:n:"+fid).forEach(k=>localStorage.removeItem(k));
   let fail=false;for(const [k,v] of Object.entries(P)){if(!(k.startsWith("hq3:e:"+fid+":")||k.startsWith("hq3:i:"+fid+":")||k.startsWith("hq3:q:"+fid+":")||k==="hq3:n:"+fid))continue;try{localStorage.setItem(k.replace("{g}",S.gender),typeof v==="string"?v:JSON.stringify(v))}catch(e){fail=true}}
   Object.keys(memImg).filter(k=>k.startsWith(fid)).forEach(k=>delete memImg[k]);return fail}
+
+/* ===== النسخة الجاهزة: محتوى معدّ مسبقًا (خطط وتحليل ونصوص) يُعبّأ تلقائيًا، ويضيف المستخدم بياناته وشواهده فقط =====
+   المصدر: نسخة يعتمدها المشرف (Supabase: ready_templates) وإلا القالب المرفق مع التطبيق (ready/<fid>.json) */
+function uiChoice(title,msg,opts){return new Promise(res=>{let m=document.getElementById("chDlg");if(!m){m=document.createElement("div");m.className="modal";m.id="chDlg";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");document.body.appendChild(m)}
+  m.innerHTML=`<div class="dialog ui-dlg wd-dlg"><div class="dlg-h"><h3>${esc(title)}</h3><p>${esc(msg)}</p></div>${opts.map(o=>`<button type="button" class="wd-o" data-v="${o[0]}"><b>${esc(o[1])}</b>${o[2]?`<span>${esc(o[2])}</span>`:""}</button>`).join("")}<div class="dlg-b"><button class="btn" type="button" data-v="">إلغاء</button></div></div>`;
+  m.classList.add("open");const done=v=>{m.classList.remove("open");res(v)};
+  m.onclick=e=>{const b=e.target.closest("[data-v]");if(b)return done(b.dataset.v||null);if(e.target===m)done(null)}})}
+const RDY_CACHE={};
+async function rdyGet(fid){
+  if(fid in RDY_CACHE)return RDY_CACHE[fid];
+  let r=null;
+  try{if(typeof BE!=="undefined"&&BE&&BE.readyGet)r=await BE.readyGet(fid)}catch(e){r=null}
+  if(!r||!r.data)try{const x=await fetch("ready/"+fid+".json",{cache:"no-cache"});if(x.ok)r=await x.json()}catch(e){r=null}
+  return RDY_CACHE[fid]=(r&&r.data&&Object.keys(r.data).length)?r:null;
+}
+const rdyFlag=()=>"hq3:rdy:"+S.file+":"+S.gender;
+const rdyFill=fid=>{const f=FILES.find(x=>x.id===fid);return !!f&&!f.ks&&!f.stu&&f.id!=="certs"};
+const rdyEmpty=v=>v==null||String(v).replace(/<[^>]*>|&nbsp;|[\s.…\-—_]/g,"")==="";
+const rdyG=v=>String(v).replace(/\{g:([^|}]*)\|([^}]*)\}/g,(_,m,f)=>S.gender==="f"?f:m);
+/* يكتب المحتوى الجاهز في الحقول الفارغة فقط (لا يمسّ ما كتبه المستخدم) */
+function rdyMerge(tp,all){
+  const cur=store.get(eKey(),{}),out=Object.assign({},cur);let n=0;
+  for(const [k,v] of Object.entries(tp.data||{})){if(!all&&!rdyEmpty(cur[k]))continue;out[k]=rdyG(v);n++}
+  if(n)store.set(eKey(),out);return n}
+let RDY_BUSY=false;
+async function rdyAuto(){
+  if(VIEW||RDY_BUSY||!S.file||!rdyFill(S.file))return;
+  if(store.get(rdyFlag(),null))return;
+  const own=Object.entries(store.get(eKey(),{})).filter(([k,v])=>!k.startsWith("@")&&!/^c-/.test(k)&&!rdyEmpty(v)).length;
+  RDY_BUSY=true;const fid=S.file,g=S.gender;
+  try{const tp=await rdyGet(fid);if(S.file!==fid||S.gender!==g)return;
+    if(!tp)return;store.set(rdyFlag(),1);if(own>3)return;
+    if(rdyMerge(tp,false)){keepY(render);if(!EMBED)toast("📄 عُبّئ الملف بالنسخة الجاهزة — أضف بياناتك وشواهدك، وعدّل ما تشاء")}}
+  catch(e){console.error(e)}finally{RDY_BUSY=false;rdyBtnSync()}
+}
+async function rdyBtnSync(){const b=$("#rdyBtn");if(!b)return;if(EMBED||VIEW||!S.file||!rdyFill(S.file)){b.hidden=true;return}const fid=S.file;const tp=await rdyGet(fid);if(S.file===fid)b.hidden=!tp}
+$("#rdyBtn").addEventListener("click",async()=>{if(!EDIT)return needAuth("edit");const tp=await rdyGet(S.file);if(!tp)return toast("لا توجد نسخة جاهزة لهذا الملف بعد");
+  const ok=await uiChoice("📄 النسخة الجاهزة","المحتوى الجاهز يشمل الخطط والتحليل والنصوص. بياناتك الشخصية وصور الشواهد لا تتأثر.",[["fill","تعبئة الحقول الفارغة فقط","يحافظ على كل ما كتبته"],["all","استبدال المحتوى بالنسخة الجاهزة","يُستبدل ما كتبته في الحقول التي لها محتوى جاهز"]]);
+  if(!ok)return;const n=rdyMerge(tp,ok==="all");store.set(rdyFlag(),1);keepY(render);toast(n?"عُبّئ "+n+" حقلًا من النسخة الجاهزة":"كل الحقول معبّأة مسبقًا")});
+/* المشرف: اعتماد محتوى الملف الحالي نسخةً جاهزة للجميع (تُستبعد البيانات الشخصية والصور) */
+function rdyCollect(){
+  const spec=cur&&cur.spec;const fieldPg=new Set();if(spec)spec.pages.forEach((p,i)=>{if(p.t==="fields")fieldPg.add(p.kpg!=null?p.kpg:"p"+i)});
+  const d={};for(const [k,v] of Object.entries(store.get(eKey(),{}))){const pg=k.split("-")[0];if(/^c-/.test(k)||fieldPg.has(pg)||k.startsWith("@")||rdyEmpty(v))continue;d[k]=v}
+  return d}
+$("#rdyPub").addEventListener("click",async()=>{if(!isAdmin())return;const d=rdyCollect();const n=Object.keys(d).length;
+  const ok=await uiChoice("⭐ اعتماد كنسخة جاهزة",`سيُعتمد محتوى هذا الملف (${n} حقلًا) نسخةً جاهزة تظهر لكل المشتركين عند فتحه أول مرة. لا تُرسل البيانات الشخصية ولا صور الشواهد.`,[["save","اعتماد النسخة"],["dl","تنزيل كملف JSON"],["del","إلغاء النسخة المعتمدة","يعود القالب المرفق مع التطبيق"]]);
+  if(!ok)return;const fid=S.file;
+  if(ok==="dl"){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({v:1,file:fid,data:d},null,1)],{type:"application/json"}));a.download=fid+".json";a.click();return}
+  if(ok==="save"&&!n)return toast("الملف فارغ — اكتب المحتوى أولًا");
+  try{await BE.readySave(fid,ok==="del"?null:{v:1,file:fid,data:d});delete RDY_CACHE[fid];toast(ok==="del"?"أُلغيت النسخة المعتمدة":"✅ اعتُمدت النسخة الجاهزة لهذا الملف")}
+  catch(e){toast("تعذّر الحفظ. هل شُغّل ملف التفعيل migration-010-ready.sql في Supabase؟")}});
 /* استيراد ملف جاهز (.json) يحتوي بيانات ملف كاملة */
 $("#impBtn").addEventListener("click",()=>{if(!isAdmin())return;$("#impIn").value="";$("#impIn").click()});
 $("#impIn").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;let o;try{const u8=new Uint8Array(await f.arrayBuffer());let txt;
