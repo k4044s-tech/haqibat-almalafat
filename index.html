@@ -6995,23 +6995,35 @@ async function pubDialog(){
 
 /* بطاقة مشاركة: صورة فيها الباركود واسم الملف والمعلم والمدرسة، تُرسل مع نص الرسالة */
 async function pubCardBlob(url){
-  const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d"),t=T();
-  try{await document.fonts.load('700 60px "Tajawal"')}catch(e){}
-  const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,t.p);g.addColorStop(1,t.s);x.fillStyle=g;x.fillRect(0,0,W,H);
-  x.fillStyle="rgba(255,255,255,.08)";x.beginPath();x.arc(80,90,260,0,7);x.fill();x.beginPath();x.arc(W-40,H-60,220,0,7);x.fill();
+  /* بطاقة مشاركة بتصميم «الإرشادي»: تدرّج أخضر→كحلي مع شبكة خطوط، وشعار الوزارة، وشريط كحلي للاسم */
+  const W=900,H=1200,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  try{await document.fonts.load('800 60px "Tajawal"');await document.fonts.load('500 30px "Tajawal"')}catch(e){}
+  const g=x.createLinearGradient(0,0,0,H);[[0,"#0ea472"],[.38,"#169b8a"],[.58,"#1f8f9b"],[.82,"#1a5d72"],[1,"#1b4a63"]].forEach(([o,col])=>g.addColorStop(o,col));x.fillStyle=g;x.fillRect(0,0,W,H);
+  {let sd=7;const r=()=>(sd=(sd*16807)%2147483647)/2147483647;const P=[];for(let i=0;i<30;i++)P.push([r()*W,r()*H]);
+    x.strokeStyle="rgba(255,255,255,.16)";x.lineWidth=1.1;P.forEach((a,i)=>P.forEach((b,j)=>{if(j<=i)return;if(Math.hypot(a[0]-b[0],a[1]-b[1])<250){x.beginPath();x.moveTo(a[0],a[1]);x.lineTo(b[0],b[1]);x.stroke()}}));
+    x.fillStyle="rgba(255,255,255,.32)";P.forEach(a=>{x.beginPath();x.arc(a[0],a[1],2.5+r()*4.5,0,7);x.fill()})}
+  const img=src=>new Promise(ok=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>ok(null);im.src=src});
+  const lg=await img(LOGO_W);if(lg){const lh=96,lw=lg.width*lh/lg.height;x.drawImage(lg,W-60-lw,56,lw,lh)}
+  x.direction="rtl";x.textAlign="left";x.fillStyle="rgba(255,255,255,.92)";x.font='700 22px "Tajawal",sans-serif';x.fillText("وزارة التعليم",60,80,380);x.font='500 19px "Tajawal",sans-serif';x.fillText(S.dept?String(S.dept):"",60,110,380);
+  const wrap=(txt,y,font,col,max,lh,al)=>{x.font=font;x.fillStyle=col;x.textAlign=al||"center";const X=al==="right"?W-60:W/2;const words=String(txt).split(" ");let line="",n=0;for(const w of words){const tt=line?line+" "+w:w;if(x.measureText(tt).width>max&&line){x.fillText(line,X,y+n*lh);n++;line=w}else line=tt}if(line){x.fillText(line,X,y+n*lh);n++}return y+n*lh};
+  const ttl=cur&&cur.spec?cur.spec.title:"";let y=wrap(ttl,262,'800 54px "Tajawal",sans-serif',"#fff",W-140,70);
+  /* الشريط الكحلي: الاسم والعمل، والشريط الأبيض: المدرسة */
+  const who=[PN(),PJ()].filter(Boolean).join(" — ")||(cur&&cur.spec&&cur.spec.sub)||"";
+  x.font='700 27px "Tajawal",sans-serif';const rw=Math.min(W-120,Math.max(460,x.measureText(who).width+90)),rx=(W-rw)/2,ry=y+8,rh=66;
+  x.fillStyle="#1b4a63";x.beginPath();x.moveTo(rx,ry);x.lineTo(rx+rw-20,ry);x.lineTo(rx+rw,ry+20);x.lineTo(rx+rw,ry+rh);x.lineTo(rx,ry+rh);x.closePath();x.fill();
+  x.fillStyle="#fff";x.textAlign="center";x.fillText(who,W/2,ry+43,rw-40);
+  if(S.school){x.font='700 22px "Tajawal",sans-serif';const sw=Math.min(rw-40,x.measureText(S.school).width+48);x.fillStyle="#fff";x.beginPath();x.moveTo(rx,ry+rh);x.lineTo(rx+sw,ry+rh);x.lineTo(rx+sw,ry+rh+40);x.lineTo(rx+14,ry+rh+40);x.quadraticCurveTo(rx,ry+rh+40,rx,ry+rh+26);x.closePath();x.fill();
+    x.fillStyle="#3b7ec0";x.fillText(S.school,rx+sw/2,ry+rh+28,sw-20)}
+  /* الباركود في بطاقة بيضاء أنيقة */
+  const q=qrcode(0,"M");q.addData(url);q.make();const n=q.getModuleCount(),box=380,cell=Math.floor(box/(n+2)),qs=cell*(n+2),bx=(W-qs-56)/2,by=ry+rh+92;
   const rr=(X,Y,w,h,r)=>{x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath()};
-  x.fillStyle="#fff";rr(70,260,W-140,980,46);x.fill();
-  x.direction="rtl";x.textAlign="center";x.fillStyle="#fff";x.font='800 58px "Tajawal",sans-serif';x.fillText("نَسَق — ملف إلكتروني",W/2,140);
-  x.font='500 32px "Tajawal",sans-serif';x.fillStyle="rgba(255,255,255,.9)";x.fillText("امسح الرمز لعرض الملف كاملًا",W/2,200);
-  const wrap=(txt,y,font,col,max,lh)=>{x.font=font;x.fillStyle=col;const words=String(txt).split(" ");let line="",n=0;for(const w of words){const tt=line?line+" "+w:w;if(x.measureText(tt).width>max&&line){x.fillText(line,W/2,y+n*lh);n++;line=w}else line=tt}if(line){x.fillText(line,W/2,y+n*lh);n++}return y+n*lh};
-  let y=wrap(cur&&cur.spec?cur.spec.title+(cur.spec.sub?" "+cur.spec.sub:""):"",350,'800 46px "Tajawal",sans-serif',t.p,W-240,62);
-  const who=[PN(),PJ()].filter(Boolean).join(" — ");if(who)y=wrap("👤 "+who,y+14,'600 34px "Tajawal",sans-serif',"#33444c",W-240,48);
-  if(S.school)y=wrap("🏫 "+S.school,y+4,'600 34px "Tajawal",sans-serif',"#33444c",W-240,48);
-  const q=qrcode(0,"M");q.addData(url);q.make();const n=q.getModuleCount(),sz=Math.min(560,1180-y-40),cell=Math.floor(sz/(n+4)),qs=cell*(n+4),qx=(W-qs)/2,qy=y+30;
-  x.fillStyle="#fff";x.fillRect(qx,qy,qs,qs);x.fillStyle="#000";for(let r=0;r<n;r++)for(let k=0;k<n;k++)if(q.isDark(r,k))x.fillRect(qx+(k+2)*cell,qy+(r+2)*cell,cell,cell);
-  x.strokeStyle=t.a;x.lineWidth=6;rr(qx-14,qy-14,qs+28,qs+28,24);x.stroke();
-  x.font='500 26px "Tajawal",sans-serif';x.fillStyle="#5c6b73";x.direction="ltr";x.fillText(url.replace(/^https?:\/\//,""),W/2,Math.min(1210,qy+qs+60));
-  x.direction="rtl";x.fillStyle="#fff";x.font='600 30px "Tajawal",sans-serif';x.fillText((S.year||"")+(S.term?" — "+S.term:""),W/2,1300);
+  x.save();x.shadowColor="rgba(0,0,0,.25)";x.shadowBlur=30;x.shadowOffsetY=10;x.fillStyle="#fff";rr(bx,by,qs+56,qs+56,30);x.fill();x.restore();
+  const gb=x.createLinearGradient(bx,0,bx+qs+56,0);gb.addColorStop(0,"#3b7ec0");gb.addColorStop(1,"#13a36f");x.strokeStyle=gb;x.lineWidth=5;rr(bx+10,by+10,qs+36,qs+36,22);x.stroke();
+  x.fillStyle="#1b4a63";for(let r=0;r<n;r++)for(let k=0;k<n;k++)if(q.isDark(r,k))x.fillRect(bx+28+(k+1)*cell,by+28+(r+1)*cell,cell,cell);
+  let yb=by+qs+56+52;x.textAlign="center";x.fillStyle="#fff";x.font='700 28px "Tajawal",sans-serif';x.fillText("امسح الرمز لعرض الملف إلكترونيًا",W/2,yb);
+  x.font='500 19px "Tajawal",sans-serif';x.fillStyle="rgba(255,255,255,.78)";x.direction="ltr";x.fillText(url.replace(/^https?:\/\//,""),W/2,yb+36);
+  x.direction="rtl";x.fillStyle="rgba(255,255,255,.95)";x.font='600 22px "Tajawal",sans-serif';x.fillText((S.year||"")+(S.term?" — "+S.term:""),W/2,H-46);
+  x.font='500 16px "Tajawal",sans-serif';x.fillStyle="rgba(255,255,255,.6)";x.fillText("نَسَق — ملفات مدرسية إلكترونية",W/2,H-18);
   return await new Promise(ok=>c.toBlob(ok,"image/png"))}
 async function pubCardShare(url,text){
   let blob;try{blob=await pubCardBlob(url)}catch(e){console.error(e);return toast("تعذّر إنشاء صورة الباركود")}
