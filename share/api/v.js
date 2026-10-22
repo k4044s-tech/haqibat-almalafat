@@ -1,8 +1,10 @@
+// لا نستخدم meta refresh: بعض أدوات المعاينة تتبعه إلى صفحة التطبيق الكبيرة فتفشل المعاينة
 // نَسَق — معاينة رابط الملف المنشور: تُعيد صفحة فيها اسم الملف والمعلم والمدرسة لواتساب، ثم تنقل الزائر للملف
 const SB = "https://rddibqurdjmrvmlneqss.supabase.co";
 const ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkZGlicXVyZGptcnZtbG5lcXNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNzMwMjgsImV4cCI6MjEwNzc0OTAyOH0.AEyFYtwsFHGM3CyhSV13pSN420Hno5QMwxx6veetxXo"; // مفتاح عام (anon) — يُستخدم في صفحة التطبيق أصلًا
 const APP = "https://k4044s-tech.github.io/haqibat-almalafat/";
-const OG_IMG = APP + "og.png";
+const OG_IMG = APP + "og.jpg";
+
 const esc = s => String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 module.exports = async (req, res) => {
   const id = String((req.query && req.query.id) || "").replace(/[^A-Za-z0-9]/g, "").slice(0, 16);
@@ -34,10 +36,9 @@ module.exports = async (req, res) => {
 <meta property="og:image" content="${OG_IMG}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:url" content="${esc(self)}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:description" content="${esc(desc)}"><meta name="twitter:image" content="${OG_IMG}">
-${bot ? "" : '<meta http-equiv="refresh" content="0;url=' + esc(dest) + '">'}
 <style>body{font-family:Tahoma,Arial,sans-serif;background:#eef2f4;color:#15445a;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}a{color:#0b7f7c}</style>
 </head><body><p>جارٍ فتح الملف… <a href="${esc(dest)}">اضغط هنا إن لم يُفتح</a></p>
-${bot ? "" : "<script>location.replace(" + JSON.stringify(dest) + ")</script>"}</body></html>`;
+<script>location.replace(${JSON.stringify(dest)})</script></body></html>`;
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=3600");
   res.status(200).send(html);
