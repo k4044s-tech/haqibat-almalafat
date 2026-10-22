@@ -1367,6 +1367,7 @@ body.evmode{overflow:hidden}
 table.rqf{width:100%;border-collapse:separate;border-spacing:0 6px}table.rqf th{width:38%;text-align:right;font-weight:600;font-size:14px;color:#1b4a63;background:#f2f6f8;border-radius:0 10px 10px 0;padding:8px 12px}
 table.rqf td{padding:0}table.rqf td .inp{width:100%;border-radius:10px 0 0 10px;margin:0}
 .rqf-ta{width:100%;font:inherit}
+body.lk #resetBtn,body.lk #setBtn,body.lk #printBtn,body.lk #pubBtn,body.lk #reqBtn,body.lk #wordBtn,body.lk #rdyBtn,body.lk #rdyPub,body.lk #aiBtn,body.lk #saveBtn,body.lk #savesBtn,body.lk #impBtn,body.lk #sendBtn,body.lk .card.opts{display:none!important}
 /* ملف إنجاز الطالب */
 .stme{display:grid;grid-template-columns:1fr 58mm;gap:6mm;align-items:start}
 .smph{order:2}.smph .slot{height:72mm;border-radius:4mm;overflow:hidden}
@@ -1920,7 +1921,7 @@ function demoFill(){
 if(EMBED)dmSeed();
 const DEF={gender:"m",name:"",job:"",school:"",dept:"الإدارة العامة للتعليم بمنطقة ",office:"",leader:"",stage:"",year:"1448هـ",term:"الفصل الدراسي الأول",theme:9,cover:3,font:"moe",pstyle:"id",v2:1,file:"perf-t",evmode:"qr"};
 let S=Object.assign({},DEF,store.get("hq:set",{}));
-const saveS=()=>store.set("hq:set",S);
+let LKB=null;const saveS=()=>store.set("hq:set",LKB?Object.assign({},S,{pstyle:LKB[0],cover:LKB[1]}):S);
 if(!S.v2){S.theme=9;S.cover=3;S.font="moe";S.pstyle="id";S.v2=1;saveS();}
 const g=(m,f)=>S.gender==="f"?f:m;
 
@@ -4254,7 +4255,11 @@ if(VIEW)document.documentElement.classList.add("embed","viewer");
 const pagesEl=$("#pages");
 let cur=null, skip=new Set(), OPTDONE=null;
 
-function render(){
+/* قبل الشراء: معاينة بنمط «الهوية» فقط، وتُخفى أزرار العمل ولوحة التخصيص (دون تغيير اختيار المستخدم المحفوظ) */
+const LOCKED=()=>!EMBED&&!VIEW&&!isAdmin()&&!(perm(S.file,"e")&&perm(S.file,"p"));
+function render(){const lk=(()=>{try{return LOCKED()}catch(e){return false}})();document.body.classList.toggle("lk",lk);
+  if(!lk)return render0();const bk=LKB=[S.pstyle,S.cover];S.pstyle="id";S.cover=3;try{return render0()}finally{S.pstyle=bk[0];S.cover=bk[1];LKB=null}}
+function render0(){
   const f=FILES.find(x=>x.id===S.file)||FILES[0];
   S.file=f.id;
   if(EMBED){const ps=PREV_STYLE[catOf(f)]||["id",9];S.pstyle=ps[0];S.cover=COVER_OF[ps[0]];S.theme=ps[1]}
