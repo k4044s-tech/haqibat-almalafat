@@ -1271,17 +1271,17 @@ body.evmode{overflow:hidden}
 .page.land .cv9 .c9box{margin-top:14mm}
 /* ===== نمط «الإرشادي» — مطابق للدليل الإرشادي لإدارة الأداء الوظيفي ===== */
 .page.st-mg{font-size-adjust:.47;--body:"Sakkal Majalla","Noto Naskh Arabic","Traditional Arabic",serif!important;--kufi:"Sakkal Majalla","Noto Naskh Arabic","Traditional Arabic",serif!important;--p:#1b4a63!important;--s:#13a36f!important;--a:#3b7ec0!important;--l:#f2f2f2!important;--d:#1b4a63!important;color:#5b5b5b;background:#fff}
-.mg{height:100%;display:flex;flex-direction:column;position:relative;padding:31mm 14mm 16mm 14mm;background:#fff}
+.mgp{height:100%;display:flex;flex-direction:column;position:relative;padding:31mm 14mm 16mm 14mm;background:#fff}
 .mglogo{position:absolute;top:8mm;height:19mm;width:auto}
-.mg.od .mglogo{right:11mm}.mg.evn .mglogo{left:11mm}
-.mg{align-items:stretch;text-align:right}.mgt{display:flex;align-items:center;align-self:stretch;justify-content:flex-start;margin:0 -14mm 7mm 0}
+.mgp.od .mglogo{right:11mm}.mgp.evn .mglogo{left:11mm}
+.mgp{align-items:stretch;text-align:right}.mgt{display:flex;align-items:center;align-self:stretch;justify-content:flex-start;margin:0 -14mm 7mm 0}
 .mgbar{flex:none;width:23mm;height:3.6mm;background:linear-gradient(90deg,#3b7ec0,#13a36f);margin-left:7mm}
 .mgt h3{margin:0;font:700 19pt var(--kufi);color:#1b4a63;line-height:1.35}
 .mgbody{}
 .mgnum{position:absolute;bottom:9mm;width:7.2mm;height:6.4mm;border:.35mm solid #13a36f;display:grid;place-items:center;background:#fff}
 .mgnum::after{content:"";position:absolute;top:-.35mm;right:-.35mm;width:2mm;height:2mm;background:linear-gradient(225deg,#fff 50%,#13a36f 50%,#13a36f 62%,#fff 62%)}
 .mgnum span{font:700 8pt Arial,Helvetica,sans-serif;color:#1b4a63;direction:ltr}
-.mg.od .mgnum{right:11mm}.mg.evn .mgnum{left:11mm}
+.mgp.od .mgnum{right:11mm}.mgp.evn .mgnum{left:11mm}
 .st-mg table.t{border-collapse:separate;border-spacing:.45mm}
 .st-mg table.t th{background:#1b4a63;color:#fff;border:0;font-weight:700;font-family:var(--kufi)}
 .st-mg table.t td,.st-mg table.t tr:nth-child(even) td{background:#f2f2f2;border:0;color:#4b4b4b}
@@ -1338,12 +1338,12 @@ body.evmode{overflow:hidden}
 .page.land .cv13 .card{margin-bottom:12mm;width:170mm}
 .page.land .cv13 .card .rw{min-height:0}.page.land .cv13 .card .k,.page.land .cv13 .card .v{padding:1.8mm 4mm}
 .page.land .cv13 .pubqr{bottom:12mm}
-.page.land .mg{padding:21mm 11mm 11mm}
+.page.land .mgp{padding:21mm 11mm 11mm}
 .page.land .mglogo{top:5mm;height:14mm}
 .page.land .mgt{margin:0 -11mm 4mm 0}.page.land .mgt h3{font-size:16pt}
 .page.land .mgbar{width:18mm;height:3mm;margin-left:5mm}
 .page.land .mgnum{bottom:4mm}
-.page.land .mg.od .mgnum{right:7mm}.page.land .mg.evn .mgnum{left:7mm}
+.page.land .mgp.od .mgnum{right:7mm}.page.land .mgp.evn .mgnum{left:7mm}
 .rqb{border-color:#0b7f7c;color:#0b6d6a;font-weight:700}
 .rq-dlg{max-width:680px;width:calc(100vw - 32px);max-height:88vh;display:flex;flex-direction:column}
 .rq-dlg .rq-b{overflow:auto;padding:4px 2px 8px;flex:1}
@@ -3806,7 +3806,7 @@ function frameGd(file,t,pi,title,body,num){
 const mgNum=n=>n?`<div class="mgnum"><span>${String(n).padStart(2,"0")}</span></div>`:"";
 const mgOdd=n=>!n||(+n)%2===1;
 function frameMg(file,t,pi,title,body,num){
-  return `<div class="mg ${mgOdd(num)?"od":"evn"}"><img class="mglogo" src="${LOGO}" alt="شعار وزارة التعليم">
+  return `<div class="mgp ${mgOdd(num)?"od":"evn"}"><img class="mglogo" src="${LOGO}" alt="شعار وزارة التعليم">
   <div class="mgt"><i class="mgbar"></i>${ed(pi+"-h",esc(title),"h3")}</div>
   <div class="pbody mgbody">${body}</div>${mgNum(num)}</div>`;
 }
@@ -3858,7 +3858,7 @@ function frameLt(file,t,pi,title,body,num){
 }
 function rDivX(p,t,pi){
   const st=S.pstyle;
-  if(st==="mg")return `<div class="mg mgv"><img class="mglogo" src="${LOGO}" alt="شعار وزارة التعليم"><div class="mgvh"><div class="mgvn"><small>العنصر</small><b>${String(p.n).padStart(2,"0")}</b></div>${ed(pi+"-h",esc(p.title),"h2")}</div><i class="mgvbar"></i><div class="hx-dv">${divBody(p,pi,"dlist")}</div></div>`;
+  if(st==="mg")return `<div class="mgp mgv"><img class="mglogo" src="${LOGO}" alt="شعار وزارة التعليم"><div class="mgvh"><div class="mgvn"><small>العنصر</small><b>${String(p.n).padStart(2,"0")}</b></div>${ed(pi+"-h",esc(p.title),"h2")}</div><i class="mgvbar"></i><div class="hx-dv">${divBody(p,pi,"dlist")}</div></div>`;
   if(st==="fm")return `<div class="fmv">${fmSpray(t,"fmc tl")}${fmSpray(t,"fmc br")}<div class="fmmd"><svg viewBox="0 0 80 80" aria-hidden="true">${fmFlower(40,40,38,t.s,.28)}<circle cx="40" cy="40" r="22" fill="#fff" stroke="${t.a}" stroke-width="1"/></svg><b>${p.n}</b></div>${ed(pi+"-h",esc(p.title),"h2")}${fmDiv(t)}<div class="hx-dv">${divBody(p,pi,"dlist")}</div><img class="dlogo" src="${LOGO}" alt="شعار وزارة التعليم"></div>`;
   if(st==="fm1")return `<div class="fm1v">${fmBlobs(t)}<div class="flace t"></div><div class="flace b"></div><div class="f1md">${fmBow(t,"fbow big")}<div class="f1o"><b>${p.n}</b></div></div>${ed(pi+"-h",esc(p.title),"h2")}<div class="hx-dv">${divBody(p,pi,"dlist")}</div><img class="dlogo" src="${LOGO}" alt="شعار وزارة التعليم"></div>`;
   if(st==="fm2")return `<div class="fm2v">${fmRainbow(t,"f2big")}${fmSun(t,"f2sun")}${fmSpark(t.s,"f2sp a")}${fmSpark(t.a,"f2sp b")}${fmSpark(t.p,"f2sp c")}<div class="f2num">${p.n}</div>${ed(pi+"-h",esc(p.title),"h2")}<div class="hx-dv">${divBody(p,pi,"dlist")}</div><img class="dlogo" src="${LOGO}" alt="شعار وزارة التعليم"></div>`;
