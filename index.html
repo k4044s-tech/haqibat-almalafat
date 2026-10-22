@@ -7200,16 +7200,15 @@ let RDY_BUSY=false;
 async function rdyAuto(){
   if(VIEW||RDY_BUSY||!S.file||!rdyFill(S.file))return;
   rdyBtnSync();
-  if(store.get(rdyFlag(),null))return;
-  const own=Object.entries(store.get(eKey(),{})).filter(([k,v])=>!k.startsWith("@")&&!/^c-/.test(k)&&!rdyEmpty(v)).length;
   RDY_BUSY=true;const fid=S.file,g=S.gender;
   try{const tp=await rdyGet(fid);if(S.file!==fid||S.gender!==g)return;
-    if(!tp)return;store.set(rdyFlag(),1);if(own>3){if(!EMBED)toast("📄 تتوفر نسخة جاهزة لهذا الملف — اضغط «النسخة الجاهزة» لتعبئة الحقول الفارغة");return}
-    if(rdyMerge(tp,false)){keepY(render);if(!EMBED)toast("📄 عُبّئ الملف بالنسخة الجاهزة — أضف بياناتك وشواهدك، وعدّل ما تشاء")}}
+    if(!tp)return;const ver=(tp.updated_at||"")+":"+Object.keys(tp.data).length;if(store.get(rdyFlag(),null)===ver)return;store.set(rdyFlag(),ver);
+    /* تُعبّأ الحقول الفارغة فقط — لا يُمسّ ما كتبه المستخدم */
+    const n=rdyMerge(tp,false);if(n){keepY(render);if(!EMBED)toast("📄 عُبّئ الملف بالنسخة الجاهزة ("+n+" حقلًا) — أضف بياناتك وشواهدك، وعدّل ما تشاء")}}
   catch(e){console.error(e)}finally{RDY_BUSY=false;rdyBtnSync()}
 }
 async function rdyBtnSync(){const b=$("#rdyBtn");if(!b)return;if(EMBED||VIEW||!S.file||!rdyFill(S.file)){b.hidden=true;return}const fid=S.file;const tp=await rdyGet(fid);if(S.file===fid)b.hidden=!tp}
-$("#rdyBtn").addEventListener("click",async()=>{if(!EDIT)return needAuth("edit");const tp=await rdyGet(S.file);if(!tp)return toast("لا توجد نسخة جاهزة لهذا الملف بعد");
+$("#rdyBtn").addEventListener("click",async()=>{const tp=await rdyGet(S.file);if(!tp)return toast("لا توجد نسخة جاهزة لهذا الملف بعد");
   const ok=await uiChoice("📄 النسخة الجاهزة","المحتوى الجاهز يشمل الخطط والتحليل والنصوص. بياناتك الشخصية وصور الشواهد لا تتأثر.",[["fill","تعبئة الحقول الفارغة فقط","يحافظ على كل ما كتبته"],["all","استبدال المحتوى بالنسخة الجاهزة","يُستبدل ما كتبته في الحقول التي لها محتوى جاهز"]]);
   if(!ok)return;const n=rdyMerge(tp,ok==="all");store.set(rdyFlag(),1);keepY(render);toast(n?"عُبّئ "+n+" حقلًا من النسخة الجاهزة":"كل الحقول معبّأة مسبقًا")});
 /* المشرف: اعتماد محتوى الملف الحالي نسخةً جاهزة للجميع (تُستبعد البيانات الشخصية والصور) */
