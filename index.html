@@ -6783,7 +6783,8 @@ async function pubDialog(){
   let st=null;try{st=await BE.pubGet(S.file)}catch(e){}
   const qrOn=!!store.get("hq3:pubqr:"+S.file,null);
   const shareTxt=u=>{const t=cur&&cur.spec?cur.spec.title+(cur.spec.sub?" "+cur.spec.sub:""):"";const L=["📁 "+t];if(PN())L.push("👤 "+PN()+(PJ()?" — "+PJ():""));if(S.school)L.push("🏫 "+S.school);if(S.year)L.push("📅 "+S.year+(S.term?" — "+S.term:""));L.push("🔗 "+u);return L.join("\n")};
-  const paint=()=>{const url=st?pubUrl(st.id):"";
+  /* نضيف رقم إصدار للرابط بعد كل تحديث نشر، فيقرأ واتساب المعاينة من جديد بدل نسخته المحفوظة */
+  const paint=()=>{const url=st?pubUrl(st.id)+(pubUrl(st.id).startsWith(SHARE_BASE)&&st.updated_at?"?r="+(Date.parse(st.updated_at)/1000|0).toString(36):""):"";
     m.innerHTML=`<div class="dialog ui-dlg pub-dlg"><div class="dlg-h"><h3>🌐 النسخة الإلكترونية — ${esc(cur&&cur.f?cur.f.name():"")}</h3><p>انشر ملفك صفحةً إلكترونية أنيقة تُفتح على الجوال برابط واحد، بنفس تصميمك. أي تعديل لاحق تنشره بزر «تحديث النشر» على الرابط نفسه.</p></div>
     ${st?`<div class="pub-st ${st.enabled?"on":"off"}"><b>${st.enabled?"● الرابط يعمل":"○ الرابط متوقف"}</b><span>آخر تحديث: ${esc(new Date(st.updated_at).toLocaleString("ar-SA-u-nu-latn",{dateStyle:"medium",timeStyle:"short"}))} — المشاهدات: ${st.views||0}</span></div>
       <div class="pub-link"><input class="inp" id="pubUrl" readonly value="${esc(url)}" dir="ltr"><button class="btn" type="button" id="pubCopy">نسخ</button><a class="btn" href="${esc(url)}" target="_blank" rel="noopener">فتح</a></div>
