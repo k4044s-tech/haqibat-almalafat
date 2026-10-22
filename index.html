@@ -1362,6 +1362,11 @@ body.evmode{overflow:hidden}
 .rq-tx{width:100%;margin:4px 0 2px;font:inherit;font-size:14px}.rq-opt{display:grid;gap:6px;margin:8px 0;font-size:13.5px}.rq-dlg .ai-prog{margin:6px 0}
 .rq-ai{display:grid;gap:6px;margin:6px 0 2px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#eef6ff,#f1fbf6);border:1px solid #cfe3f0}
 .rq-ai b{color:#1b4a63}.rq-ai span{font-size:13px;color:#456;line-height:1.7}.rq-ai .btn{justify-self:start}
+.rq-sum{display:flex;flex-wrap:wrap;gap:5px;margin:4px 30px 2px 0}.rq-sum:empty{display:none}.rq-sum .chip{font-size:12px}.rq-sum b{color:#0b6d6a}
+.rqf-dlg{max-width:560px;width:calc(100vw - 32px)}
+table.rqf{width:100%;border-collapse:separate;border-spacing:0 6px}table.rqf th{width:38%;text-align:right;font-weight:600;font-size:14px;color:#1b4a63;background:#f2f6f8;border-radius:0 10px 10px 0;padding:8px 12px}
+table.rqf td{padding:0}table.rqf td .inp{width:100%;border-radius:10px 0 0 10px;margin:0}
+.rqf-ta{width:100%;font:inherit}
 /* ملف إنجاز الطالب */
 .stme{display:grid;grid-template-columns:1fr 58mm;gap:6mm;align-items:start}
 .smph{order:2}.smph .slot{height:72mm;border-radius:4mm;overflow:hidden}
@@ -7096,13 +7101,41 @@ const REQ={"perf-t": {"r": ["عناصر التقييم وأوزانها وفق �
 const REQ_SEC=[["r","✅ جاهز في الملف (جهّزه نَسَق لك)",0],["d","✍️ بيانات تكتبها",1],["s","📂 تجهّزها من الأنظمة والسجلات",1],["k","🧭 قرارات وتقييم تتخذه",1],["e","📸 شواهد بعد التنفيذ",1]];
 const reqKey=fid=>"hq3:req:"+fid;const REQF={};const REQ_ATT=new Set(["s","k"]);
 function reqBtnSync(){const b=$("#reqBtn");if(b)b.hidden=EMBED||!!VIEW||!S.file||!REQ[S.file]}
+
+/* نافذة تعبئة البيانات على شكل جدول: كل بند يُفكّك إلى خانات */
+const RQ_SET=[["الاسم","name"],["العمل / التخصص","job"],["المدرسة","school"],["إدارة التعليم","dept"],["العام الدراسي","year"],["الفصل الدراسي","term"]];
+function rqParts(x){const t=rdyG(x);if(/زر «بيانات الملف»/.test(t))return "SET";const i=t.indexOf(":");if(i<0)return null;
+  const L=t.slice(i+1).replace(/\(.*?\)/g,"").split(/،|\s+أو\s+/).map(z=>z.trim().replace(/^و(?=\S{2,})/,"").trim()).filter(z=>z&&z.length<40);return L.length?L:null}
+const rqNorm=z=>String(z).replace(/[إأآ]/g,"ا").replace(/ة/g,"ه").replace(/^(رقم\s+)/,"").replace(/(^|\s)ال/g,"$1").replace(/الكتروني|\s+/g,"").trim();
+function rqForm(fid,id,R,vals,after){
+  const sec=id[0],i=+id.slice(1),x=(R[sec]||[])[i]||"",parts=rqParts(x),title=rdyG(x).split(":")[0];
+  let f=document.getElementById("rqFm");if(!f){f=document.createElement("div");f.className="modal";f.id="rqFm";f.setAttribute("role","dialog");f.setAttribute("aria-modal","true");document.body.appendChild(f)}
+  const cv=vals[id];let rows;
+  if(parts==="SET")rows=RQ_SET.map(([l,k])=>[l,S[k]||"",k]);
+  else if(parts)rows=parts.map(l=>[l,cv&&typeof cv==="object"?cv[l]||"":""]);
+  else rows=null;
+  f.innerHTML=`<div class="dialog ui-dlg rqf-dlg"><div class="dlg-h"><h3>✍️ ${esc(title)}</h3><p>${parts==="SET"?"تُحفظ في «بيانات الملف» وتظهر في الغلاف وكل الصفحات.":"اكتب البيانات في الجدول. ما يطابق خانات الملف يُكتب فيها مباشرة، والباقي يستخدمه التجهيز الذكي."}</p></div>
+   ${rows?`<table class="rqf"><tbody>${rows.map((r,n)=>`<tr><th>${esc(r[0])}</th><td><input class="inp" data-n="${n}" value="${esc(r[1])}" ${/جوال|هوية|سنوات|عدد/.test(r[0])?'inputmode="numeric"':""}></td></tr>`).join("")}</tbody></table>`
+     :`<textarea class="inp rqf-ta" rows="6" placeholder="اكتب هنا…">${esc(typeof cv==="string"?cv:"")}</textarea>`}
+   <div class="dlg-b"><button class="btn primary" type="button" data-f="save">حفظ</button><button class="btn" type="button" data-f="x">إلغاء</button></div></div>`;
+  f.classList.add("open");const first=f.querySelector("input,textarea");if(first)setTimeout(()=>first.focus(),50);
+  f.onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){e.preventDefault();const ins=[...f.querySelectorAll("input")],k=ins.indexOf(e.target);if(ins[k+1])ins[k+1].focus();else f.querySelector("[data-f=save]").click()}};
+  f.onclick=e=>{const b=e.target.closest("[data-f]");if(e.target===f||(b&&b.dataset.f==="x")){f.classList.remove("open");return}if(!b)return;
+    if(parts==="SET"){f.querySelectorAll("input").forEach(el=>{const r=rows[+el.dataset.n];S[r[2]]=el.value.trim()});saveS();vals[id]=Object.fromEntries(rows.map((r,n)=>[r[0],f.querySelector(`[data-n="${n}"]`).value.trim()]))}
+    else if(rows){const o={};f.querySelectorAll("input").forEach(el=>{o[rows[+el.dataset.n][0]]=el.value.trim()});vals[id]=o;
+      /* كتابة ما يطابق خانات صفحات «البيانات» في الملف مباشرة */
+      const sp=cur&&cur.spec||null;const st=store.get(eKey(),{});let w=0;
+      if(sp)sp.pages.forEach((p,pi)=>{if(p.t!=="fields")return;const key=p.kpg!=null?p.kpg:"p"+pi;p.fields.forEach((fl,fi)=>{const nl=rqNorm(fl[0]);const hit=Object.entries(o).find(([l,v])=>v&&(rqNorm(l)===nl||(rqNorm(l).length>3&&(nl.includes(rqNorm(l))||rqNorm(l).includes(nl)))));if(hit){st[key+"-f"+fi]=esc(hit[1]);w++}})});
+      if(w)store.set(eKey(),st)}
+    else vals[id]=f.querySelector("textarea").value.trim();
+    store.set("hq3:reqv:"+fid,vals);f.classList.remove("open");keepY(render);after&&after();toast("حُفظت البيانات")}}
 function reqOpen(mode){const fid=S.file,R=REQ[fid];if(!R)return;store.set("hq3:reqseen:"+fid,1);const AI=mode==="ai";const done=new Set(store.get(reqKey(fid),[]));const vals=store.get("hq3:reqv:"+fid,{});
   let m=document.getElementById("reqDlg");if(!m){m=document.createElement("div");m.className="modal";m.id="reqDlg";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");document.body.appendChild(m)}
   const f=FILES.find(x=>x.id===fid);let n=0,tot=0;
   const att=k=>AI&&(k==="s"||k==="k"||k==="e"),inpt=k=>AI&&k==="d";
   const item=(k,x,i)=>{const id=k+i,lab=esc(rdyG(x));tot++;if(done.has(id))n++;
     return `<li><label><input type="checkbox" data-rq="${id}"${done.has(id)?" checked":""}><span>${lab}</span>${att(k)?`<button type="button" class="rq-at" data-at="${id}" data-ty="${k}" title="${k==="e"?"أرفق صور الشواهد ليضعها التجهيز الذكي في صفحاتها":"أرفق الملف (PDF أو صورة أو Excel) ليحلّله التجهيز الذكي ويُدرجه في الملف"}">📎 ${k==="e"?"إرفاق صور":"إرفاق"}</button>`:""}${inpt(k)?`<button type="button" class="rq-at" data-wr="${id}">✍️ اكتب</button>`:""}</label>
-      ${att(k)?`<div class="rq-fs" data-fs="${id}"></div>`:""}${inpt(k)?`<textarea class="inp rq-tx" data-tx="${id}" rows="2" placeholder="اكتب هنا: ${lab}"${vals[id]?"":" hidden"}>${esc(vals[id]||"")}</textarea>`:""}</li>`};
+      ${att(k)?`<div class="rq-fs" data-fs="${id}"></div>`:""}${inpt(k)?`<div class="rq-sum" data-sum="${id}"></div>`:""}</li>`};
   const secs=REQ_SEC.filter(([k])=>R[k]&&R[k].length).map(([k,h,chk])=>`<div class="rq-s"><h4>${h}</h4><ul>${R[k].map((x,i)=>chk?item(k,x,i):`<li class="ok"><span>${esc(rdyG(x))}</span></li>`).join("")}</ul></div>`).join("");
   const sv=store.get(AIREF,null);
   m.innerHTML=`<div class="dialog ui-dlg rq-dlg"><div class="dlg-h"><h3>${AI?"✨ التجهيز الذكي":"📋 متطلبات إعداد"}: ${esc(f?f.name():"")}</h3><p>${AI?"أرفق المطلوب عند كل بند، واكتب البيانات المطلوبة، ثم اضغط «جهّز الآن»: يقرأ Claude المرفقات ويُدرج أرقامها وبياناتها، ويضع صور الشواهد في صفحاتها.":"جهّز هذه البيانات قبل أن تبدأ ليكتمل الملف بنجاح. ضع علامة على ما جهّزته، ويُحفظ تقدمك."}</p>
@@ -7120,17 +7153,18 @@ function reqOpen(mode){const fid=S.file,R=REQ[fid];if(!R)return;store.set("hq3:r
   const tick=id=>{const cb=m.querySelector(`[data-rq="${id}"]`);if(cb&&!cb.checked){cb.checked=true;cb.dispatchEvent(new Event("change",{bubbles:true}))}};
   inp.onchange=()=>{if(!atId)return;const L=F[atId]=F[atId]||[];for(const f of inp.files){if(f.size>15728640){toast("«"+f.name+"» أكبر من 15 ميجابايت");continue}if(atTy==="e"&&!/^image\//.test(f.type)){toast("الشواهد: أرفق صورًا فقط");continue}if(!L.some(x=>x.name===f.name&&x.size===f.size))L.push(f)}inp.value="";if(L.length)tick(atId);paintF()};
   paintF();
+  const paintSum=()=>m.querySelectorAll("[data-sum]").forEach(b=>{const v=vals[b.dataset.sum];b.innerHTML=v&&typeof v==="object"?Object.entries(v).filter(([,x])=>String(x).trim()).map(([a,x])=>`<span class="chip on"><b>${esc(a)}:</b> ${esc(String(x).slice(0,40))}</span>`).join(""):(v?`<span class="chip on">${esc(String(v).slice(0,80))}</span>`:"")});paintSum();
   m.oninput=e=>{const t=e.target.closest("[data-tx]");if(t){vals[t.dataset.tx]=t.value;store.set("hq3:reqv:"+fid,vals);if(t.value.trim())tick(t.dataset.tx)}if(e.target.id==="rqNote"){vals.__note=e.target.value;store.set("hq3:reqv:"+fid,vals)}};
   m.onchange=e=>{const c=e.target.closest("[data-rq]");if(!c)return;c.checked?done.add(c.dataset.rq):done.delete(c.dataset.rq);store.set(reqKey(fid),[...done]);
     const k=m.querySelectorAll("[data-rq]:checked").length,t=m.querySelectorAll("[data-rq]").length;m.querySelector(".rq-bar i").style.width=(t?Math.round(k/t*100):0)+"%";m.querySelector(".rq-n").textContent="جهّزت "+k+" من "+t};
   m.onclick=e=>{const at=e.target.closest("[data-at]");if(at){e.preventDefault();e.stopPropagation();atId=at.dataset.at;atTy=at.dataset.ty;inp.accept=atTy==="e"?"image/*":".pdf,application/pdf,image/*,.xlsx,.xls,.csv,.txt";inp.click();return}
-    const wr=e.target.closest("[data-wr]");if(wr){e.preventDefault();e.stopPropagation();const t=m.querySelector(`[data-tx="${wr.dataset.wr}"]`);if(t){t.hidden=false;t.focus()}return}
+    const wr=e.target.closest("[data-wr]");if(wr){e.preventDefault();e.stopPropagation();rqForm(fid,wr.dataset.wr,R,vals,()=>{paintSum();tick(wr.dataset.wr)});return}
     const fx=e.target.closest("[data-fx]");if(fx){e.preventDefault();e.stopPropagation();const [id,i]=fx.dataset.fx.split(":");(F[id]||[]).splice(+i,1);paintF();return}
     const b=e.target.closest("[data-x]");
     if(b&&b.dataset.x==="go"){
       const docs=[],imgs=[];Object.entries(F).forEach(([id,L])=>L.forEach(f=>{if(id[0]==="e")imgs.push(f);else{try{f.__lab=labOf(id)}catch(_){}docs.push(f)}}));
       const info={"الملف":f?f.name():"","الاسم":PN()||"","المدرسة":S.school||"","الجنس":S.gender==="f"?"أنثى":"ذكر","الصفة":S.job||""};
-      (R.d||[]).forEach((x,i)=>{const v=(vals["d"+i]||"").trim();if(v)info[labOf("d"+i)||("بيان "+(i+1))]=v});
+      (R.d||[]).forEach((x,i)=>{let v=vals["d"+i];if(v&&typeof v==="object")v=Object.entries(v).filter(([a,y])=>String(y).trim()&&!/هوية|جوال|البريد|بريد/.test(a)).map(([a,y])=>a+": "+y).join("\n");v=(v||"").trim();if(v)info[labOf("d"+i)||("بيان "+(i+1))]=v});
       const got=[...done].map(id=>rdyG((R[id[0]]||[])[+id.slice(1)]||"")).filter(Boolean);if(got.length)info["ما جهّزه المستخدم ويؤكد توفره"]=got;
       const note=(vals.__note||"").trim();if(note)info["ملاحظات المستخدم (ركّز عليها)"]=note;
       if(!docs.length&&!imgs.length&&Object.keys(info).length<=5&&!note)return toast("أرفق ملفًا أو اكتب بيانات أولًا");
