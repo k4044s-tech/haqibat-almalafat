@@ -6970,7 +6970,7 @@ async function pubDialog(){
     m.innerHTML=`<div class="dialog ui-dlg pub-dlg"><div class="dlg-h"><h3>🌐 النسخة الإلكترونية — ${esc(cur&&cur.f?cur.f.name():"")}</h3><p>انشر ملفك صفحةً إلكترونية أنيقة تُفتح على الجوال برابط واحد، بنفس تصميمك. أي تعديل لاحق تنشره بزر «تحديث النشر» على الرابط نفسه.</p></div>
     ${st?`<div class="pub-st ${st.enabled?"on":"off"}"><b>${st.enabled?"● الرابط يعمل":"○ الرابط متوقف"}</b><span>آخر تحديث: ${esc(new Date(st.updated_at).toLocaleString("ar-SA-u-nu-latn",{dateStyle:"medium",timeStyle:"short"}))} — المشاهدات: ${st.views||0}</span></div>
       <div class="pub-link"><input class="inp" id="pubUrl" readonly value="${esc(url)}" dir="ltr"><button class="btn" type="button" id="pubCopy">نسخ</button><a class="btn" href="${esc(url)}" target="_blank" rel="noopener">فتح</a></div>
-      <div class="pub-qr"><div>${qrSvg(url)}</div><div><label class="ck"><input type="checkbox" id="pubQrCv" ${qrOn?"checked":""}> إضافة باركود الرابط على غلاف الملف المطبوع</label><small class="muted">يمسحه المقيّم من الورقة المطبوعة فيفتح النسخة الإلكترونية كاملة.</small><a class="btn sm" id="pubWa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareTxt(url))}">مشاركة عبر واتساب</a><button class="btn sm" type="button" id="pubCopyAll">نسخ الرابط مع البيانات</button><button class="btn sm primary" type="button" id="pubCard">📤 مشاركة الباركود مع الرسالة</button><pre class="pub-msg">${esc(shareTxt(url))}</pre></div></div>`
+      <div class="pub-qr"><div>${qrSvg(url)}</div><div><label class="ck"><input type="checkbox" id="pubQrCv" ${qrOn?"checked":""}> إضافة باركود الرابط على غلاف الملف المطبوع</label><small class="muted">يمسحه المقيّم من الورقة المطبوعة فيفتح النسخة الإلكترونية كاملة.</small><a class="btn sm" id="pubWa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareTxt(url))}">مشاركة عبر واتساب</a><button class="btn sm" type="button" id="pubCopyAll">نسخ الرابط مع البيانات</button><button class="btn sm primary" type="button" id="pubCard">📤 مشاركة الباركود مع الرسالة</button><button class="btn sm" type="button" id="pubPdf">📄 تنزيل PDF بالباركود والرابط</button><pre class="pub-msg">${esc(shareTxt(url))}</pre></div></div>`
       :`<div class="pub-empty">لم يُنشر هذا الملف بعد. تُنشر النصوص والصور وروابط الشواهد كما تظهر في الطباعة، والصفحات المخفية وصفحات الشواهد الفارغة لا تظهر.</div>`}
     <div class="ai-prog" id="pubProg" hidden><div class="bar"><i></i></div><span></span></div>
     <div class="dlg-b"><button class="btn primary" type="button" id="pubGo">${st?"تحديث النشر":"نشر الآن"}</button>${st?`<button class="btn" type="button" id="pubTg">${st.enabled?"إيقاف الرابط":"تفعيل الرابط"}</button>`:""}<button class="btn" type="button" id="pubX">إغلاق</button></div></div>`;
@@ -6979,6 +6979,7 @@ async function pubDialog(){
     if(q("#pubCopy"))q("#pubCopy").onclick=async()=>{try{await navigator.clipboard.writeText(url);toast("نُسخ الرابط")}catch(e){q("#pubUrl").select();document.execCommand("copy");toast("نُسخ الرابط")}};
     if(q("#pubCopyAll"))q("#pubCopyAll").onclick=async()=>{const t=shareTxt(url);try{await navigator.clipboard.writeText(t)}catch(e){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove()}toast("نُسخ الرابط مع اسم الملف والمعلم والمدرسة")};
     if(q("#pubCard"))q("#pubCard").onclick=()=>pubCardShare(url,shareTxt(url));
+    if(q("#pubPdf"))q("#pubPdf").onclick=()=>pubCardPdf(url);
     if(q("#pubQrCv"))q("#pubQrCv").onchange=e=>{if(e.target.checked)store.set("hq3:pubqr:"+S.file,url);else store.del("hq3:pubqr:"+S.file);keepY(render);toast(e.target.checked?"أُضيف باركود الرابط على الغلاف":"أُزيل الباركود من الغلاف")};
     if(q("#pubTg"))q("#pubTg").onclick=async()=>{try{await BE.pubEnable(S.file,!st.enabled);st.enabled=!st.enabled;paint();toast(st.enabled?"الرابط يعمل الآن":"أُوقف الرابط")}catch(e){toast("تعذّر تغيير حالة الرابط")}};
     q("#pubGo").onclick=async()=>{const pr=q("#pubProg"),bar=pr.querySelector("i"),lab=pr.querySelector("span");pr.hidden=false;q("#pubGo").disabled=true;bar.style.width="25%";lab.textContent="تجهيز النصوص والصور…";
@@ -6994,7 +6995,7 @@ async function pubDialog(){
 }
 
 /* بطاقة مشاركة: صورة فيها الباركود واسم الملف والمعلم والمدرسة، تُرسل مع نص الرسالة */
-async function pubCardBlob(url){
+async function pubCardBlob(url,type){
   /* بطاقة مشاركة بتصميم «الإرشادي»: تدرّج أخضر→كحلي مع شبكة خطوط، وشعار الوزارة، وشريط كحلي للاسم */
   const W=900,H=1200,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
   try{await document.fonts.load('800 60px "Tajawal"');await document.fonts.load('500 30px "Tajawal"')}catch(e){}
@@ -7024,7 +7025,24 @@ async function pubCardBlob(url){
   x.font='500 19px "Tajawal",sans-serif';x.fillStyle="rgba(255,255,255,.78)";x.direction="ltr";x.fillText(url.replace(/^https?:\/\//,""),W/2,yb+36);
   x.direction="rtl";x.fillStyle="rgba(255,255,255,.95)";x.font='600 22px "Tajawal",sans-serif';x.fillText((S.year||"")+(S.term?" — "+S.term:""),W/2,H-46);
   x.font='500 16px "Tajawal",sans-serif';x.fillStyle="rgba(255,255,255,.6)";x.fillText("نَسَق — ملفات مدرسية إلكترونية",W/2,H-18);
-  return await new Promise(ok=>c.toBlob(ok,"image/png"))}
+  return await new Promise(ok=>c.toBlob(ok,type||"image/png",.9))}
+
+/* ملف PDF (A4) فيه بطاقة الباركود، والرابط قابل للضغط */
+const JSPDF_URL="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+async function pubCardPdf(url){
+  toast("جارٍ إنشاء ملف PDF…");
+  try{if(!window.jspdf)await loadScript(JSPDF_URL);const blob=await pubCardBlob(url,"image/jpeg");
+    const du=await new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(r.result);r.readAsDataURL(blob)});
+    const doc=new window.jspdf.jsPDF({unit:"mm",format:"a4",orientation:"portrait"});
+    doc.setFillColor(242,246,248);doc.rect(0,0,210,297,"F");
+    const w=156,h=208,x0=(210-w)/2,y0=20;doc.addImage(du,"JPEG",x0,y0,w,h);doc.link(x0,y0,w,h,{url});
+    const u=url.replace(/^https?:\/\//,"");doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(27,74,99);
+    const tw=doc.getTextWidth(u);doc.textWithLink(u,(210-tw)/2,y0+h+16,{url});
+    doc.setDrawColor(19,163,111);doc.setLineWidth(.6);doc.roundedRect((210-tw)/2-6,y0+h+9,tw+12,10,3,3,"S");
+    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(110,125,135);const ft="nasaq";doc.text(ft,(210-doc.getTextWidth(ft))/2,289);
+    doc.setProperties({title:(cur&&cur.spec?cur.spec.title:"ملف")+" — باركود"});
+    doc.save("باركود-"+((cur&&cur.spec?cur.spec.title:"ملف").slice(0,40))+".pdf");toast("نُزّل ملف PDF: الباركود والرابط قابلان للضغط")}
+  catch(e){console.error(e);toast("تعذّر إنشاء ملف PDF")}}
 async function pubCardShare(url,text){
   let blob;try{blob=await pubCardBlob(url)}catch(e){console.error(e);return toast("تعذّر إنشاء صورة الباركود")}
   const file=new File([blob],"باركود-"+((cur&&cur.spec?cur.spec.title:"ملف").slice(0,40))+".png",{type:"image/png"});
