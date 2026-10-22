@@ -1,0 +1,4 @@
+{
+  "rewrites": [{ "source": "/v/:id", "destination": "/api/v?id=:id" }],
+  "redirects": [{ "source": "/", "destination": "https://k4044s-tech.github.io/haqibat-almalafat/", "permanent": false }]
+}

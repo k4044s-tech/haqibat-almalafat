@@ -6765,7 +6765,9 @@ $("#saveBtn").addEventListener("click",()=>saveDlg());
 setInterval(()=>{try{if(CURV==="file"&&$("#svChip"))svChip()}catch(e){}},5000);
 $("#savesBtn").addEventListener("click",()=>savesDlg());
 /* ---------- النسخة الإلكترونية: نشر الملف كموقع برابط ---------- */
-const pubUrl=id=>location.origin+location.pathname+"?v="+id;
+/* رابط المشاركة يمر عبر nasaq-share (Vercel) ليُظهر اسم الملف والمعلم والمدرسة في معاينة واتساب ثم يفتح الملف */
+const SHARE_BASE="https://nasaq-share.vercel.app/v/";
+const pubUrl=id=>(BE&&!BE.demo&&/github\.io$/.test(location.hostname)?SHARE_BASE:location.origin+location.pathname+"?v=")+id;
 const rid=()=>{const a="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789",b=new Uint8Array(10);crypto.getRandomValues(b);return [...b].map(x=>a[x%a.length]).join("")};
 async function pubPayload(fid){
   const raw=txCollect(fid),data={};let n=0;
