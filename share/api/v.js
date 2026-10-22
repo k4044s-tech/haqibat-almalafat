@@ -9,8 +9,6 @@ const esc = s => String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": 
 module.exports = async (req, res) => {
   const id = String((req.query && req.query.id) || "").replace(/[^A-Za-z0-9]/g, "").slice(0, 16);
   const dest = APP + "?v=" + id;
-  const ua = String((req.headers && req.headers["user-agent"]) || "");
-  const bot = /facebookexternalhit|facebot|whatsapp|twitterbot|telegrambot|slackbot|linkedinbot|discordbot|skypeuripreview|googlebot|bingbot|applebot|embedly|pinterest|vkshare|redditbot/i.test(ua);
   const self = "https://" + String((req.headers && req.headers.host) || "") + "/v/" + id;
   let m = null;
   if (id.length >= 8) {
