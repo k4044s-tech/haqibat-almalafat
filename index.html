@@ -1323,6 +1323,21 @@ body.evmode{overflow:hidden}
 .cv13 .card{margin-bottom:26mm;background:transparent;border:0;box-shadow:none;border-radius:0}
 .cv13 .card .k{background:#1b4a63}
 .cv13 .card .rw{border-bottom:.6mm solid transparent;background:#f2f2f2}.cv13 .card .v{color:#1b4a63}
+/* «الإرشادي»: تنسيق الفهرس ذي العمودين والغلاف الأفقي */
+.page.st-mg table.t.ixt td,.page.st-mg table.t.ixt tr:nth-child(even) td,.page.st-mg table.t.ixt tr:nth-child(odd) td{font-size:12pt;height:8mm;padding:.6mm 1.5mm;line-height:1.35;background:transparent;border-bottom:.3mm solid #c9c9c9;color:#444}
+.page.st-mg table.t.ix2t td,.page.st-mg table.t.ix2t tr:nth-child(even) td,.page.st-mg table.t.ix2t tr:nth-child(odd) td{font-size:10.5pt;height:6.6mm;padding:.3mm 1.2mm}
+.page.st-mg table.t.ix2t th{font-size:11pt}
+.page.land.st-mg table.t.ix2t td,.page.land.st-mg table.t.ix2t tr:nth-child(even) td,.page.land.st-mg table.t.ix2t tr:nth-child(odd) td{font-size:9.3pt;height:5.4mm;padding:.2mm 1mm;line-height:1.25}
+.page.st-mg table.t.ixt td.gap,.page.st-mg table.t.ixt th.gap{border-bottom:0!important}
+.cv13 .c13rw{display:flex;flex-direction:column;align-items:flex-end}
+.cv13 .c13tab{align-self:flex-end;margin:0}
+.page.land .cv13 .c13logo{top:10mm;height:22mm}
+.page.land .cv13 .c13hd{top:10mm}
+.page.land .cv13 .c13t{margin-top:50mm}
+.page.land .cv13 .c13t h1{font-size:34pt;margin-bottom:4mm}
+.page.land .cv13 .card{margin-bottom:12mm;width:170mm}
+.page.land .cv13 .card .rw{min-height:0}.page.land .cv13 .card .k,.page.land .cv13 .card .v{padding:1.8mm 4mm}
+.page.land .cv13 .pubqr{bottom:12mm}
 /* ملف إنجاز الطالب */
 .stme{display:grid;grid-template-columns:1fr 58mm;gap:6mm;align-items:start}
 .smph{order:2}.smph .slot{height:72mm;border-radius:4mm;overflow:hidden}
@@ -3841,7 +3856,7 @@ function rDivX(p,t,pi){
 function rCoverX(c,file,t,card,lab){
   const T1=`${ed("c-t",esc(file.title),"h1")}${ed("c-s",esc(file.sub||""),"div","sub")}`;
   if(c===13)return `<div class="cov cv13">${mgNet()}<img class="c13logo" src="${LOGO_W}" alt="شعار وزارة التعليم"><div class="c13hd"><span class="ksa" role="img" aria-label="المملكة العربية السعودية"></span><br>وزارة التعليم<br>${dots(S.dept)}</div>
-    <div class="c13t">${ed("c-t",esc(file.title),"h1")}<div class="c13rib">${ed("c-s",esc(file.sub||""),"div","sub")}</div><div class="c13tab">${esc(S.year)} — ${esc(S.term)}</div></div>${card}</div>`;
+    <div class="c13t">${ed("c-t",esc(file.title),"h1")}<div class="c13rw"><div class="c13rib">${ed("c-s",esc(file.sub||""),"div","sub")}</div><div class="c13tab">${esc(S.year)} — ${esc(S.term)}</div></div></div>${card}</div>`;
   if(c===11)return `<div class="cov cv11">${fmBlobs(t)}<i class="fwc d"></i><div class="flace t"></div><div class="flace b"></div>
     <div class="c11hd"><span class="ksa" role="img" aria-label="المملكة العربية السعودية"></span><br>وزارة التعليم<br>${dots(S.dept)}</div><img class="c11logo" src="${LOGO}" alt="شعار وزارة التعليم">
     <div class="c11ov">${fmBow(t,"fbow c11b")}<div class="c11in">${T1}</div></div>${card}</div>`;
