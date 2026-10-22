@@ -6842,7 +6842,8 @@ async function pubCardShare(url,text){
 }
 $("#pubBtn").addEventListener("click",()=>pubDialog());
 /* عارض النسخة المنشورة (?v=) */
-function viewFit(){const ps=pagesEl.querySelectorAll(".pwrap:not(.skip):not(.evx) .page");let w=0;ps.forEach(p=>{w=Math.max(w,p.offsetWidth)});if(!w)return;const z=Math.min(1,(innerWidth-24)/w);pagesEl.style.zoom=z}
+/* العارض يستخدم دالة الملاءمة نفسها (transform في iOS و zoom في غيره) حتى لا يتضاعف التصغير */
+function viewFit(){try{fit()}catch(e){}}
 function viewChrome(info){
   const items=[...pagesEl.querySelectorAll(".pwrap:not(.skip):not(.evx)")].map((w,i)=>{const h=w.querySelector('[data-k$="-h"]'),k=w.dataset.pg;const t=(k==="cv"?"الغلاف":k==="ix"?"الفهرس":h?h.innerText.trim():(w.querySelector(".pbar span")||{}).textContent||"صفحة").slice(0,70);return `<a href="#" data-go="${esc(k)}"><i>${i+1}</i>${esc(t)}</a>`}).join("");
   const bar=document.createElement("div");bar.id="vwBar";bar.innerHTML=`<button type="button" id="vwMenu" aria-label="الأقسام">☰</button><div class="t"><b>${esc(info.title||"")}</b>${info.owner?`<span>${esc(info.owner)}</span>`:""}</div><a class="nq" href="${esc(location.origin+location.pathname)}" target="_blank" rel="noopener">صُمّم بـ نَسَق</a>`;
