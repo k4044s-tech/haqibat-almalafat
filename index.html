@@ -6788,7 +6788,7 @@ async function pubDialog(){
     m.innerHTML=`<div class="dialog ui-dlg pub-dlg"><div class="dlg-h"><h3>🌐 النسخة الإلكترونية — ${esc(cur&&cur.f?cur.f.name():"")}</h3><p>انشر ملفك صفحةً إلكترونية أنيقة تُفتح على الجوال برابط واحد، بنفس تصميمك. أي تعديل لاحق تنشره بزر «تحديث النشر» على الرابط نفسه.</p></div>
     ${st?`<div class="pub-st ${st.enabled?"on":"off"}"><b>${st.enabled?"● الرابط يعمل":"○ الرابط متوقف"}</b><span>آخر تحديث: ${esc(new Date(st.updated_at).toLocaleString("ar-SA-u-nu-latn",{dateStyle:"medium",timeStyle:"short"}))} — المشاهدات: ${st.views||0}</span></div>
       <div class="pub-link"><input class="inp" id="pubUrl" readonly value="${esc(url)}" dir="ltr"><button class="btn" type="button" id="pubCopy">نسخ</button><a class="btn" href="${esc(url)}" target="_blank" rel="noopener">فتح</a></div>
-      <div class="pub-qr"><div>${qrSvg(url)}</div><div><label class="ck"><input type="checkbox" id="pubQrCv" ${qrOn?"checked":""}> إضافة باركود الرابط على غلاف الملف المطبوع</label><small class="muted">يمسحه المقيّم من الورقة المطبوعة فيفتح النسخة الإلكترونية كاملة.</small><a class="btn sm" id="pubWa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareTxt(url))}">مشاركة عبر واتساب</a><button class="btn sm" type="button" id="pubCopyAll">نسخ الرابط مع البيانات</button><pre class="pub-msg">${esc(shareTxt(url))}</pre></div></div>`
+      <div class="pub-qr"><div>${qrSvg(url)}</div><div><label class="ck"><input type="checkbox" id="pubQrCv" ${qrOn?"checked":""}> إضافة باركود الرابط على غلاف الملف المطبوع</label><small class="muted">يمسحه المقيّم من الورقة المطبوعة فيفتح النسخة الإلكترونية كاملة.</small><a class="btn sm" id="pubWa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareTxt(url))}">مشاركة عبر واتساب</a><button class="btn sm" type="button" id="pubCopyAll">نسخ الرابط مع البيانات</button><button class="btn sm primary" type="button" id="pubCard">📤 مشاركة الباركود مع الرسالة</button><pre class="pub-msg">${esc(shareTxt(url))}</pre></div></div>`
       :`<div class="pub-empty">لم يُنشر هذا الملف بعد. تُنشر النصوص والصور وروابط الشواهد كما تظهر في الطباعة، والصفحات المخفية وصفحات الشواهد الفارغة لا تظهر.</div>`}
     <div class="ai-prog" id="pubProg" hidden><div class="bar"><i></i></div><span></span></div>
     <div class="dlg-b"><button class="btn primary" type="button" id="pubGo">${st?"تحديث النشر":"نشر الآن"}</button>${st?`<button class="btn" type="button" id="pubTg">${st.enabled?"إيقاف الرابط":"تفعيل الرابط"}</button>`:""}<button class="btn" type="button" id="pubX">إغلاق</button></div></div>`;
@@ -6796,6 +6796,7 @@ async function pubDialog(){
     q("#pubX").onclick=()=>m.classList.remove("open");
     if(q("#pubCopy"))q("#pubCopy").onclick=async()=>{try{await navigator.clipboard.writeText(url);toast("نُسخ الرابط")}catch(e){q("#pubUrl").select();document.execCommand("copy");toast("نُسخ الرابط")}};
     if(q("#pubCopyAll"))q("#pubCopyAll").onclick=async()=>{const t=shareTxt(url);try{await navigator.clipboard.writeText(t)}catch(e){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove()}toast("نُسخ الرابط مع اسم الملف والمعلم والمدرسة")};
+    if(q("#pubCard"))q("#pubCard").onclick=()=>pubCardShare(url,shareTxt(url));
     if(q("#pubQrCv"))q("#pubQrCv").onchange=e=>{if(e.target.checked)store.set("hq3:pubqr:"+S.file,url);else store.del("hq3:pubqr:"+S.file);keepY(render);toast(e.target.checked?"أُضيف باركود الرابط على الغلاف":"أُزيل الباركود من الغلاف")};
     if(q("#pubTg"))q("#pubTg").onclick=async()=>{try{await BE.pubEnable(S.file,!st.enabled);st.enabled=!st.enabled;paint();toast(st.enabled?"الرابط يعمل الآن":"أُوقف الرابط")}catch(e){toast("تعذّر تغيير حالة الرابط")}};
     q("#pubGo").onclick=async()=>{const pr=q("#pubProg"),bar=pr.querySelector("i"),lab=pr.querySelector("span");pr.hidden=false;q("#pubGo").disabled=true;bar.style.width="25%";lab.textContent="تجهيز النصوص والصور…";
@@ -6808,6 +6809,36 @@ async function pubDialog(){
         paint();toast("تم النشر، الرابط جاهز للمشاركة")}
       catch(e){console.error(e);pr.hidden=true;q("#pubGo").disabled=false;toast(e&&e.code==="size"?"تعذّر الحفظ لامتلاء مساحة المتصفح (الوضع التجريبي)":"تعذّر النشر، تحقق من الصلاحية والاتصال")}}};
   paint();m.classList.add("open");m.onclick=e=>{if(e.target===m)m.classList.remove("open")};
+}
+
+/* بطاقة مشاركة: صورة فيها الباركود واسم الملف والمعلم والمدرسة، تُرسل مع نص الرسالة */
+async function pubCardBlob(url){
+  const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d"),t=T();
+  try{await document.fonts.load('700 60px "Tajawal"')}catch(e){}
+  const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,t.p);g.addColorStop(1,t.s);x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.fillStyle="rgba(255,255,255,.08)";x.beginPath();x.arc(80,90,260,0,7);x.fill();x.beginPath();x.arc(W-40,H-60,220,0,7);x.fill();
+  const rr=(X,Y,w,h,r)=>{x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath()};
+  x.fillStyle="#fff";rr(70,260,W-140,980,46);x.fill();
+  x.direction="rtl";x.textAlign="center";x.fillStyle="#fff";x.font='800 58px "Tajawal",sans-serif';x.fillText("نَسَق — ملف إلكتروني",W/2,140);
+  x.font='500 32px "Tajawal",sans-serif';x.fillStyle="rgba(255,255,255,.9)";x.fillText("امسح الرمز لعرض الملف كاملًا",W/2,200);
+  const wrap=(txt,y,font,col,max,lh)=>{x.font=font;x.fillStyle=col;const words=String(txt).split(" ");let line="",n=0;for(const w of words){const tt=line?line+" "+w:w;if(x.measureText(tt).width>max&&line){x.fillText(line,W/2,y+n*lh);n++;line=w}else line=tt}if(line){x.fillText(line,W/2,y+n*lh);n++}return y+n*lh};
+  let y=wrap(cur&&cur.spec?cur.spec.title+(cur.spec.sub?" "+cur.spec.sub:""):"",350,'800 46px "Tajawal",sans-serif',t.p,W-240,62);
+  const who=[PN(),PJ()].filter(Boolean).join(" — ");if(who)y=wrap("👤 "+who,y+14,'600 34px "Tajawal",sans-serif',"#33444c",W-240,48);
+  if(S.school)y=wrap("🏫 "+S.school,y+4,'600 34px "Tajawal",sans-serif',"#33444c",W-240,48);
+  const q=qrcode(0,"M");q.addData(url);q.make();const n=q.getModuleCount(),sz=Math.min(560,1180-y-40),cell=Math.floor(sz/(n+4)),qs=cell*(n+4),qx=(W-qs)/2,qy=y+30;
+  x.fillStyle="#fff";x.fillRect(qx,qy,qs,qs);x.fillStyle="#000";for(let r=0;r<n;r++)for(let k=0;k<n;k++)if(q.isDark(r,k))x.fillRect(qx+(k+2)*cell,qy+(r+2)*cell,cell,cell);
+  x.strokeStyle=t.a;x.lineWidth=6;rr(qx-14,qy-14,qs+28,qs+28,24);x.stroke();
+  x.font='500 26px "Tajawal",sans-serif';x.fillStyle="#5c6b73";x.direction="ltr";x.fillText(url.replace(/^https?:\/\//,""),W/2,Math.min(1210,qy+qs+60));
+  x.direction="rtl";x.fillStyle="#fff";x.font='600 30px "Tajawal",sans-serif';x.fillText((S.year||"")+(S.term?" — "+S.term:""),W/2,1300);
+  return await new Promise(ok=>c.toBlob(ok,"image/png"))}
+async function pubCardShare(url,text){
+  let blob;try{blob=await pubCardBlob(url)}catch(e){console.error(e);return toast("تعذّر إنشاء صورة الباركود")}
+  const file=new File([blob],"باركود-"+((cur&&cur.spec?cur.spec.title:"ملف").slice(0,40))+".png",{type:"image/png"});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text});return}catch(e){if(e&&e.name==="AbortError")return}}
+  /* الحاسب: نسخ الصورة للحافظة ثم تنزيلها احتياطًا */
+  let copied=false;try{await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);copied=true}catch(e){}
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);
+  toast(copied?"نُسخت صورة الباركود: الصقها في واتساب (Ctrl+V)، ثم اضغط «نسخ الرابط مع البيانات» والصق الرسالة في التعليق":"نُزّلت صورة الباركود: أرفقها في واتساب، ثم الصق الرسالة من «نسخ الرابط مع البيانات»");
 }
 $("#pubBtn").addEventListener("click",()=>pubDialog());
 /* عارض النسخة المنشورة (?v=) */
