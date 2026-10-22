@@ -6668,7 +6668,7 @@ function aiQs(f){
   return {h:"حدّد ما ينطبق عليك ليكتب Claude نصوص الملف ويوزع صور الشواهد.",b:[Qs("المادة",AO.subj,AO.subj.find(x=>(S.job||"").includes(x.split(" ")[0]))||""),STG,Qi("الصفوف","مثال: الرابع والخامس"),Qs("سنوات الخبرة",AO.years),STY],x:[Qc("الاستراتيجيات التي تطبقها",AO.strat),Qc("الدورات والبرامج التي حضرتها",AO.pd),Qt("مبادرات أو إنجازات تريد ذكرها","مثال: خطة علاجية لضعاف القراءة")],sec:secs};
 }
 const aiAvail=()=>!!ME&&perm(S.file,"ai");
-function renderAiBtn(){const b=$("#aiBtn");if(!b)return;b.hidden=EMBED||AI_NONE.has(S.file);const ok=aiAvail();b.classList.toggle("off",!ok);
+function renderAiBtn(){const b=$("#aiBtn");if(!b)return;b.hidden=EMBED||AI_NONE.has(S.file)||!isAdmin();const ok=aiAvail();b.classList.toggle("off",!ok);
   b.querySelector(".aibdg").textContent=ok?"متوفر":"غير متوفر";b.title=ok?"يجهّز Claude نصوص الملف ويوزع صور الشواهد":"التجهيز الذكي غير متوفر لحسابك في هذا الملف"}
 function aiLabel(el){const b=el.closest(".blk");if(b&&b.querySelector("h4"))return b.querySelector("h4").innerText;
   const f=el.closest(".fld,.smf");if(f){const k=f.querySelector(".k,b");if(k)return k.innerText}
@@ -7200,6 +7200,7 @@ let RDY_BUSY=false;
 async function rdyAuto(){
   if(VIEW||RDY_BUSY||!S.file||!rdyFill(S.file))return;
   rdyBtnSync();
+  if(!isAdmin())return; /* النسخة الجاهزة للمشرف فقط */
   RDY_BUSY=true;const fid=S.file,g=S.gender;
   try{const tp=await rdyGet(fid);if(S.file!==fid||S.gender!==g)return;
     if(!tp)return;const ver=(tp.updated_at||"")+":"+Object.keys(tp.data).length;if(store.get(rdyFlag(),null)===ver)return;store.set(rdyFlag(),ver);
@@ -7207,7 +7208,7 @@ async function rdyAuto(){
     const n=rdyMerge(tp,false);if(n){keepY(render);if(!EMBED)toast("📄 عُبّئ الملف بالنسخة الجاهزة ("+n+" حقلًا) — أضف بياناتك وشواهدك، وعدّل ما تشاء")}}
   catch(e){console.error(e)}finally{RDY_BUSY=false;rdyBtnSync()}
 }
-async function rdyBtnSync(){const b=$("#rdyBtn");if(!b)return;if(EMBED||VIEW||!S.file||!rdyFill(S.file)){b.hidden=true;return}const fid=S.file;const tp=await rdyGet(fid);if(S.file===fid)b.hidden=!tp}
+async function rdyBtnSync(){const b=$("#rdyBtn");if(!b)return;if(EMBED||VIEW||!S.file||!rdyFill(S.file)||!isAdmin()){b.hidden=true;return}const fid=S.file;const tp=await rdyGet(fid);if(S.file===fid)b.hidden=!tp}
 $("#rdyBtn").addEventListener("click",async()=>{const tp=await rdyGet(S.file);if(!tp)return toast("لا توجد نسخة جاهزة لهذا الملف بعد");
   const ok=await uiChoice("📄 النسخة الجاهزة","المحتوى الجاهز يشمل الخطط والتحليل والنصوص. بياناتك الشخصية وصور الشواهد لا تتأثر.",[["fill","تعبئة الحقول الفارغة فقط","يحافظ على كل ما كتبته"],["all","استبدال المحتوى بالنسخة الجاهزة","يُستبدل ما كتبته في الحقول التي لها محتوى جاهز"]]);
   if(!ok)return;const n=rdyMerge(tp,ok==="all");store.set(rdyFlag(),1);keepY(render);toast(n?"عُبّئ "+n+" حقلًا من النسخة الجاهزة":"كل الحقول معبّأة مسبقًا")});
