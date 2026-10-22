@@ -4795,7 +4795,15 @@ window.addEventListener("resize",fit);
 if(IOS_FIT&&window.ResizeObserver)new ResizeObserver(()=>fitH()).observe(pagesEl);
 
 /* controls */
-$("#gSeg").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;S.gender=b.dataset.g;saveS();render()});
+/* تغيير (معلم/معلمة) ينقل البيانات المكتوبة بدل أن تختفي */
+async function setGender(ng){if(ng===S.gender)return;try{ftbFlush()}catch(e){}const og=S.gender;
+  const moves=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k.startsWith("hq3:e:"))continue;const pt=k.split(":");if(pt[3]!==og)continue;pt[3]=ng;moves.push([k,pt.join(":")])}}catch(e){}
+  const conflict=moves.filter(([a,b])=>{const v=localStorage.getItem(b);return v&&v!=="{}"&&v!==localStorage.getItem(a)});
+  let over=false;
+  if(conflict.length)over=await uiConfirm(`يوجد ${conflict.length} ملف فيه بيانات سابقة محفوظة بصيغة «${ng==="f"?"معلمة":"معلم"}». هل تستبدلها ببياناتك الحالية؟ (اختر «لا» لتبقى كل نسخة كما هي)`,{title:"نقل البيانات",ok:"نعم، انقل بياناتي الحالية",cancel:"لا",danger:false});
+  let n=0;moves.forEach(([a,b])=>{const v=localStorage.getItem(a),ex=localStorage.getItem(b);if(!ex||ex==="{}"||over){try{localStorage.setItem(b,v);n++}catch(e){}}});
+  S.gender=ng;saveS();keepY(render);if(n)toast(`حُوّل الملف إلى «${ng==="f"?"معلمة":"معلم"}» مع الاحتفاظ ببياناتك`)}
+$("#gSeg").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;setGender(b.dataset.g)});
 $("#pSeg").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;S.pstyle=b.dataset.p;S.cover=COVER_OF[S.pstyle]??(+S.cover>=3?0:S.cover);saveS();keepY(render);toast("نمط "+((PSTYLES.find(x=>x[0]===S.pstyle)||[])[1]||""))});
 /* ---------- قائمة أسماء الطلاب (للكشوف) ---------- */
 /* ملاءمة تلقائية لصفحات الملفات الأفقية بالكامل: تصغير طفيف للمحتوى عند تجاوزه حدود الصفحة */
@@ -4846,7 +4854,7 @@ let stuT;
 document.addEventListener("input",e=>{const id=e.target.id;if(!/^stu[NCSD]$/.test(id))return;const v=e.target.value;
   if(id==="stuN"||id==="stuC"){const d=STI();d[id==="stuN"?"name":"cls"]=v;store.set("hq:stuinfo",d)}else{S[id==="stuS"?"school":"dept"]=v;saveS()}
   clearTimeout(stuT);stuT=setTimeout(()=>keepY(render),450)});
-document.addEventListener("click",e=>{const b=e.target.closest("#stuG [data-g]");if(!b)return;ftbFlush();S.gender=b.dataset.g;saveS();keepY(render)});
+document.addEventListener("click",e=>{const b=e.target.closest("#stuG [data-g]");if(!b)return;setGender(b.dataset.g)});
 let ksEditing=null;
 function openKs(id){
   if(!EDIT)return needAuth("edit");
