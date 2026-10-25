@@ -1421,6 +1421,7 @@ table.t.rh14 td{height:18.5mm;vertical-align:middle}
 .tx-dlg{max-width:560px}.tx-list{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:6px;margin:10px 0}.tx-u{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:right;border:1px solid #e1e7eb;background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;font:inherit}.tx-u span{font-size:12.5px;color:#55636c}.tx-u small{font-size:11.5px;color:#8a9aa3}.tx-u.on{border-color:#15445a;background:#eef5f8;box-shadow:0 0 0 2px #15445a33}
 .tx-ck{display:flex;align-items:center;gap:8px;font-size:13px;margin:4px 0 8px}.tx-note{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}.tx-sz{font-size:12px;margin-top:6px}
 .inbox-card{position:fixed;bottom:18px;left:18px;z-index:90;width:min(360px,calc(100vw - 36px));background:#fff;border:1px solid #d8e2e7;border-radius:14px;box-shadow:0 12px 32px rgba(15,40,55,.18);padding:12px 14px;display:flex;flex-direction:column;gap:8px}.ib-h{display:flex;justify-content:space-between;align-items:center;font-size:14px}.ib-x{border:0;background:none;font-size:20px;cursor:pointer;color:#7a8791}.ib-i{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #eef2f4;padding-top:8px}.ib-i>div{display:flex;flex-direction:column;gap:1px}.ib-i span{font-size:12.5px;color:#33434b}.ib-i small{font-size:11px;color:#8a9aa3}
+.prep-card{right:18px;left:auto}.pr-l{max-height:46vh;overflow:auto;display:flex;flex-direction:column;gap:6px}.rq-st{margin-top:8px;padding:8px 10px;border-radius:10px;background:#eef6f8;font-size:.85rem}.rq-st.done{background:#e8f6ee}.rq-st.working{background:#fff6e5}
 @media print{.inbox-card{display:none!important}}
 .ai-note{font-size:12.5px;color:#55636c;background:#f6f8f9;border-radius:10px;padding:9px 11px;margin-top:4px}
 .ai-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 12px}.ai-sum>div{border:1px solid #e3e8eb;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:2px}.ai-sum b{font-size:20px}.ai-sum span{font-size:12px;color:#6b7a84}
@@ -6483,6 +6484,13 @@ function demoBackend(){
     async sendFile(o){const u=me();if(!u||u.role!=="admin")throw{code:"perm"};const L=store.get("hq:demo:tx",[]);L.unshift({id:Date.now(),from_uid:u.uid,to_uid:o.to,file_id:o.file,file_name:o.name,note:o.note||null,payload:o.payload,created_at:new Date().toISOString(),received_at:null});if(!store.set("hq:demo:tx",L))throw{code:"quota"}},
     async inbox(){const u=me();if(!u)return[];return store.get("hq:demo:tx",[]).filter(t=>t.to_uid===u.uid&&!t.received_at).map(t=>Object.assign({},t,{payload:undefined}))},
     async getTransfer(id){return store.get("hq:demo:tx",[]).find(t=>t.id===id)||null},
+    async prepCreate(o){const u=me();if(!u)throw{code:"auth"};const L=store.get("hq:demo:prep",[]);const id=Date.now();const files=[];for(const [i,x] of o.files.entries()){const path=u.uid+"/"+id+"/"+i;const du=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(x.f)});if(!store.set("hq:demo:prepf:"+path,du))throw{code:"quota"};files.push({path,name:x.f.name,size:x.f.size,type:x.f.type,item:x.item,label:x.label})}L.unshift({id,uid:u.uid,email:u.email,name:u.name,file_id:o.file,file_name:o.name,data:o.data,files,status:"new",created_at:new Date().toISOString()});store.set("hq:demo:prep",L);return id},
+    async prepMine(fid){const u=me();if(!u)return[];return store.get("hq:demo:prep",[]).filter(x=>x.uid===u.uid&&x.file_id===fid)},
+    async prepList(){return store.get("hq:demo:prep",[]).filter(x=>x.status==="new"||x.status==="working").reverse()},
+    async prepGet(id){return store.get("hq:demo:prep",[]).find(x=>x.id===id)||null},
+    async prepBlob(path){const du=store.get("hq:demo:prepf:"+path,null);if(!du)throw{code:"missing"};return await (await fetch(du)).blob()},
+    async prepSet(id,patch){const L=store.get("hq:demo:prep",[]);const x=L.find(y=>y.id===id);if(x)Object.assign(x,patch,{updated_at:new Date().toISOString()});store.set("hq:demo:prep",L)},
+    async prepPurge(paths){paths.forEach(p=>store.del("hq:demo:prepf:"+p))},
     async readyGet(fid){const M=store.get("hq:demo:ready",{});return M[fid]||null},
     async readySave(fid,o){const M=store.get("hq:demo:ready",{});if(o)M[fid]=o;else delete M[fid];if(!store.set("hq:demo:ready",M))throw{code:"size"}},
     async savesList(){const u=me();if(!u)return[];return store.get("hq:demo:saves",[]).filter(x=>x.uid===u.uid).map(x=>({id:x.id,file_id:x.file_id,name:x.name,size:x.size,updated_at:x.updated_at,created_at:x.created_at}))},
@@ -6573,6 +6581,14 @@ async function sbBackend(cfg){
     async sendFile(o){ck(await sb.from("file_transfers").insert({from_uid:uid,to_uid:o.to,file_id:o.file,file_name:o.name,note:o.note||null,payload:o.payload}))},
     async inbox(){if(!uid)return[];return ck(await sb.from("file_transfers").select("id,file_id,file_name,note,created_at").eq("to_uid",uid).is("received_at",null).order("created_at",{ascending:false}))},
     async getTransfer(id){return ck(await sb.from("file_transfers").select("id,file_id,file_name,payload").eq("id",id).maybeSingle())},
+    async prepCreate(o){if(!uid)throw{code:"auth"};const ts=Date.now();const files=[];for(const [i,x] of o.files.entries()){const ext=((x.f.name.match(/\.([a-z0-9]{1,5})$/i)||[0,"bin"])[1]).toLowerCase();const path=`${uid}/${ts}/${i}.${ext}`;const r=await sb.storage.from("prep").upload(path,x.f,{contentType:x.f.type||"application/octet-stream",upsert:false});if(r.error)throw norm(r.error);files.push({path,name:x.f.name,size:x.f.size,type:x.f.type,item:x.item,label:x.label})}
+      return ck(await sb.from("prep_requests").insert({uid,email:cur&&cur.email,name:cur&&cur.name,file_id:o.file,file_name:o.name,data:o.data,files}).select("id").single()).id},
+    async prepMine(fid){if(!uid)return[];return ck(await sb.from("prep_requests").select("id,file_id,status,created_at,updated_at,admin_note").eq("uid",uid).eq("file_id",fid).order("created_at",{ascending:false}).limit(5))},
+    async prepList(){return ck(await sb.from("prep_requests").select("id,uid,email,name,file_id,file_name,status,created_at,updated_at").in("status",["new","working"]).order("created_at",{ascending:true}).limit(100))},
+    async prepGet(id){return ck(await sb.from("prep_requests").select("*").eq("id",id).maybeSingle())},
+    async prepBlob(path){const r=await sb.storage.from("prep").download(path);if(r.error)throw norm(r.error);return r.data},
+    async prepSet(id,patch){ck(await sb.from("prep_requests").update(Object.assign({},patch,{updated_at:new Date().toISOString()})).eq("id",id))},
+    async prepPurge(paths){if(paths&&paths.length)await sb.storage.from("prep").remove(paths)},
     async readyGet(fid){const d=ck(await sb.from("ready_templates").select("data,updated_at").eq("file_id",fid).maybeSingle());return d?Object.assign({v:1,file:fid,updated_at:d.updated_at},d.data):null},
     async readySave(fid,o){if(!o){ck(await sb.from("ready_templates").delete().eq("file_id",fid));return}ck(await sb.from("ready_templates").upsert({file_id:fid,data:o,updated_at:new Date().toISOString()}))},
     async savesList(){if(!uid)return[];return ck(await sb.from("saved_files").select("id,file_id,name,size,updated_at,created_at").eq("uid",uid).order("updated_at",{ascending:false}).limit(300))},
@@ -6974,8 +6990,8 @@ function aiQs(f){
   return {h:"حدّد ما ينطبق عليك ليكتب Claude نصوص الملف ويوزع صور الشواهد.",b:[Qs("المادة",AO.subj,AO.subj.find(x=>(S.job||"").includes(x.split(" ")[0]))||""),STG,Qi("الصفوف","مثال: الرابع والخامس"),Qs("سنوات الخبرة",AO.years),STY],x:[Qc("الاستراتيجيات التي تطبقها",AO.strat),Qc("الدورات والبرامج التي حضرتها",AO.pd),Qt("مبادرات أو إنجازات تريد ذكرها","مثال: خطة علاجية لضعاف القراءة")],sec:secs};
 }
 const aiAvail=()=>!!ME&&perm(S.file,"ai");
-function renderAiBtn(){const b=$("#aiBtn");if(!b)return;b.hidden=EMBED||AI_NONE.has(S.file)||!isAdmin();const ok=aiAvail();b.classList.toggle("off",!ok);
-  b.querySelector(".aibdg").textContent=ok?"متوفر":"غير متوفر";b.title=ok?"يجهّز Claude نصوص الملف ويوزع صور الشواهد":"التجهيز الذكي غير متوفر لحسابك في هذا الملف"}
+function renderAiBtn(){const b=$("#aiBtn");if(!b)return;const adm=isAdmin();b.hidden=EMBED||!!VIEW||AI_NONE.has(S.file)||(!adm&&(!ME||!REQ[S.file]||!BE||!BE.prepCreate));const ok=adm?aiAvail():true;b.classList.toggle("off",!ok);
+  b.querySelector(".aibdg").textContent=adm?(ok?"متوفر":"غير متوفر"):"اطلب التجهيز";b.title=adm?(ok?"يجهّز Claude نصوص الملف ويوزع صور الشواهد":"التجهيز الذكي غير متوفر لحسابك في هذا الملف"):"أرفق ملفاتك واكتب بياناتك، ويجهّز فريق نَسَق ملفك ويرسله لك"}
 function aiLabel(el){const b=el.closest(".blk");if(b&&b.querySelector("h4"))return b.querySelector("h4").innerText;
   const f=el.closest(".fld,.smf");if(f){const k=f.querySelector(".k,b");if(k)return k.innerText}
   const fs=el.closest("fieldset");if(fs&&fs.querySelector("legend"))return fs.querySelector("legend").innerText;
@@ -7170,7 +7186,7 @@ async function runAi(pre){
   }catch(e){console.error(e);go.disabled=false;m.querySelectorAll(".ai-dlg input,.ai-dlg textarea,.ai-dlg select,.ai-dlg .chip,#aiBack").forEach(x=>x.disabled=false);prog.hidden=true;
     const c=String(e&&e.code||"").replace(/^ai\//,"");toast(AI_ERR[c]||AI_ERR.server)}
 }
-$("#aiBtn").addEventListener("click",()=>{if(!ME)return needAuth("edit");if(!aiAvail())return toast(AI_ERR.no_permission);if(isAdmin()&&REQ[S.file])return reqOpen("ai");runAi()});
+$("#aiBtn").addEventListener("click",()=>{if(!ME)return needAuth("edit");if(!isAdmin()&&REQ[S.file])return reqOpen("ask");if(!aiAvail())return toast(AI_ERR.no_permission);if(isAdmin()&&REQ[S.file])return reqOpen("ai");runAi()});
 
 
 
@@ -7407,7 +7423,7 @@ async function sendFileDlg(){
    <label class="tx-note"><span>رسالة للمستخدم (اختياري)</span><input class="inp" id="txNote" placeholder="مثال: جهّزنا ملفك، راجعه قبل الطباعة"></label>
    <div class="muted tx-sz">حجم الملف: ${size<1048576?Math.max(1,Math.round(size/1024))+" كيلوبايت":(size/1048576).toFixed(1)+" ميجابايت"}</div>
    <div class="dlg-b"><button class="btn primary" id="txGo" type="button" disabled>إرسال</button><button class="btn" id="txNo" type="button">إلغاء</button></div></div>`;
-  m.classList.add("open");let sel=null;
+  m.classList.add("open");let sel=PREP_CUR&&PREP_CUR.file===f.id&&L.some(u=>u.uid===PREP_CUR.uid)?PREP_CUR.uid:null;if(sel){$("#txGo").disabled=false;$("#txNote").value="جهّزنا ملفك حسب طلبك رقم "+PREP_CUR.id+"، راجعه قبل الطباعة"}
   const draw=()=>{const q=$("#txQ").value.trim();const R=L.filter(u=>!q||[u.name,u.email,u.school,u.title].join(" ").includes(q)).slice(0,60);
     $("#txL").innerHTML=R.length?R.map(u=>`<button type="button" class="tx-u${sel===u.uid?" on":""}" data-u="${u.uid}"><b>${esc(u.name||u.email)}</b><span>${esc(u.title||"")}${u.school?" — "+esc(u.school):""}</span><small dir="ltr">${esc(u.email||"")}</small></button>`).join(""):`<p class="empty">لا يوجد مستخدمون مفعّلون${q?" بهذا البحث":""}.</p>`};
   draw();$("#txQ").oninput=draw;
@@ -7416,7 +7432,8 @@ async function sendFileDlg(){
   $("#txGo").onclick=async()=>{if(!sel)return;const u=L.find(x=>x.uid===sel);const go=$("#txGo");go.disabled=true;go.textContent="جارٍ الإرسال…";
     try{await BE.sendFile({to:sel,file:f.id,name:(cur.spec.title&&cur.spec.title!==f.name()?cur.spec.title+" — ":"")+f.name(),note:$("#txNote").value.trim(),payload});
       if($("#txPerm").checked){const p=Object.assign({},u.perms||{});const o=Object.assign({},p[f.id]||{});o.e=true;o.p=true;p[f.id]=o;await BE.update(sel,{perms:p})}
-      m.classList.remove("open");toast(`أُرسل الملف إلى ${u.name||u.email}، وسيظهر له عند دخوله`)}
+      m.classList.remove("open");toast(`أُرسل الملف إلى ${u.name||u.email}، وسيظهر له عند دخوله`);
+      if(PREP_CUR&&PREP_CUR.file===f.id&&PREP_CUR.uid===sel){const pid=PREP_CUR.id;PREP_CUR=null;try{await BE.prepSet(pid,{status:"done"});const r=await BE.prepGet(pid);if(r&&BE.prepPurge)await BE.prepPurge((r.files||[]).map(x=>x.path))}catch(e){console.error(e)}REQF[f.id]={};checkPrep()}}
     catch(err){console.error(err);go.disabled=false;go.textContent="إرسال";toast("تعذّر الإرسال: "+(errMsg?errMsg(err):"حاول مرة أخرى"))}};
 }
 let INBOX=[];
@@ -7474,7 +7491,7 @@ function rqForm(fid,id,R,vals,after){
       if(w)store.set(eKey(),st)}
     else vals[id]=f.querySelector("textarea").value.trim();
     store.set("hq3:reqv:"+fid,vals);f.classList.remove("open");keepY(render);after&&after();toast("حُفظت البيانات")}}
-function reqOpen(mode){const fid=S.file,R=REQ[fid];if(!R)return;store.set("hq3:reqseen:"+fid,1);const AI=mode==="ai";const done=new Set(store.get(reqKey(fid),[]));const vals=store.get("hq3:reqv:"+fid,{});
+function reqOpen(mode){const fid=S.file,R=REQ[fid];if(!R)return;store.set("hq3:reqseen:"+fid,1);const ASK=mode==="ask",AI=mode==="ai"||ASK;const done=new Set(store.get(reqKey(fid),[]));const vals=store.get("hq3:reqv:"+fid,{});
   let m=document.getElementById("reqDlg");if(!m){m=document.createElement("div");m.className="modal";m.id="reqDlg";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");document.body.appendChild(m)}
   const f=FILES.find(x=>x.id===fid);let n=0,tot=0;
   const att=k=>AI&&(k==="s"||k==="k"||k==="e"),inpt=k=>AI&&k==="d";
@@ -7483,21 +7500,21 @@ function reqOpen(mode){const fid=S.file,R=REQ[fid];if(!R)return;store.set("hq3:r
       ${att(k)?`<div class="rq-fs" data-fs="${id}"></div>`:""}${inpt(k)?`<div class="rq-sum" data-sum="${id}"></div>`:""}</li>`};
   const secs=REQ_SEC.filter(([k])=>R[k]&&R[k].length).map(([k,h,chk])=>`<div class="rq-s"><h4>${h}</h4><ul>${R[k].map((x,i)=>chk?item(k,x,i):`<li class="ok"><span>${esc(rdyG(x))}</span></li>`).join("")}</ul></div>`).join("");
   const sv=store.get(AIREF,null);
-  m.innerHTML=`<div class="dialog ui-dlg rq-dlg"><div class="dlg-h"><h3>${AI?"✨ التجهيز الذكي":"📋 متطلبات إعداد"}: ${esc(f?f.name():"")}</h3><p>${AI?"أرفق المطلوب عند كل بند، واكتب البيانات المطلوبة، ثم اضغط «جهّز الآن»: يقرأ Claude المرفقات ويُدرج أرقامها وبياناتها، ويضع صور الشواهد في صفحاتها.":"جهّز هذه البيانات قبل أن تبدأ ليكتمل الملف بنجاح. ضع علامة على ما جهّزته، ويُحفظ تقدمك."}</p>
-   <div class="rq-bar"><i style="width:${tot?Math.round(n/tot*100):0}%"></i></div><small class="rq-n">جهّزت ${n} من ${tot}</small></div>
+  m.innerHTML=`<div class="dialog ui-dlg rq-dlg"><div class="dlg-h"><h3>${ASK?"✨ طلب تجهيز ذكي":AI?"✨ التجهيز الذكي":"📋 متطلبات إعداد"}: ${esc(f?f.name():"")}</h3><p>${ASK?"أرفق المطلوب عند كل بند واكتب البيانات، ثم أرسل الطلب: يجهّز فريق نَسَق ملفك بالتجهيز الذكي، ويصلك جاهزًا في حسابك لتراجعه وتطبعه.":AI?"أرفق المطلوب عند كل بند، واكتب البيانات المطلوبة، ثم اضغط «جهّز الآن»: يقرأ Claude المرفقات ويُدرج أرقامها وبياناتها، ويضع صور الشواهد في صفحاتها.":"جهّز هذه البيانات قبل أن تبدأ ليكتمل الملف بنجاح. ضع علامة على ما جهّزته، ويُحفظ تقدمك."}</p>
+   <div class="rq-bar"><i style="width:${tot?Math.round(n/tot*100):0}%"></i></div><small class="rq-n">جهّزت ${n} من ${tot}</small>${ASK?`<div class="rq-st" id="prepSt" hidden></div>`:""}</div>
    <div class="rq-b">${secs}${R.t?`<div class="rq-tip">💡 ${esc(rdyG(R.t))}</div>`:""}
    ${AI?`<div class="rq-s"><h4>📝 ملاحظات إضافية لـ Claude (اختياري)</h4><textarea class="inp rq-tx" id="rqNote" rows="2" placeholder="مثال: ركّز على القراءة والرياضيات، المدرسة مشتركة المبنى…">${esc(vals.__note||"")}</textarea></div>
-   <div class="rq-opt"><label class="ck"><input type="checkbox" id="rqRep"> استبدال النصوص المكتوبة مسبقًا (الافتراضي: تعبئة الخانات الفارغة فقط)</label>${sv&&sv.digest?`<label class="ck"><input type="checkbox" id="rqUseRef" checked> استخدام البيانات المحفوظة من: ${esc(sv.names.join("، "))} — دون تكلفة إضافية</label>`:""}</div>`:""}</div>
+   ${ASK?"":`<div class="rq-opt"><label class="ck"><input type="checkbox" id="rqRep"> استبدال النصوص المكتوبة مسبقًا (الافتراضي: تعبئة الخانات الفارغة فقط)</label>${sv&&sv.digest?`<label class="ck"><input type="checkbox" id="rqUseRef" checked> استخدام البيانات المحفوظة من: ${esc(sv.names.join("، "))} — دون تكلفة إضافية</label>`:""}</div>`}`:""}</div>
    <input type="file" id="rqIn" multiple hidden>
-   ${AI?`<div class="ai-prog" id="aiProg" hidden><div class="bar"><i></i></div><span></span></div>`:""}
-   <div class="dlg-b">${AI?`<button class="btn primary" type="button" id="aiGo" data-x="go">✨ جهّز الآن</button>`:""}<button class="btn" type="button" data-x="print">🖨️ طباعة القائمة</button><button class="btn${AI?"":" primary"}" type="button" id="aiBack" data-x="close">${AI?"إغلاق":"ابدأ العمل"}</button></div></div>`;
+   ${AI&&!ASK?`<div class="ai-prog" id="aiProg" hidden><div class="bar"><i></i></div><span></span></div>`:""}
+   <div class="dlg-b">${ASK?`<button class="btn primary" type="button" id="prepGo" data-x="send">📨 إرسال طلب التجهيز</button>`:AI?`<button class="btn primary" type="button" id="aiGo" data-x="go">✨ جهّز الآن</button>`:""}<button class="btn" type="button" data-x="print">🖨️ طباعة القائمة</button><button class="btn${AI?"":" primary"}" type="button" id="aiBack" data-x="close">${AI?"إغلاق":"ابدأ العمل"}</button></div></div>`;
   m.classList.add("open");
   const F=REQF[fid]=REQF[fid]||{};let atId=null,atTy="s";const inp=m.querySelector("#rqIn");
   const labOf=id=>{const sec=id[0],i=+id.slice(1);return rdyG((R[sec]||[])[i]||"").replace(/\s*\(.*?\)\s*/g," ").split(/[:،—]/)[0].trim().slice(0,60)};
   const paintF=()=>{m.querySelectorAll("[data-fs]").forEach(b=>{const L=F[b.dataset.fs]||[];b.innerHTML=L.map((f,i)=>`<span class="chip on">${/^image\//.test(f.type)?"🖼️":"📄"} ${esc(f.name)} <small>${(f.size/1048576).toFixed(1)} م.ب</small><a data-fx="${b.dataset.fs}:${i}" title="إزالة">✕</a></span>`).join("")})};
   const tick=id=>{const cb=m.querySelector(`[data-rq="${id}"]`);if(cb&&!cb.checked){cb.checked=true;cb.dispatchEvent(new Event("change",{bubbles:true}))}};
   inp.onchange=()=>{if(!atId)return;const L=F[atId]=F[atId]||[];for(const f of inp.files){if(f.size>15728640){toast("«"+f.name+"» أكبر من 15 ميجابايت");continue}if(atTy==="e"&&!/^image\//.test(f.type)){toast("الشواهد: أرفق صورًا فقط");continue}if(!L.some(x=>x.name===f.name&&x.size===f.size))L.push(f)}inp.value="";if(L.length)tick(atId);paintF()};
-  paintF();
+  paintF();if(ASK)prepStatus(fid,m);
   const paintSum=()=>m.querySelectorAll("[data-sum]").forEach(b=>{const v=vals[b.dataset.sum];b.innerHTML=v&&typeof v==="object"?Object.entries(v).filter(([,x])=>String(x).trim()).map(([a,x])=>`<span class="chip on"><b>${esc(a)}:</b> ${esc(String(x).slice(0,40))}</span>`).join(""):(v?`<span class="chip on">${esc(String(v).slice(0,80))}</span>`:"")});paintSum();
   m.oninput=e=>{const t=e.target.closest("[data-tx]");if(t){vals[t.dataset.tx]=t.value;store.set("hq3:reqv:"+fid,vals);if(t.value.trim())tick(t.dataset.tx)}if(e.target.id==="rqNote"){vals.__note=e.target.value;store.set("hq3:reqv:"+fid,vals)}};
   m.onchange=e=>{const c=e.target.closest("[data-rq]");if(!c)return;c.checked?done.add(c.dataset.rq):done.delete(c.dataset.rq);store.set(reqKey(fid),[...done]);
@@ -7514,9 +7531,52 @@ function reqOpen(mode){const fid=S.file,R=REQ[fid];if(!R)return;store.set("hq3:r
       const note=(vals.__note||"").trim();if(note)info["ملاحظات المستخدم (ركّز عليها)"]=note;
       if(!docs.length&&!imgs.length&&Object.keys(info).length<=5&&!note)return toast("أرفق ملفًا أو اكتب بيانات أولًا");
       runAi({r:{m,info,files:imgs.slice(0,12),docs:docs.slice(0,10),useRef:!!(m.querySelector("#rqUseRef")||{}).checked,replace:!!(m.querySelector("#rqRep")||{}).checked}});return}
+    if(b&&b.dataset.x==="send"){prepSend(fid,f,R,F,vals,done,m);return}
     if(b&&b.dataset.x==="print"){const w=window.open("","_blank");if(!w)return;w.document.write(`<html dir="rtl" lang="ar"><head><meta charset="utf-8"><${"t"}itle>متطلبات الإعداد</${"t"}itle><style>body{font-family:Tahoma,Arial;padding:24px;color:#1b2d36}h2{color:#0b5f6a}h4{margin:16px 0 6px;color:#0b5f6a}li{margin:4px 0;line-height:1.7}button,textarea,.rq-fs{display:none}</style></head><body><h2>متطلبات إعداد: ${esc(f?f.name():"")}</h2>${m.querySelector(".rq-b").innerHTML.replace(/<input[^>]*>/g,"☐ ")}</body></html>`);w.document.close();w.focus();w.print();return}
     if((b&&b.dataset.x==="close")||e.target===m)m.classList.remove("open")}}
 $("#reqBtn").addEventListener("click",()=>reqOpen());
+/* ===================== طلبات التجهيز: المشترك يرسل، والمشرف يجهّز بالتجهيز الذكي ثم يرسل الملف ===================== */
+const PREP_ST={new:"بانتظار التجهيز",working:"قيد التجهيز",done:"تم التجهيز وأُرسل لك",canceled:"ملغى"};
+let PREP_CUR=null,PREPS=[];
+async function prepStatus(fid,m){const el=m.querySelector("#prepSt");if(!el||!BE||!BE.prepMine)return;try{const L=await BE.prepMine(fid);const x=(L||[]).find(r=>r.status==="new"||r.status==="working")||(L||[])[0];
+  if(!x)return;el.hidden=false;el.className="rq-st "+x.status;el.innerHTML=`📨 طلبك رقم ${esc(String(x.id))}: <b>${PREP_ST[x.status]||x.status}</b> — ${new Date(x.created_at).toLocaleDateString("ar-SA")}${x.admin_note?` · ${esc(x.admin_note)}`:""}`;
+  if(x.status==="new"||x.status==="working"){const b=m.querySelector("#prepGo");if(b){b.disabled=true;b.textContent="⏳ طلبك قيد المعالجة"}}}catch(e){console.error(e)}}
+async function prepSend(fid,f,R,F,vals,done,m){if(!ME)return needAuth("edit");if(!BE||!BE.prepCreate)return toast("طلبات التجهيز غير متاحة حاليًا");
+  const labOf=id=>rdyG((R[id[0]]||[])[+id.slice(1)]||"").replace(/\s*\(.*?\)\s*/g," ").split(/[:،—]/)[0].trim().slice(0,80);
+  const files=[];Object.entries(F).forEach(([id,L])=>L.forEach(x=>files.push({f:x,item:id,label:labOf(id)})));
+  const tot=files.reduce((a,x)=>a+x.f.size,0);if(tot>62914560)return toast("حجم المرفقات أكبر من 60 ميجابايت — قلّل الصور أو اضغطها");
+  const hasData=Object.keys(vals).some(k=>k!=="__note"&&vals[k]&&(typeof vals[k]==="string"?vals[k].trim():Object.values(vals[k]).some(v=>String(v).trim())));
+  if(!files.length&&!hasData&&!(vals.__note||"").trim())return toast("أرفق الملفات المطلوبة أو اكتب بياناتك أولًا");
+  const b=m.querySelector("#prepGo");b.disabled=true;b.textContent=`⏳ جارٍ رفع ${files.length?fmtN(files.length)+" مرفق":"الطلب"}…`;
+  try{const id=await BE.prepCreate({file:fid,name:f?f.name():fid,files,data:{vals,done:[...done],gender:S.gender,name:PN()||S.name||"",school:S.school||"",job:S.job||"",dept:S.dept||"",year:S.year||"",term:S.term||""}});
+    REQF[fid]={};m.classList.remove("open");
+    uiChoice("📨 وصل طلبك",`رقم الطلب ${id}. سيجهّز فريق نَسَق ملفك بالتجهيز الذكي من مرفقاتك وبياناتك، ويصلك جاهزًا في حسابك (يظهر لك إشعار «وصلك ملف جاهز» عند الدخول).`,[["ok","حسنًا"]])}
+  catch(e){console.error(e);b.disabled=false;b.textContent="📨 إرسال طلب التجهيز";toast("تعذّر إرسال الطلب: "+(typeof errMsg==="function"?errMsg(e):"حاول مرة أخرى"))}}
+/* ---- المشرف ---- */
+async function checkPrep(){if(!isAdmin()||!BE||!BE.prepList||EMBED)return;try{PREPS=(await BE.prepList())||[]}catch(e){PREPS=[]}renderPrep()}
+function renderPrep(){let c=document.getElementById("prepCard");
+  if(!PREPS.length||!isAdmin()){if(c)c.remove();return}
+  if(!c){c=document.createElement("div");c.id="prepCard";c.className="inbox-card prep-card";document.body.appendChild(c)}
+  c.innerHTML=`<div class="ib-h"><b>📨 طلبات التجهيز (${fmtN(PREPS.length)})</b><button type="button" class="ib-x" aria-label="إخفاء">×</button></div><div class="pr-l">${PREPS.map(r=>`<div class="ib-i"><div><b>${esc(r.file_name||fileName(r.file_id))}</b><span>${esc(r.name||r.email||"")} · ${new Date(r.created_at).toLocaleDateString("ar-SA")} · ${PREP_ST[r.status]||r.status}</span></div><button type="button" class="btn sm primary" data-pr="${r.id}">${PREP_CUR&&PREP_CUR.id===r.id?"مفتوح":"تجهيز"}</button></div>`).join("")}</div>`;
+  c.querySelector(".ib-x").onclick=()=>c.remove();
+  c.querySelectorAll("[data-pr]").forEach(b=>b.onclick=()=>prepOpen(+b.dataset.pr||b.dataset.pr))}
+async function prepOpen(id){if(!isAdmin())return;let r;try{r=await BE.prepGet(id)}catch(e){return toast("تعذّر فتح الطلب")}if(!r)return toast("الطلب غير موجود");
+  const fid=r.file_id,f=FILES.find(x=>x.id===fid);if(!f)return toast("الملف غير معروف: "+fid);const d=r.data||{};
+  const ch=await uiChoice("📨 طلب تجهيز رقم "+r.id,`صاحب الطلب: ${r.name||r.email} — الملف: ${r.file_name||f.name()} — المرفقات: ${(r.files||[]).length}.\nسيُفتح الملف بصيغة ${d.gender==="f"?"البنات":"البنين"} وتُحمَّل المرفقات والبيانات في «التجهيز الذكي». هل تبدأ من ملف فارغ؟`,[["clear","ابدأ من ملف فارغ (مستحسن)"],["keep","أبقِ محتوى الملف الحالي"],["x","إلغاء"]]);
+  if(!ch||ch==="x")return;
+  if(d.gender&&d.gender!==S.gender){S.gender=d.gender;saveS()}
+  if(ch==="clear")Object.keys(localStorage).filter(k=>k.startsWith("hq3:e:"+fid+":"+S.gender)||k.startsWith("hq3:i:"+fid+":")||k.startsWith("hq3:q:"+fid+":")).forEach(k=>localStorage.removeItem(k));
+  toast("⏳ تحميل المرفقات…");const F={};
+  for(const x of (r.files||[])){try{const bl=await BE.prepBlob(x.path);const fl=new File([bl],x.name,{type:x.type||bl.type});(F[x.item]=F[x.item]||[]).push(fl)}catch(e){console.error(e);toast("تعذّر تحميل «"+x.name+"»")}}
+  REQF[fid]=F;const vals=Object.assign({},d.vals||{});
+  const who=[d.name&&"الاسم: "+d.name,d.job&&"العمل: "+d.job,d.school&&"المدرسة: "+d.school,d.dept&&"إدارة التعليم: "+d.dept].filter(Boolean).join("، ");
+  if(who&&!(vals.__note||"").includes(who))vals.__note=(who?"بيانات صاحب الملف — "+who+"\n":"")+(vals.__note||"");
+  store.set("hq3:reqv:"+fid,vals);store.set(reqKey(fid),d.done||[]);
+  PREP_CUR={id:r.id,uid:r.uid,file:fid,name:r.name||r.email};
+  try{if(r.status==="new")await BE.prepSet(r.id,{status:"working"})}catch(e){}
+  if(location.hash!=="#/f/"+fid)location.hash="#/f/"+fid;
+  setTimeout(()=>{keepY(render);setTimeout(()=>{reqOpen("ai");toast("حُمّلت مرفقات الطلب وبياناته — اضغط «جهّز الآن»، ثم «إرسال لمستخدم» بعد المراجعة")},300)},400);checkPrep()}
+
 /* ===================== تحليل الدرجات التلقائي (ملف «تحليل النتائج») ===================== */
 const GRD_FILES=["results"];
 const grdKey=()=>"hq3:grd:"+S.file+":"+(S.gender||"m");
@@ -7773,7 +7833,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#authM").classLi
     try{const bk=sessionStorage.getItem("nq:back");if(bk&&ME&&ME.status&&ME.status!=="noprofile"){sessionStorage.removeItem("nq:back");location.href=bk;return}}catch(e){}
     if(isAdmin())startAdmin();else stopAdmin();
     if(isActive()&&!S.name&&ME.name){S.name=ME.name;S.school=S.school||ME.school||"";S.dept=ME.dept||S.dept;S.job=S.job||ME.title||"";S.gender=ME.gender||S.gender;saveS();render();return}
-    applyAccess();checkInbox();
+    applyAccess();checkInbox();checkPrep();try{renderAiBtn()}catch(e){}
     if(CURV==="cards"){cdDraw();renderMyCards()}
     if(CURV==="store")renderStore();if(CURV==="account")renderMyOrders();if(CURV==="orders")renderOrdersAdmin();
     if(isAdmin())shopPending();
