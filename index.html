@@ -260,6 +260,12 @@ html.dark .okmsg{color:oklch(.792 .209 151.711)}
 .stat .s{font-size:.75rem;color:var(--mut-fg);margin-top:.125rem}
 .dgrid{display:grid;gap:1rem;margin-top:1rem;grid-template-columns:1fr}
 @media (min-width:1024px){.dgrid{grid-template-columns:4fr 3fr}}
+.grd-dlg{max-width:58rem}.grd-o{display:flex;flex-wrap:wrap;gap:.6rem;align-items:flex-end;margin-bottom:.8rem}.grd-o label{display:flex;flex-direction:column;gap:.25rem;font-size:.8rem;font-weight:600}.grd-o .inp{width:7rem}.grd-x{cursor:pointer;border:1px dashed var(--bd);border-radius:.5rem;padding:.55rem .8rem;flex-direction:row!important;align-items:center}
+.grd-c{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.6rem}.grd-k{display:flex;flex-direction:column;gap:.3rem}.grd-k textarea{font-size:.8rem;min-height:10rem;direction:rtl}.grd-k small{color:var(--mut,#667);font-size:.72rem;min-height:1em}.grd-b{max-height:65vh;overflow:auto}
+.gch-empty{border:2px dashed #c9d3d8;border-radius:3mm;padding:20mm 8mm;text-align:center;color:#6b7a82;font-size:11pt;margin-top:6mm}
+.gch h4{margin:5mm 0 2mm;font-size:11pt}.gkp{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm}.gkp div{border:1px solid #dde3e6;border-radius:2mm;padding:2.5mm;text-align:center}.gkp small{display:block;font-size:8.5pt;color:#5d6b72}.gkp b{font-size:15pt}
+.gbars{display:flex;align-items:flex-end;gap:4mm;height:70mm;border-bottom:1px solid #9aa7ad;padding:0 3mm}.gcol{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:1mm}.gcol i{display:block;width:70%;border-radius:1.5mm 1.5mm 0 0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.gcol b{font-size:10pt;text-align:center;line-height:1.2}.gcol b small{display:block;font-size:8pt;color:#5d6b72;font-weight:500}.gcol span{font-size:9pt;font-weight:600;position:relative;top:6mm;height:0;white-space:nowrap}
+.gbars+h4{margin-top:13mm}.ghb{display:flex;flex-direction:column;gap:2mm}.ghr{display:grid;grid-template-columns:28mm 1fr 14mm;align-items:center;gap:2mm;font-size:9.5pt}.ghr>div{background:#eef2f3;border-radius:1mm;height:5mm;overflow:hidden}.ghr i{display:block;height:100%;background:#1f6f8b;-webkit-print-color-adjust:exact;print-color-adjust:exact}.ghr b{text-align:center}
 .chart{display:flex;align-items:flex-end;gap:.75rem;height:15rem;padding-top:1rem;border-bottom:1px solid var(--bd)}
 .chart .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.375rem;height:100%;min-width:0}
 .chart .col i{display:block;width:100%;max-width:3rem;background:var(--pri);border-radius:.25rem .25rem 0 0;min-height:4px}
@@ -1367,7 +1373,7 @@ body.evmode{overflow:hidden}
 table.rqf{width:100%;border-collapse:separate;border-spacing:0 6px}table.rqf th{width:38%;text-align:right;font-weight:600;font-size:14px;color:#1b4a63;background:#f2f6f8;border-radius:0 10px 10px 0;padding:8px 12px}
 table.rqf td{padding:0}table.rqf td .inp{width:100%;border-radius:10px 0 0 10px;margin:0}
 .rqf-ta{width:100%;font:inherit}
-body.lk #resetBtn,body.lk #setBtn,body.lk #printBtn,body.lk #pubBtn,body.lk #reqBtn,body.lk #wordBtn,body.lk #rdyBtn,body.lk #rdyPub,body.lk #aiBtn,body.lk #saveBtn,body.lk #savesBtn,body.lk #impBtn,body.lk #sendBtn,body.lk .card.opts{display:none!important}
+body.lk #resetBtn,body.lk #setBtn,body.lk #printBtn,body.lk #pubBtn,body.lk #reqBtn,body.lk #grdBtn,body.lk #wordBtn,body.lk #rdyBtn,body.lk #rdyPub,body.lk #aiBtn,body.lk #saveBtn,body.lk #savesBtn,body.lk #impBtn,body.lk #sendBtn,body.lk .card.opts{display:none!important}
 /* ملف إنجاز الطالب */
 .stme{display:grid;grid-template-columns:1fr 58mm;gap:6mm;align-items:start}
 .smph{order:2}.smph .slot{height:72mm;border-radius:4mm;overflow:hidden}
@@ -1553,7 +1559,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <div class="vacts">
             <button class="btn svb" id="saveBtn" type="button" hidden title="حفظ نسخة من هذا الملف للرجوع إليها لاحقًا">💾 حفظ</button><button class="btn" id="savesBtn" type="button" hidden title="ملفاتي المحفوظة">📂 ملفاتي المحفوظة</button><button class="btn" id="resetBtn" type="button" title="حذف ما كتبته في هذا الملف"><i data-i="rotate"></i>مسح التعديلات</button>
             <button class="btn" id="setBtn" type="button" hidden><i data-i="user"></i>بيانات الملف</button>
-            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button><button class="btn pubb" id="pubBtn" type="button" hidden title="نشر الملف كموقع برابط">🌐 نشر كموقع</button><button class="btn rqb" id="reqBtn" type="button" hidden title="ما تحتاج تجهيزه قبل البدء ليكتمل الملف">📋 متطلبات الإعداد</button><button class="btn" id="rdyBtn" type="button" hidden title="تعبئة الملف بالمحتوى الجاهز (الخطط والتحليل والنصوص)">📄 النسخة الجاهزة</button><button class="btn" id="rdyPub" type="button" hidden title="اعتماد محتوى هذا الملف نسخةً جاهزة لجميع المشتركين">⭐ اعتماد كنسخة جاهزة</button><button class="btn" id="impBtn" type="button" hidden title="استيراد ملف جاهز (PDF أو JSON)">📥 استيراد ملف جاهز</button><input type="file" id="impIn" accept=".json,.pdf,application/json,application/pdf" hidden><button class="btn" id="sendBtn" type="button" hidden>📤 إرسال لمستخدم</button>
+            <button class="btn primary" id="printBtn" type="button"><i data-i="printer"></i>طباعة / حفظ PDF</button><button class="btn" id="wordBtn" type="button" hidden><i data-i="file"></i>تصدير Word</button><button class="btn aib" id="aiBtn" type="button"><span class="aist">✨</span>التجهيز الذكي<span class="aibdg"></span></button><button class="btn pubb" id="pubBtn" type="button" hidden title="نشر الملف كموقع برابط">🌐 نشر كموقع</button><button class="btn rqb" id="grdBtn" type="button" hidden title="الصق الدرجات أو ارفع ملف Excel فيُحلّلها نَسَق ويملأ الجداول">📊 إدخال الدرجات</button><button class="btn rqb" id="reqBtn" type="button" hidden title="ما تحتاج تجهيزه قبل البدء ليكتمل الملف">📋 متطلبات الإعداد</button><button class="btn" id="rdyBtn" type="button" hidden title="تعبئة الملف بالمحتوى الجاهز (الخطط والتحليل والنصوص)">📄 النسخة الجاهزة</button><button class="btn" id="rdyPub" type="button" hidden title="اعتماد محتوى هذا الملف نسخةً جاهزة لجميع المشتركين">⭐ اعتماد كنسخة جاهزة</button><button class="btn" id="impBtn" type="button" hidden title="استيراد ملف جاهز (PDF أو JSON)">📥 استيراد ملف جاهز</button><input type="file" id="impIn" accept=".json,.pdf,application/json,application/pdf" hidden><button class="btn" id="sendBtn" type="button" hidden>📤 إرسال لمستخدم</button>
           </div>
         </div>
         <div class="access" id="access" role="status" hidden></div>
@@ -2700,15 +2706,26 @@ const CERT_TYPES={
  attend:{t:"شهادة حضور",x:"تشهد إدارة {المدرسة} بأن {الطالب} / {الاسم} قد حضر ................................................ المنعقد بتاريخ ..../..../........هـ."},
  part:{t:"شهادة مشاركة",x:"تتقدم إدارة {المدرسة} بالشكر {للطالب} / {الاسم} على مشاركته الفاعلة في ................................................، متمنين له دوام التميز."},
  grad:{t:"شهادة تخرج",x:"تهنئ إدارة {المدرسة} {الطالب} / {الاسم} بمناسبة تخرجه من {الصف} للعام {العام}، متمنين له مستقبلًا مشرقًا."},
- teacher:{t:"شهادة شكر وتقدير",x:"تتقدم إدارة {المدرسة} بخالص الشكر والتقدير {للمعلم} / {الاسم}؛ تقديرًا لجهوده المخلصة وعطائه المتميز، سائلين الله له التوفيق والسداد."}
+ teacher:{tch:1,t:"شهادة شكر وتقدير",x:"تتقدم إدارة {المدرسة} بخالص الشكر والتقدير {للمعلم} / {الاسم}؛ تقديرًا لجهوده المخلصة وعطائه المتميز، سائلين الله له التوفيق والسداد."},
+ national:{o:"اليوم الوطني",t:"شهادة شكر وتقدير",x:"تتقدم إدارة {المدرسة} بالشكر والتقدير {للطالب} / {الاسم} {بالصف} {الصف}؛ لمشاركته المتميزة في فعاليات اليوم الوطني السعودي، دام عز الوطن، ودامت أفراحه."},
+ found:{o:"يوم التأسيس",t:"شهادة شكر وتقدير",x:"تتقدم إدارة {المدرسة} بالشكر والتقدير {للطالب} / {الاسم} {بالصف} {الصف}؛ لمشاركته المتميزة في فعاليات الاحتفاء بيوم التأسيس، اعتزازًا بجذور هذه الدولة المباركة وتاريخها العريق."},
+ flag:{o:"يوم العلم",t:"شهادة شكر وتقدير",x:"تتقدم إدارة {المدرسة} بالشكر والتقدير {للطالب} / {الاسم} {بالصف} {الصف}؛ لمشاركته المتميزة في فعاليات يوم العلم، تعبيرًا عن الولاء والانتماء لراية التوحيد."},
+ arabic:{o:"اليوم العالمي للغة العربية",t:"شهادة شكر وتقدير",x:"تتقدم إدارة {المدرسة} بالشكر والتقدير {للطالب} / {الاسم} {بالصف} {الصف}؛ لمشاركته المتميزة في فعاليات اليوم العالمي للغة العربية، اعتزازًا بلغة القرآن الكريم."},
+ nafes:{o:"التميز في نافس",t:"شهادة تميز",x:"يسر إدارة {المدرسة} أن تمنح {الطالب} / {الاسم} {بالصف} {الصف} هذه الشهادة؛ تقديرًا لتميزه وجدّه في الاستعداد للاختبارات الوطنية (نافس) وأدائه المشرّف، متمنين له دوام التفوق."},
+ nafesfam:{o:"شكر أسرة الطالب (نافس)",t:"شكر وتقدير",x:"تتقدم إدارة {المدرسة} بالشكر والتقدير لأسرة {الطالب} / {الاسم} {بالصف} {الصف}؛ لدعمها ومتابعتها المستمرة لابنها في الاستعداد للاختبارات الوطنية (نافس)، وشراكتها الفاعلة مع المدرسة."},
+ health:{o:"المشاركة في حملة توعوية",t:"شهادة شكر وتقدير",x:"تتقدم إدارة {المدرسة} بالشكر والتقدير {للطالب} / {الاسم} {بالصف} {الصف}؛ لمشاركته الفاعلة في الحملة التوعوية ................................................، إسهامًا في نشر الوعي الصحي في المجتمع."},
+ disab:{o:"اليوم الدولي لذوي الإعاقة",t:"شهادة شكر وتقدير",x:"تتقدم إدارة {المدرسة} بالشكر والتقدير {للطالب} / {الاسم} {بالصف} {الصف}؛ لمشاركته المتميزة في فعاليات اليوم الدولي للأشخاص ذوي الإعاقة، ترسيخًا لقيم الدمج والتكافل."},
+ teachday:{o:"يوم المعلم (للمعلمين)",tch:1,t:"شهادة شكر وتقدير",x:"بمناسبة اليوم العالمي للمعلم، تتقدم إدارة {المدرسة} بخالص الشكر والتقدير {للمعلم} / {الاسم}؛ عرفانًا بجهوده المخلصة ورسالته السامية في بناء الأجيال، سائلين الله له التوفيق والسداد."},
+ course:{o:"حضور برنامج تدريبي (للمعلمين)",tch:1,t:"شهادة حضور برنامج تدريبي",x:"تشهد إدارة {المدرسة} بأن {المعلم} / {الاسم} قد حضر البرنامج التدريبي «................................» المنعقد بتاريخ ..../..../........هـ، بواقع (....) ساعات تدريبية."},
+ trainer:{o:"تقديم برنامج تدريبي (للمعلمين)",tch:1,t:"شهادة شكر وتقدير",x:"تتقدم إدارة {المدرسة} بخالص الشكر والتقدير {للمعلم} / {الاسم}؛ لتقديمه البرنامج التدريبي «................................» لمنسوبي المدرسة، وإسهامه في التنمية المهنية ونقل الخبرات."}
 };
 const certCfg=()=>Object.assign({type:"thanks",design:"a",text:"",title:""},store.get("hq3:certcfg",{}));
 function certText(cfg,name){
   const c=rosterCur(),T=CERT_TYPES[cfg.type]||CERT_TYPES.thanks,fem=S.gender==="f";
   let x=cfg.text||T.x;
-  const map={"{الاسم}":name||"................................","{المدرسة}":S.school||"المدرسة","{الصف}":c?c.name:"..........","{العام}":S.year||"","{الطالب}":fem?"الطالبة":"الطالب","{للطالب}":fem?"للطالبة":"للطالب","{بالصف}":"بالصف","{للمعلم}":fem?"للمعلمة":"للمعلم"};
+  const map={"{الاسم}":name||"................................","{المدرسة}":S.school||"المدرسة","{الصف}":c?c.name:"..........","{العام}":S.year||"","{الطالب}":fem?"الطالبة":"الطالب","{للطالب}":fem?"للطالبة":"للطالب","{بالصف}":"بالصف","{للمعلم}":fem?"للمعلمة":"للمعلم","{المعلم}":fem?"المعلمة":"المعلم"};
   x=esc(x);Object.keys(map).forEach(k=>{const v=k==="{الاسم}"?`<b class="cn">${esc(map[k])}</b>`:esc(map[k]);x=x.split(esc(k)).join(v)});
-  if(fem)x=x.replace(/تميزه/g,"تميزها").replace(/تفوقه/g,"تفوقها").replace(/له /g,"لها ").replace(/حضر/g,"حضرت").replace(/مشاركته/g,"مشاركتها").replace(/تخرجه/g,"تخرجها").replace(/جهوده/g,"جهودها").replace(/عطائه/g,"عطائها");
+  if(fem)x=x.replace(/تميزه/g,"تميزها").replace(/تفوقه/g,"تفوقها").replace(/له /g,"لها ").replace(/حضر/g,"حضرت").replace(/مشاركته/g,"مشاركتها").replace(/تخرجه/g,"تخرجها").replace(/جهوده/g,"جهودها").replace(/عطائه/g,"عطائها").replace(/أدائه/g,"أدائها").replace(/لابنها/g,"لابنتها").replace(/لتقديمه/g,"لتقديمها").replace(/وإسهامه/g,"وإسهامها").replace(/ورسالته/g,"ورسالتها").replace(/وجدّه/g,"وجدّها").replace(/لمشاركته/g,"لمشاركتها");
   return x;
 }
 function CERTB(){
@@ -2717,7 +2734,7 @@ function CERTB(){
 }
 function rCert(spec,t,p){
   const cfg=certCfg(),T=CERT_TYPES[cfg.type]||CERT_TYPES.thanks;const MD=g("مدير المدرسة","مديرة المدرسة");
-  const sig2=cfg.type==="teacher"?"":`<div><span>${g("المعلم","المعلمة")}</span><b>${esc(S.name||"")||"................"}</b></div>`;
+  const sig2=T.tch?"":`<div><span>${g("المعلم","المعلمة")}</span><b>${esc(S.name||"")||"................"}</b></div>`;
   return `<div class="cert cd-${cfg.design}"><div class="cfr"></div><div class="cin">
    <div class="ctop"><div class="cr"><span class="ksa" role="img" aria-label="المملكة العربية السعودية"></span><br>وزارة التعليم<br>${esc(S.dept||"")}<br>${S.school?esc(S.school):""}</div><img src="${LOGO}" alt="شعار وزارة التعليم"><div class="cl">${esc(S.year)}<br>${esc(S.term)}</div></div>
    <div class="ctitle">${esc(cfg.title||T.t)}</div>
@@ -2728,7 +2745,7 @@ function rCert(spec,t,p){
 function renderCertCard(){
   const card=$("#certCard");if(!card)return;const f=FILES.find(x=>x.id===S.file);card.hidden=!(f&&f.cert);if(card.hidden)return;
   const cfg=certCfg();
-  $("#ctType").innerHTML=Object.keys(CERT_TYPES).map(k=>`<option value="${k}"${k===cfg.type?" selected":""}>${CERT_TYPES[k].t}${k==="teacher"?" (للمعلمين)":k==="thanks"?" (للطلاب)":""}</option>`).join("");
+  $("#ctType").innerHTML=Object.keys(CERT_TYPES).map(k=>`<option value="${k}"${k===cfg.type?" selected":""}>${CERT_TYPES[k].o||(CERT_TYPES[k].t+(k==="teacher"?" (للمعلمين)":k==="thanks"?" (للطلاب)":""))}</option>`).join("");
   document.querySelectorAll("#ctDesign button").forEach(b=>b.classList.toggle("on",b.dataset.d===cfg.design));
   $("#ctTitle").value=cfg.title||"";$("#ctText").value=cfg.text||(CERT_TYPES[cfg.type]||CERT_TYPES.thanks).x;
 }
@@ -3881,6 +3898,7 @@ FILES.push(
    {t:"fields",title:"بيانات الاختبار",fields:[["الاسم","name"],["المادة",""],["الصف",""],["الفصول / الشعب",""],["نوع الاختبار",""],["الدرجة الكلية",""],["تاريخ الاختبار",""],["عدد المختبرين",""],["المدرسة","school"],["العام الدراسي","year"]]},
    {t:"table",title:"المؤشرات الإحصائية",cols:[["البيان",30]].concat(CL.map(c=>[c,14])),center:[0],rows:["عدد المختبرين","أعلى درجة","أدنى درجة","المتوسط الحسابي","نسبة النجاح","نسبة الإتقان (٨٠٪ فأكثر)","عدد الغائبين"].map(x=>[x,"","","","",""])},
    {t:"table",title:"توزيع "+ST+" على مستويات الأداء",cols:[["المستوى",18],["الفئة",14]].concat(CL.map(c=>[c,13.6])),center:[0,1],rows:[["ممتاز","من ٩٠ إلى ١٠٠٪"],["جيد جدًا","من ٨٠ إلى ٨٩٪"],["جيد","من ٦٥ إلى ٧٩٪"],["مقبول","من ٥٠ إلى ٦٤٪"],["دون المستوى","أقل من ٥٠٪"]].map(x=>x.concat(["","","","",""]))},
+   {t:"gchart",title:"التمثيل البياني للنتائج"},
    {t:"table",title:"تحليل المهارات / الأسئلة",cols:[["م",6],["المهارة / السؤال",34],["رقم السؤال",10],["الدرجة",9],["عدد الإجابات الصحيحة",13],["نسبة الإتقان",12],["الحكم",16]],rows:15,num:true},
    {t:"table",title:ST+" المحتاجون إلى خطة علاجية",cols:[["م",6],["اسم "+S1,26],["الدرجة",9],["المهارات غير المتقنة",27],["الإجراء العلاجي",20],["القياس البعدي",12]],rows:15,num:true},
    {t:"table",title:g("المتفوقون والإجراءات الإثرائية","المتفوقات والإجراءات الإثرائية"),cols:[["م",6],["اسم "+S1,28],["الدرجة",10],["الإجراء الإثرائي",36],["الموعد",20]],rows:10,num:true},
@@ -3888,6 +3906,60 @@ FILES.push(
    {t:"table",title:"مقارنة النتائج عبر الفترات",cols:[["م",6],["الاختبار",24],["الفترة",16],["المتوسط",12],["نسبة الإتقان",13],["نسبة النجاح",13],["التغير",16]],rows:8,num:true},
    {t:"ev",title:"شواهد التحليل وتنفيذ الخطط"}
   ]}}});
+
+FILES.push(
+ {id:"daily-log",cat:()=>g("ملفات المعلم","ملفات المعلمة"),ic:"calendar",name:()=>"تقرير الإنجاز اليومي والأسبوعي",build:()=>{
+  const DAYS=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس"];
+  const wk=n=>[{t:"table",title:"سجل الإنجاز اليومي – الأسبوع ( "+n+" )",cols:[["اليوم",10],["التاريخ",10],["الدروس المنفذة (الصف / الدرس)",24],["الأنشطة والمهام",20],["الواجبات والتقويم",14],["التواصل والمتابعة",12],["ملاحظات",10]],center:[0],tall:true,rows:DAYS.map(d=>[d,"","","","","",""])},
+   {t:"text",title:"التقرير الأسبوعي – الأسبوع ( "+n+" )",sig:[g("المعلم","المعلمة"),g("قائد المدرسة","قائدة المدرسة")],blocks:[["أبرز ما أُنجز هذا الأسبوع",""],["مؤشرات الأداء (حصص منفذة، واجبات، اختبارات قصيرة، تواصل مع الأسر)",""],["التحديات وكيفية التعامل معها",""],["خطة الأسبوع القادم",""]]}];
+  return {title:"تقرير الإنجاز اليومي والأسبوعي",sub:g("للمعلم","للمعلمة"),pages:[
+   {t:"fields",title:"البيانات",fields:[["الاسم","name"],["التخصص",""],["المواد المسندة",""],["الصفوف",""],["عدد الحصص الأسبوعية",""],["المدرسة","school"],["الفصل الدراسي","term"],["العام الدراسي","year"]]},
+   ...wk("١"),...wk("٢"),...wk("٣"),...wk("٤"),
+   {t:"table",title:"الملخص الشهري للإنجاز",cols:[["م",6],["المؤشر",34],["الأسبوع ١",12],["الأسبوع ٢",12],["الأسبوع ٣",12],["الأسبوع ٤",12],["الإجمالي",12]],num:true,rows:NR(["الحصص المنفذة","الدروس المنجزة من الخطة","الواجبات المصححة","الاختبارات القصيرة","التواصل مع أولياء الأمور","المهام والأنشطة غير الصفية","حصص الانتظار"].map(x=>[x,"","","","",""]))},
+   {t:"ev",title:"شواهد الإنجاز"}
+  ]}}},
+ {id:"doc-forms",cat:()=>g("ملفات المعلم","ملفات المعلمة"),ic:"filecheck",name:()=>"نماذج التوثيق",build:()=>{
+  const T1=g("المعلم","المعلمة"),MD=g("قائد المدرسة","قائدة المدرسة");
+  return {title:"نماذج التوثيق",sub:"تقارير تنفيذ وشواهد جاهزة للطباعة",pages:[
+   {t:"div",n:1,title:"تقرير تنفيذ استراتيجية",list:"بيانات التنفيذ\nخطوات التطبيق\nالشواهد"},
+   {t:"multi",title:"تقرير تنفيذ استراتيجية تدريسية",sig:[T1,MD],parts:[{cols:[["البند",30],["البيان",70]],center:[],rows:[["اسم الاستراتيجية",""],["المادة / الصف",""],["الدرس",""],["تاريخ التنفيذ",""],["عدد المستفيدين",""],["الأدوات والوسائل",""]]},{h:"أهداف تطبيق الاستراتيجية",text:"١.\n٢.\n٣."},{h:"خطوات التطبيق",text:"١.\n٢.\n٣.\n٤."},{h:"الأثر الملاحظ على المتعلمين",text:"\n"}]},
+   {t:"ev",title:"شواهد تنفيذ الاستراتيجية",n:4},
+   {t:"div",n:2,title:"تقرير تنفيذ برنامج / نشاط",list:"تقرير بشاهدين\nتقرير بأربعة شواهد"},
+   {t:"rep",title:"تقرير تنفيذ برنامج",d:{method:"",count:"",date:"",slogan:"",place:"المدرسة",target:"",idea:"",goals:"١.\n٢.\n٣.",comps:"",acts:"",kpis:""}},
+   {t:"ev",title:"شواهد التقرير (شاهدان)",n:2},
+   {t:"rep",title:"تقرير تنفيذ برنامج",d:{method:"",count:"",date:"",slogan:"",place:"المدرسة",target:"",idea:"",goals:"١.\n٢.\n٣.",comps:"",acts:"",kpis:""}},
+   {t:"ev",title:"شواهد التقرير (أربعة شواهد)",n:4},
+   {t:"div",n:3,title:"ملحق الشواهد",list:"ملحق شواهد مرقّم"},
+   {t:"ev",title:"ملحق الشواهد (١)",numbered:true},{t:"ev",title:"ملحق الشواهد (٢)",numbered:true}
+  ]}}},
+ {id:"parents",cat:()=>g("ملفات المعلم","ملفات المعلمة"),ic:"users",name:()=>"التواصل مع أولياء الأمور",build:()=>{
+  const ST=g("الطلاب","الطالبات"),S1=g("الطالب","الطالبة"),T1=g("المعلم","المعلمة"),MD=g("قائد المدرسة","قائدة المدرسة");
+  return {title:"التواصل مع أولياء الأمور",sub:"السجل والتقارير ومحضر اللقاء",pages:[
+   {t:"text",title:"خطة التواصل مع أولياء الأمور",blocks:[["الهدف","بناء شراكة فاعلة مع الأسرة تدعم تعلم "+ST+" وانضباطهم، عبر تواصل منتظم وواضح وإيجابي."],["قنوات التواصل","منصة مدرستي (الرسائل والإشعارات) — الرسائل النصية — الاتصال الهاتفي — اللقاءات الحضورية — الجمعية العمومية لأولياء الأمور."],["مواعيد التواصل","• رسالة ترحيبية بداية الفصل.\n• تقرير مختصر عن مستوى "+S1+" بعد كل فترة تقويم.\n• تواصل فوري عند التأخر الدراسي أو الغياب المتكرر أو السلوك غير المرغوب.\n• رسائل تحفيز وشكر عند التميز."]]},
+   {t:"table",title:"سجل التواصل مع أولياء الأمور",cols:[["م",6],["اسم "+S1,24],["الصف",9],["وسيلة التواصل",13],["الموضوع",24],["التاريخ",11],["النتيجة",13]],rows:18,num:true},
+   {t:"multi",title:"تقرير التواصل عبر منصة مدرستي",sig:[T1,MD],parts:[{cols:[["البند",40],["البيان",60]],center:[],rows:[["الفترة",""],["عدد الرسائل المرسلة لأولياء الأمور",""],["عدد الإشعارات (واجبات، اختبارات، غياب)",""],["عدد أولياء الأمور المتفاعلين",""],["نسبة التفاعل",""]]},{h:"أبرز موضوعات التواصل",text:"\n"},{h:"الأثر والملاحظات",text:"\n"}]},
+   {t:"multi",title:"محضر اللقاء الأول بأولياء الأمور",sig:[T1,MD],parts:[{cols:[["البند",30],["البيان",70]],center:[],rows:[["التاريخ والوقت",""],["المكان",""],["عدد الحضور",""],["الصف / الفصل",""]]},{h:"محاور اللقاء",text:"١. الترحيب والتعريف بالمادة وأهدافها.\n٢. توزيع الدرجات وأساليب التقويم.\n٣. الواجبات ومنصة مدرستي وطرق متابعتها.\n٤. قواعد السلوك والمواظبة.\n٥. دور الأسرة في دعم تعلم "+S1+"."},{h:"مقترحات أولياء الأمور",text:"\n"},{h:"التوصيات",text:"\n"}]},
+   {t:"table",title:"كشف حضور أولياء الأمور",cols:[["م",6],["اسم ولي الأمر",30],["اسم "+S1,28],["رقم التواصل",18],["التوقيع",18]],rows:18,num:true},
+   {t:"text",title:"إشعار ولي أمر",sig:[T1,MD],blocks:[["المكرم ولي أمر "+S1+" / ................................ وفقه الله","السلام عليكم ورحمة الله وبركاته، وبعد:\nنود إشعاركم بـ ................................................................\nونأمل تعاونكم في ................................................................\nشاكرين حرصكم ومتابعتكم."],["رد ولي الأمر","اطلعت على الإشعار، وأتعهد بالمتابعة.\nالاسم: ....................   التوقيع: ....................   التاريخ: ....../....../........هـ"]]},
+   {t:"ev",title:"شواهد التواصل مع أولياء الأمور"}
+  ]}}},
+ {id:"lstyles",cat:()=>g("ملفات المعلم","ملفات المعلمة"),ic:"puzzle",name:()=>"أنماط التعلم",build:()=>{
+  const ST=g("الطلاب","الطالبات"),S1=g("الطالب","الطالبة");
+  const Q=[["أتذكر الدرس أكثر عندما","أرى صورًا ورسومًا","أسمع الشرح","أقرأ وأكتب ملخصًا","أجرّب بيدي"],["عندما أتعلم كلمة جديدة","أتخيل شكلها","أرددها بصوت عالٍ","أكتبها عدة مرات","أمثّلها بحركة"],["أفضّل أن يشرح لي المعلم","بالخرائط والرسوم","بالحوار والقصص","بالكتاب والأوراق","بالتجارب والأنشطة"],["في وقت الفراغ أحب","الرسم والتلوين","الاستماع والحديث","القراءة","اللعب والحركة"],["عندما أحل مسألة","أرسمها","أتحدث عنها مع زميلي","أكتب خطواتها","أستخدم أدوات أو أصابعي"],["أتعلم أفضل في","الحصص التي فيها عروض وصور","الحصص التي فيها نقاش","الحصص التي فيها قراءة وكتابة","الحصص التي فيها حركة وتجارب"],["عندما أشرح لزميلي","أرسم له","أشرح له بالكلام","أكتب له","أريه كيف يفعلها"],["أتذكر الأشخاص من","وجوههم","أصواتهم","أسمائهم المكتوبة","ما فعلناه معًا"],["عند المذاكرة","أستخدم ألوانًا وخرائط","أذاكر بصوت مسموع","ألخّص في دفتري","أمشي أو أتحرك وأنا أذاكر"],["يزعجني في الصف","الفوضى في السبورة","الضجيج","عدم وجود ملخص مكتوب","الجلوس طويلًا"],["أفضّل الواجب الذي","أصمم فيه ملصقًا","أسجّل فيه صوتي","أكتب فيه تقريرًا","أصنع فيه مجسمًا"],["أفهم التعليمات أكثر عندما","أرى مثالًا","أسمعها","أقرؤها","أطبقها مباشرة"]];
+  return {title:"أنماط التعلم",sub:"الاستبانة وكشف التصنيف والتوظيف",pages:[
+   {t:"text",title:"أنماط التعلم: المفهوم والتوظيف",blocks:[["المفهوم","نمط التعلم هو الطريقة المفضلة لدى "+S1+" في استقبال المعلومات ومعالجتها. ومن أشهر التصنيفات: البصري، والسمعي، والقرائي/الكتابي، والحركي."],["البصري","يتعلم بالصور والخرائط والألوان والرسوم البيانية. — التوظيف: خرائط المفاهيم، العروض المصورة، الترميز اللوني."],["السمعي","يتعلم بالاستماع والنقاش والقصص. — التوظيف: الحوار، الأناشيد، التسجيلات الصوتية، العصف الذهني."],["القرائي / الكتابي","يتعلم بالقراءة وكتابة الملخصات والقوائم. — التوظيف: أوراق العمل، التلخيص، المذكرات، الأسئلة المكتوبة."],["الحركي","يتعلم بالتجربة والحركة والتطبيق العملي. — التوظيف: التجارب، لعب الأدوار، التعلم باللعب، المحسوسات."],["ملاحظة","الأنماط تفضيلات وليست قوالب ثابتة؛ والأفضل تنويع الاستراتيجيات لتخدم الأنماط جميعها."]],small:true},
+   {t:"table",title:"استبانة أنماط التعلم",cols:[["م",5],["العبارة",27],["أ",17],["ب",17],["ج",17],["د",17]],num:true,dense:true,rows:NR(Q.map(q=>[q[0]+"…","☐ "+q[1],"☐ "+q[2],"☐ "+q[3],"☐ "+q[4]]))},
+   {t:"text",title:"مفتاح التصحيح والتفسير",blocks:[["طريقة التصحيح","يضع "+S1+" علامة على خيار واحد في كل عبارة، ثم يُحسب عدد الإجابات في كل عمود:\n(أ) بصري — (ب) سمعي — (ج) قرائي/كتابي — (د) حركي."],["التفسير","النمط الغالب هو العمود الأعلى عددًا. إذا تقاربت درجتان أو أكثر (فرق ١ أو ٢) فـ"+S1+" متعدد الأنماط."],["نتيجتي","بصري: (....)   سمعي: (....)   قرائي: (....)   حركي: (....)\nالنمط الغالب: ................................"]]},
+   {t:"table",title:"كشف تصنيف "+ST+" حسب أنماط التعلم",cols:[["م",6],["اسم "+S1,30],["بصري",11],["سمعي",11],["قرائي",11],["حركي",11],["النمط الغالب",20]],rows:22,num:true,center:[0,2,3,4,5]},
+   {t:"table",title:"ملخص الأنماط في الفصل وتوظيفها",cols:[["النمط",16],["العدد",10],["النسبة",10],["استراتيجيات مقترحة للتوظيف",64]],center:[0],rows:[["بصري","","","خرائط المفاهيم، العروض المصورة، المنظمات البصرية، الترميز اللوني"],["سمعي","","","الحوار والمناقشة، القصة، الأناشيد، فكر – زاوج – شارك"],["قرائي / كتابي","","","أوراق العمل، التلخيص، القراءة الموجهة، بطاقات المفردات"],["حركي","","","التجارب العملية، لعب الأدوار، التعلم باللعب، المحسوسات"],["متعدد الأنماط","","","تنويع الأنشطة ومحطات التعلم"]]},
+   {t:"ev",title:"شواهد تطبيق الاستبانة وتوظيف الأنماط"}
+  ]}}},
+ {id:"exam-signs",cat:"ملفات الإدارة والتوجيه",ic:"clipboard",name:()=>"لوحات لجان الاختبارات",build:()=>{
+  const ST=g("الطلاب","الطالبات");const n=["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة"];
+  return {title:"لوحات لجان الاختبارات",sub:"لوحة لكل لجنة وكشف أسمائها",pages:[
+   ...n.map((x,i)=>({t:"multi",title:"لجنة الاختبار "+x+" — رقم ( "+(i+1).toLocaleString("ar-EG")+" )",parts:[{cols:[["البند",34],["البيان",66]],center:[],rows:[["المقر",""],["الصفوف",""],["أرقام الجلوس",""],["عدد "+ST,""],["الملاحظون",""]]},{h:"أسماء "+ST,cols:[["م",8],["الاسم",52],["رقم الجلوس",20],["الصف",20]],num:true,rows:16}]}))
+  ]}}}
+);
 
 {const ORD=["الأداء الوظيفي","الخطط","ملفات المدرسة","ملفات الإدارة والتوجيه","ملفات المعلم","ملفات التخصص","الإشراف التربوي"];
  const ci=f=>{const c=typeof f.cat==="function"?f.cat():f.cat;const i=ORD.findIndex(o=>c.startsWith(o));return i<0?99:i};
@@ -4559,6 +4631,7 @@ function render0(){
     else if(p.t==="gcard")h=rGcards(spec,t,p,pi);
     else if(p.t==="min")h=rMin(spec,t,p,pi,num);
     else if(p.t==="grid")h=rGrid(spec,t,p,pi,num);
+    else if(p.t==="gchart")h=rGChart(spec,t,p,pi,num);
     out.push(wrap(pi,(p.opt?"⭐ صفحة اختيارية"+(num?" "+num:"")+" — "+p.title:"صفحة "+num+" — "+p.title),h,p.land?"land":"",p.t==="ev"?evCtl(pi):""));
   });
   pagesEl.innerHTML=out.join("");
@@ -7364,10 +7437,15 @@ const REQ={"perf-t": {"r": ["عناصر التقييم وأوزانها وفق �
 Object.keys(SUBJ).forEach(k=>{const s=SUBJ[k];REQ["subj-"+k]={r:["الرؤية والرسالة والقيم المهنية لمعلم "+s.n,"أهداف تدريس المادة ومجالاتها ومرتكزات العمل","خطة تنمية المهارات ("+s.skills.length+" مهارات) واستراتيجيات تدريس المادة بأمثلة تطبيقية","برنامج إثرائي جاهز: "+s.prog[0]].concat(s.nafs?["مجالات الاستعداد للاختبارات الوطنية (نافس)"]:[]),d:["من زر «بيانات الملف»: الاسم، والعمل، والمدرسة، والعام الدراسي","المؤهل وسنوات الخبرة والرتبة والمواد والصفوف المسندة","الجدول المدرسي"],s:["أسماء {g:الطلاب|الطالبات} من نظام نور لـ«"+s.sp.title+"»","نتائج الاختبارات التشخيصية والفترية لتحديد المتعثرين والمتقنين"].concat(s.nafs?["نتائج نافس السابقة للمدرسة في المادة"]:[]).concat(["سجل الدورات والورش وساعات التطوير المهني"]),k:["الصفوف والموعد وأداة القياس لكل مهارة","الدروس التي ستطبق فيها الاستراتيجيات"],e:["صور تطبيق الاستراتيجيات في الحصص","صور البرنامج الإثرائي ونماذج من أعمال {g:الطلاب|الطالبات}","شهادات الدورات وخطابات الشكر"],t:"عدّل الأمثلة التطبيقية لتطابق دروس صفك، ووثّق كل استراتيجية بصورة من الحصة."}});
 REQ.supervisor={r:["رؤية الإشراف التربوي ورسالته ومهامه الرئيسة","خطة إشرافية سنوية بثمانية أهداف وأساليبها ومؤشراتها","نموذج تقرير زيارة صفية بعناصر الملاحظة","قائمة بعشرة أساليب إشرافية للتوثيق"],d:["من زر «بيانات الملف»: الاسم، والعمل، والعام الدراسي","إدارة التعليم والقسم والتخصص وعدد المدارس و{g:المعلمين|المعلمات}"],s:["قائمة المدارس المسندة وبيانات قادتها","قائمة {g:المعلمين|المعلمات} المشرف عليهم واحتياجاتهم التدريبية","نتائج الاختبارات الوطنية والتحصيلية للمدارس"],k:["مواعيد الزيارات وأولويتها","البرامج التدريبية المناسبة للاحتياجات"],e:["تقارير الزيارات الموقعة","صور الأساليب الإشرافية والبرامج التدريبية","النشرات والعروض المقدمة"],t:"ابدأ بتحليل الاحتياجات ونتائج المدارس، ثم ابنِ جدول الزيارات على الأولوية."};
 REQ.applied={r:["مفهوم الدرس التطبيقي وأهدافه وخطواته قبل الدرس وأثناءه وبعده","خطة درس بمراحل التنفيذ وأزمنتها","كشف حضور واستمارة تقييم بثمانية عناصر","نموذج التأمل وسجل الدروس خلال العام"],d:["من زر «بيانات الملف»: الاسم والمدرسة","المادة والصف وعنوان الدرس والاستراتيجية المستهدفة والموعد والمكان"],s:["أسماء {g:الزملاء|الزميلات} المدعوين وتخصصاتهم"],k:["اختيار الاستراتيجية بناءً على احتياج تدريبي مشترك","تحديد أهداف الدرس وإجراءاته"],e:["صور تنفيذ الدرس","كشف الحضور الموقع","استمارات التقييم المعبأة"],t:"اختر استراتيجية واحدة واضحة واجعل الدرس كله يخدم عرضها."};
-REQ.results={r:["هدف التحليل وخطواته ومعيار الإتقان","جداول المؤشرات الإحصائية ومستويات الأداء لأربعة فصول","جداول تحليل المهارات والعلاج والإثراء والمقارنة"],d:["من زر «بيانات الملف»: الاسم والمدرسة والعام الدراسي","المادة والصف ونوع الاختبار والدرجة الكلية وتاريخه"],s:["كشوف درجات {g:الطلاب|الطالبات} لكل سؤال أو مهارة","نتائج الاختبارات السابقة للمقارنة"],k:["الحكم على المهارات (متقنة/غير متقنة)","الإجراءات العلاجية والإثرائية المناسبة"],e:["كشوف الدرجات وجداول التحليل","صور تنفيذ الخطط العلاجية والإثرائية"],t:"احسب نسبة الإتقان لكل مهارة أولًا، فهي التي تحدد خطة العلاج."};
+REQ.results={r:["زر «📊 إدخال الدرجات»: الصق الدرجات أو ارفع Excel فتُحسب المؤشرات والمستويات والرسم البياني وقوائم العلاج والإثراء والقراءة التحليلية تلقائيًا","هدف التحليل وخطواته ومعيار الإتقان","جداول المؤشرات الإحصائية ومستويات الأداء لأربعة فصول","جداول تحليل المهارات والعلاج والإثراء والمقارنة"],d:["من زر «بيانات الملف»: الاسم والمدرسة والعام الدراسي","المادة والصف ونوع الاختبار والدرجة الكلية وتاريخه"],s:["كشوف درجات {g:الطلاب|الطالبات} لكل سؤال أو مهارة","نتائج الاختبارات السابقة للمقارنة"],k:["الحكم على المهارات (متقنة/غير متقنة)","الإجراءات العلاجية والإثرائية المناسبة"],e:["كشوف الدرجات وجداول التحليل","صور تنفيذ الخطط العلاجية والإثرائية"],t:"احسب نسبة الإتقان لكل مهارة أولًا، فهي التي تحدد خطة العلاج."};
+REQ["daily-log"]={r:["سجل يومي لأربعة أسابيع بأعمدة الدروس والأنشطة والواجبات والتواصل","تقرير أسبوعي بعد كل أسبوع","ملخص شهري لمؤشرات الإنجاز"],d:["من زر «بيانات الملف»: الاسم والمدرسة والفصل والعام الدراسي","المواد والصفوف وعدد الحصص"],s:["الجدول المدرسي وخطة توزيع المنهج"],k:["خطة الأسبوع القادم"],e:["صور من الحصص والأنشطة","لقطات من منصة مدرستي"],t:"اكتب سطرًا قصيرًا كل يوم؛ يصبح التقرير الأسبوعي تلخيصًا جاهزًا."};
+REQ["doc-forms"]={r:["تقرير تنفيذ استراتيجية بأهدافه وخطواته وأثره","تقريرا تنفيذ برنامج بشاهدين وبأربعة شواهد","ملحق شواهد مرقّم"],d:["اسم الاستراتيجية أو البرنامج وتاريخه والمستفيدين"],s:[],k:["اختيار الاستراتيجية أو البرنامج المراد توثيقه"],e:["صور التنفيذ (٢ أو ٤ صور لكل تقرير)"],t:"احذف الصفحات التي لا تحتاجها من خيار «صفحات الملف»."};
+REQ.parents={r:["خطة التواصل وقنواته ومواعيده","سجل التواصل وتقرير منصة مدرستي","محضر اللقاء الأول بمحاوره الجاهزة وكشف الحضور","نموذج إشعار ولي أمر"],d:["تاريخ اللقاء ومكانه وعدد الحضور"],s:["أسماء {g:الطلاب|الطالبات} وأرقام أولياء الأمور من نظام نور","إحصاءات الرسائل والإشعارات من منصة مدرستي"],k:["موضوعات التواصل والتوصيات"],e:["صور اللقاء","لقطات من رسائل منصة مدرستي"],t:"وثّق كل تواصل في السجل فور حدوثه، فهو شاهد لعنصر «التفاعل مع أولياء الأمور»."};
+REQ.lstyles={r:["التعريف بالأنماط الأربعة وطرق توظيفها","استبانة من ١٢ عبارة ومفتاح تصحيح","كشف التصنيف وجدول الملخص بالاستراتيجيات المقترحة"],d:["الصف والفصل"],s:["أسماء {g:الطلاب|الطالبات} من نظام نور"],k:["الاستراتيجيات التي ستوظفها لكل نمط"],e:["صور تطبيق الاستبانة","صور توظيف الاستراتيجيات"],t:"اطبع صفحة الاستبانة بعدد {g:الطلاب|الطالبات}، ثم انقل النتائج إلى الكشف."};
+REQ["exam-signs"]={r:["لوحة لكل لجنة (٦ لجان) مع جدول أسماء {g:الطلاب|الطالبات} وأرقام الجلوس"],d:["مقر كل لجنة والصفوف وأرقام الجلوس والملاحظين"],s:["كشوف أرقام الجلوس من نظام نور"],k:["توزيع {g:الطلاب|الطالبات} على اللجان"],e:[],t:"أضف لجانًا أكثر من «صفحات الملف» بتكرار صفحة اللجنة."};
 const REQ_SEC=[["r","✅ جاهز في الملف (جهّزه نَسَق لك)",0],["d","✍️ بيانات تكتبها",1],["s","📂 تجهّزها من الأنظمة والسجلات",1],["k","🧭 قرارات وتقييم تتخذه",1],["e","📸 شواهد بعد التنفيذ",1]];
 const reqKey=fid=>"hq3:req:"+fid;const REQF={};
-function reqBtnSync(){const b=$("#reqBtn");if(b)b.hidden=EMBED||!!VIEW||!S.file||!REQ[S.file]}
+function reqBtnSync(){const b=$("#reqBtn");if(b)b.hidden=EMBED||!!VIEW||!S.file||!REQ[S.file];const gb=$("#grdBtn");if(gb)gb.hidden=EMBED||!!VIEW||!GRD_FILES.includes(S.file)}
 
 /* نافذة تعبئة البيانات على شكل جدول: كل بند يُفكّك إلى خانات */
 const RQ_SET=[["الاسم","name"],["العمل / التخصص","job"],["المدرسة","school"],["إدارة التعليم","dept"],["العام الدراسي","year"],["الفصل الدراسي","term"]];
@@ -7439,6 +7517,93 @@ function reqOpen(mode){const fid=S.file,R=REQ[fid];if(!R)return;store.set("hq3:r
     if(b&&b.dataset.x==="print"){const w=window.open("","_blank");if(!w)return;w.document.write(`<html dir="rtl" lang="ar"><head><meta charset="utf-8"><${"t"}itle>متطلبات الإعداد</${"t"}itle><style>body{font-family:Tahoma,Arial;padding:24px;color:#1b2d36}h2{color:#0b5f6a}h4{margin:16px 0 6px;color:#0b5f6a}li{margin:4px 0;line-height:1.7}button,textarea,.rq-fs{display:none}</style></head><body><h2>متطلبات إعداد: ${esc(f?f.name():"")}</h2>${m.querySelector(".rq-b").innerHTML.replace(/<input[^>]*>/g,"☐ ")}</body></html>`);w.document.close();w.focus();w.print();return}
     if((b&&b.dataset.x==="close")||e.target===m)m.classList.remove("open")}}
 $("#reqBtn").addEventListener("click",()=>reqOpen());
+/* ===================== تحليل الدرجات التلقائي (ملف «تحليل النتائج») ===================== */
+const GRD_FILES=["results"];
+const grdKey=()=>"hq3:grd:"+S.file+":"+(S.gender||"m");
+const grdGet=()=>store.get(grdKey(),null)||{total:100,mast:80,pass:50,cls:[0,1,2,3].map(i=>({n:"الفصل ("+(i+1).toLocaleString("ar-EG")+")",raw:""}))};
+const arN=v=>String(v).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/٫/g,".");
+const fmtN=(v,d=1)=>(+v).toLocaleString("ar-EG",{maximumFractionDigits:d});
+const fmtP=v=>fmtN(v)+"٪";
+function grdParse(raw){const out=[];let abs=0;if(!raw||!raw.trim())return {L:out,abs};
+  const lines=arN(raw).split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  /* سطر واحد أو أسطر أرقام فقط بدون أسماء */
+  if(lines.every(l=>/^[\d.\s,،;؛غائب]+$/.test(l))){lines.join(" ").split(/[\s,،;؛]+/).filter(Boolean).forEach(x=>{if(/^غ/.test(x))abs++;else if(!isNaN(+x))out.push({nm:"",s:+x})});return {L:out,abs}}
+  lines.forEach(l=>{const tk=l.split(/\t|,|،|;|؛|\s{2,}/).map(x=>x.trim()).filter(Boolean);let s=null,nm=[];
+    for(let i=tk.length-1;i>=0;i--){if(s===null&&/^\d+(\.\d+)?$/.test(tk[i])){s=+tk[i];continue}if(s===null&&/^غ(ائب|ائبة)?$/.test(tk[i])){s="غ";continue}nm.unshift(tk[i])}
+    if(s===null){const m=l.match(/^(.*?)[\s]+(\d+(?:\.\d+)?|غائب|غائبة|غ)$/);if(m){nm=[m[1]];s=/^غ/.test(m[2])?"غ":+m[2]}}
+    if(s==="غ")abs++;else if(s!==null)out.push({nm:nm.join(" ").replace(/^\d+[-.)]\s*/,"").trim(),s})});
+  return {L:out,abs}}
+function grdStats(d){const T=+d.total||100,M=+d.mast||80,P=+d.pass||50;
+  const C=d.cls.map(c=>{const r=grdParse(c.raw);return Object.assign({n:c.n},r)}).filter(c=>c.L.length||c.abs);
+  const st=c=>{const s=c.L.map(x=>x.s),n=s.length;if(!n)return {n:0,abs:c.abs};const pc=s.map(x=>x/T*100);
+    const lv=[pc.filter(x=>x>=90).length,pc.filter(x=>x>=80&&x<90).length,pc.filter(x=>x>=65&&x<80).length,pc.filter(x=>x>=50&&x<65).length,pc.filter(x=>x<50).length];
+    return {n,abs:c.abs,max:Math.max(...s),min:Math.min(...s),avg:s.reduce((a,b)=>a+b,0)/n,pass:pc.filter(x=>x>=P).length/n*100,mast:pc.filter(x=>x>=M).length/n*100,lv}};
+  const all={n:"الإجمالي",L:C.flatMap(c=>c.L.map(x=>Object.assign({c:c.n},x))),abs:C.reduce((a,c)=>a+c.abs,0)};
+  return {T,M,P,C:C.map(c=>Object.assign(c,{st:st(c)})),A:Object.assign(all,{st:st(all)})}}
+function grdApply(d,over){const R=grdStats(d);if(!R.A.st.n){toast("لم أجد درجات — الصق الدرجات أولًا");return false}
+  const sp=cur&&cur.spec;if(!sp)return false;const st=store.get(eKey(),{});const ST=g("الطلاب","الطالبات"),S1=g("طالب","طالبة");
+  const pk=re=>{const i=sp.pages.findIndex(p=>re.test(p.title||""));if(i<0)return null;const p=sp.pages[i];return p.kpg!=null?p.kpg:"p"+i};
+  const put=(k,v)=>{if(over||!st[k]||!String(st[k]).replace(/<[^>]*>|&nbsp;/g,"").trim())st[k]=esc(String(v))};
+  const set=(k,v)=>{st[k]=esc(String(v))};
+  const cols=R.C.slice(0,4),cell=(s,ri)=>!s.n?(ri===6?fmtN(s.abs||0):"—"):[fmtN(s.n),fmtN(s.max),fmtN(s.min),fmtN(s.avg,2),fmtP(s.pass),fmtP(s.mast),fmtN(s.abs||0)][ri];
+  let k=pk(/^المؤشرات الإحصائية/);if(k)for(let ri=0;ri<7;ri++){for(let ci=0;ci<4;ci++)set(`${k}-${ri}-${ci+1}`,cols[ci]?cell(cols[ci].st,ri):"");set(`${k}-${ri}-5`,cell(R.A.st,ri))}
+  k=pk(/^توزيع .* على مستويات الأداء/);if(k)for(let ri=0;ri<5;ri++){for(let ci=0;ci<4;ci++){const s=cols[ci]&&cols[ci].st;set(`${k}-${ri}-${ci+2}`,s&&s.n?fmtN(s.lv[ri])+" ("+fmtP(s.lv[ri]/s.n*100)+")":"")}const a=R.A.st;set(`${k}-${ri}-6`,fmtN(a.lv[ri])+" ("+fmtP(a.lv[ri]/a.n*100)+")")}
+  k=pk(/^بيانات الاختبار/);if(k){put(k+"-f5",fmtN(R.T));set(k+"-f7",fmtN(R.A.st.n));put(k+"-f3",cols.map(c=>c.n).join("، "))}
+  const nm=x=>(String(x.nm||"").trim()||"…………")+(R.C.length>1&&x.c?" — "+x.c:"");
+  const low=R.A.L.filter(x=>x.s/R.T*100<65).sort((a,b)=>a.s-b.s).slice(0,15),top=R.A.L.filter(x=>x.s/R.T*100>=90).sort((a,b)=>b.s-a.s).slice(0,10);
+  const named=L=>L;
+  k=pk(/المحتاجون إلى خطة علاجية/);if(k){for(let ri=0;ri<15;ri++){set(`${k}-${ri}-1`,"");set(`${k}-${ri}-2`,"")}named(low).forEach((x,ri)=>{set(`${k}-${ri}-1`,nm(x));set(`${k}-${ri}-2`,fmtN(x.s));put(`${k}-${ri}-4`,x.s/R.T*100<50?"خطة علاجية فردية + متابعة أسبوعية":"تدريبات علاجية في مجموعات")})}
+  k=pk(/^(المتفوقون|المتفوقات) والإجراءات الإثرائية/);if(k){for(let ri=0;ri<10;ri++){set(`${k}-${ri}-1`,"");set(`${k}-${ri}-2`,"")}named(top).forEach((x,ri)=>{set(`${k}-${ri}-1`,nm(x));set(`${k}-${ri}-2`,fmtN(x.s));put(`${k}-${ri}-3`,"مهام إثرائية متقدمة ومسابقات، ومساعدة الأقران")})}
+  /* القراءة التحليلية */
+  k=pk(/^القراءة التحليلية/);if(k){const a=R.A.st,cs=R.C.filter(c=>c.st.n),best=cs.slice().sort((x,y)=>y.st.avg-x.st.avg)[0],worst=cs.slice().sort((x,y)=>x.st.avg-y.st.avg)[0];
+    const s1=[`بلغت نسبة النجاح ${fmtP(a.pass)}، ونسبة الإتقان (${fmtN(R.M)}٪ فأكثر) ${fmtP(a.mast)}، بمتوسط ${fmtN(a.avg,2)} من ${fmtN(R.T)}.`];
+    if(a.lv[0])s1.push(`حصل ${fmtN(a.lv[0])} من ${ST} على مستوى «ممتاز» (${fmtP(a.lv[0]/a.n*100)}).`);
+    if(cs.length>1)s1.push(`أعلى متوسط في ${best.n} (${fmtN(best.st.avg,2)}).`);
+    const w1=[];const below=a.lv[4];if(below)w1.push(`${fmtN(below)} من ${ST} دون المستوى (أقل من ٥٠٪) بنسبة ${fmtP(below/a.n*100)}.`);
+    if(a.lv[3])w1.push(`${fmtN(a.lv[3])} في مستوى «مقبول» يحتاجون دعمًا للوصول إلى الإتقان.`);
+    if(cs.length>1&&best.st.avg-worst.st.avg>=R.T*.1)w1.push(`فجوة واضحة بين الفصول: ${worst.n} أدنى متوسطًا (${fmtN(worst.st.avg,2)}).`);
+    if(a.mast<50)w1.push(`نسبة الإتقان أقل من النصف، ما يستدعي مراجعة المهارات الأساسية.`);
+    const r1=[];if(low.length)r1.push(`تنفيذ خطة علاجية لـ${fmtN(low.length)} من ${ST} المدرجين في جدول العلاج، مع قياس بعدي.`);
+    if(top.length)r1.push(`تقديم برامج إثرائية لـ${fmtN(top.length)} من ${g("المتفوقين","المتفوقات")}.`);
+    r1.push("تحليل المهارات والأسئلة لتحديد المهارات غير المتقنة وإعادة تدريسها باستراتيجيات متنوعة.");
+    if(cs.length>1&&best.st.avg-worst.st.avg>=R.T*.1)r1.push(`تبادل الممارسات بين الفصول ودعم ${worst.n}.`);
+    r1.push("إشعار أولياء أمور "+g("المتعثرين","المتعثرات")+" وإشراكهم في المتابعة المنزلية.");
+    put(k+"-b0",s1.join("\n"));put(k+"-b1",w1.join("\n")||"لا توجد مؤشرات ضعف بارزة على مستوى النتائج العامة.");put(k+"-b3",r1.map((x,i)=>fmtN(i+1)+". "+x).join("\n"))}
+  store.set(eKey(),st);store.set(grdKey(),d);keepY(render);return true}
+function rGChart(file,t,p,pi,num){const d=store.get(grdKey(),null);let body;
+  if(!d){body=`<div class="gch-empty">📊 اضغط زر «إدخال الدرجات» في الأعلى والصق درجات ${g("الطلاب","الطالبات")}؛ يُرسم هنا التمثيل البياني تلقائيًا.</div>`}
+  else{const R=grdStats(d),a=R.A.st;
+    if(!a.n)body=`<div class="gch-empty">لا توجد درجات بعد.</div>`;else{
+    const LV=[["ممتاز","#1f8a5b"],["جيد جدًا","#3aa36f"],["جيد","#e0a526"],["مقبول","#e07b26"],["دون المستوى","#c6423d"]],mx=Math.max(...a.lv,1);
+    const bars=LV.map((l,i)=>{const h=a.lv[i]/mx*100;return `<div class="gcol"><b>${fmtN(a.lv[i])}<small>${fmtP(a.lv[i]/a.n*100)}</small></b><i style="height:${Math.max(h,1)}%;background:${l[1]}"></i><span>${l[0]}</span></div>`}).join("");
+    const cs=R.C.filter(c=>c.st.n);
+    const hb=cs.map(c=>`<div class="ghr"><span>${esc(c.n)}</span><div><i style="width:${c.st.avg/R.T*100}%"></i></div><b>${fmtN(c.st.avg,2)}</b></div>`).join("");
+    const kp=[["عدد المختبرين",fmtN(a.n)],["المتوسط",fmtN(a.avg,2)],["نسبة النجاح",fmtP(a.pass)],["نسبة الإتقان",fmtP(a.mast)]].map(x=>`<div><small>${x[0]}</small><b>${x[1]}</b></div>`).join("");
+    body=`<div class="gch"><div class="gkp">${kp}</div><h4>توزيع ${g("الطلاب","الطالبات")} على مستويات الأداء</h4><div class="gbars">${bars}</div>${cs.length>1?`<h4>متوسط الدرجات حسب الفصل (من ${fmtN(R.T)})</h4><div class="ghb">${hb}</div>`:""}</div>`}}
+  return frame(file,t,pi,p.title,body,num)}
+function grdOpen(){const d=grdGet();let m=document.getElementById("grdDlg");if(!m){m=document.createElement("div");m.className="modal";m.id="grdDlg";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");document.body.appendChild(m)}
+  m.innerHTML=`<div class="dialog ui-dlg grd-dlg"><div class="dlg-h"><h3>📊 إدخال الدرجات والتحليل التلقائي</h3><p>الصق من Excel أو نور عمودَي <b>الاسم والدرجة</b> (أو الدرجات فقط)، سطرًا لكل ${g("طالب","طالبة")}. اكتب «غ» للغائب. يحسب نَسَق المؤشرات والمستويات ويملأ جداول العلاج والإثراء والقراءة التحليلية والرسم البياني.</p></div>
+   <div class="grd-b"><div class="grd-o"><label>الدرجة الكلية<input class="inp" id="gT" inputmode="decimal" value="${esc(d.total)}"></label><label>الإتقان من (٪)<input class="inp" id="gM" inputmode="decimal" value="${esc(d.mast)}"></label><label>النجاح من (٪)<input class="inp" id="gP" inputmode="decimal" value="${esc(d.pass)}"></label><label class="grd-x">📥 رفع ملف Excel<input type="file" id="gX" accept=".xlsx,.xls,.csv" hidden></label></div>
+   <div class="grd-c">${d.cls.map((c,i)=>`<div class="grd-k"><input class="inp gN" data-i="${i}" value="${esc(c.n)}"><textarea class="inp gR" data-i="${i}" rows="8" placeholder="محمد أحمد	85\nسعد علي	72\n…">${esc(c.raw)}</textarea><small class="gC" data-i="${i}"></small></div>`).join("")}</div>
+   <label class="ck"><input type="checkbox" id="gO"> استبدال ما كتبته يدويًا في القراءة التحليلية والإجراءات</label></div>
+   <div class="dlg-b"><button class="btn primary" type="button" data-g="go">احسب واملأ الملف</button><button class="btn" type="button" data-g="clr">مسح الدرجات</button><button class="btn" type="button" data-g="x">إغلاق</button></div></div>`;
+  m.classList.add("open");let xi=0;
+  const read=()=>({total:arN(m.querySelector("#gT").value)||100,mast:arN(m.querySelector("#gM").value)||80,pass:arN(m.querySelector("#gP").value)||50,cls:[...m.querySelectorAll(".gR")].map((t,i)=>({n:m.querySelector(`.gN[data-i="${i}"]`).value.trim()||"الفصل ("+(i+1)+")",raw:t.value}))});
+  const cnt=()=>m.querySelectorAll(".gR").forEach(t=>{const r=grdParse(t.value);m.querySelector(`.gC[data-i="${t.dataset.i}"]`).textContent=r.L.length||r.abs?`الدرجات: ${fmtN(r.L.length)}${r.abs?" · "+fmtN(r.abs)+" غائب":""}`:""});cnt();
+  m.oninput=e=>{if(e.target.classList.contains("gR"))cnt()};
+  m.onfocusin=e=>{if(e.target.classList.contains("gR"))xi=+e.target.dataset.i};
+  m.querySelector("#gX").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;try{if(!window.XLSX)await loadScript(XLSX_URL);const wb=XLSX.read(new Uint8Array(await f.arrayBuffer()),{type:"array"});
+      const sheets=wb.SheetNames.slice(0,4);sheets.forEach((sn,si)=>{const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:""}).filter(r=>r.some(x=>String(x).trim()));
+        /* عمود الاسم: أكثر عمود نصي؛ عمود الدرجة: آخر عمود رقمي أو ما عنوانه درجة/مجموع */
+        const W=Math.max(...rows.map(r=>r.length));let nc=-1,sc=-1,bn=0;for(let c=0;c<W;c++){const v=rows.map(r=>arN(r[c]).trim());const tx=v.filter(x=>x&&isNaN(+x)&&x.length>5).length;if(tx>bn){bn=tx;nc=c}}
+        const hd=rows.slice(0,3).flat().map(x=>String(x));for(let c=W-1;c>=0;c--){const v=rows.map(r=>arN(r[c]).trim()).filter(x=>x!=="");if(v.filter(x=>!isNaN(+x)).length>=v.length*.6&&v.length>2){if(sc<0)sc=c;if(rows.slice(0,3).some(r=>/مجموع|الدرجة|درجة|المجموع/.test(String(r[c]))))sc=c}}
+        if(sc<0)return;const lines=rows.filter(r=>{const v=arN(r[sc]).trim();return v!==""&&(!isNaN(+v)||/^غ/.test(v))}).map(r=>(nc>=0?String(r[nc]).trim()+"\t":"")+arN(r[sc]).trim());
+        const ti=Math.min(sheets.length>1?si:xi,3);m.querySelector(`.gR[data-i="${ti}"]`).value=lines.join("\n");if(sheets.length>1)m.querySelector(`.gN[data-i="${ti}"]`).value=sn});cnt();toast("تم استيراد الدرجات — راجعها ثم اضغط «احسب»")}catch(err){console.error(err);toast("تعذرت قراءة الملف")}};
+  m.onclick=e=>{const b=e.target.closest("[data-g]");if(e.target===m||(b&&b.dataset.g==="x")){store.set(grdKey(),read());m.classList.remove("open");return}if(!b)return;
+    if(b.dataset.g==="clr"){m.querySelectorAll(".gR").forEach(t=>t.value="");cnt();return}
+    if(b.dataset.g==="go"){if(grdApply(read(),m.querySelector("#gO").checked)){m.classList.remove("open");toast("✅ تم التحليل وتعبئة الجداول")}}}}
+
+$("#grdBtn").addEventListener("click",()=>grdOpen());
 function reqAuto(){reqBtnSync();if(EMBED||VIEW||!S.file||!REQ[S.file])return;const k="hq3:reqseen:"+S.file,fid=S.file;if(store.get(k,null))return;let tries=0;const go=()=>{if(S.file!==fid||store.get(k,null))return;if(document.querySelector(".modal.open")){if(++tries<20)setTimeout(go,1500);return}store.set(k,1);reqOpen()};setTimeout(go,700)}
 /* ===== النسخة الجاهزة: محتوى معدّ مسبقًا (خطط وتحليل ونصوص) يُعبّأ تلقائيًا، ويضيف المستخدم بياناته وشواهده فقط =====
    المصدر: نسخة يعتمدها المشرف (Supabase: ready_templates) وإلا القالب المرفق مع التطبيق (ready/<fid>.json) */
