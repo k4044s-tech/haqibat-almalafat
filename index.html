@@ -883,6 +883,11 @@ table.t.kx2{border-right:2px solid #111;border-bottom:2px solid #111}
 .st-b .ico{width:13px;height:13px}.st-b.free{background:#dcfce7;color:#166534}.st-b.own{background:#e0f2fe;color:#075985}
 .st-a{display:flex;gap:.4rem;margin-top:auto;padding-top:.5rem;flex-wrap:wrap}.st-a .btn{flex:1}
 .st-cart{position:sticky;top:4.5rem}
+.st-wrap{grid-template-columns:minmax(0,1fr)!important}
+.st-cart.cart-pop{position:fixed;top:64px;left:16px;width:min(360px,calc(100vw - 32px));max-height:min(75vh,620px);overflow:auto;z-index:95;box-shadow:0 16px 40px rgba(15,40,55,.2)}.cart-pop[hidden]{display:none}
+.cartb{position:relative}.cbdg{position:absolute;top:-2px;left:-2px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#c6423d;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center}.cbdg[hidden]{display:none}
+@media print{.cart-pop{display:none!important}}
+
 .st-cl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.45rem}
 .st-cl li{display:flex;align-items:center;gap:.5rem;font-size:.85rem;border-bottom:1px dashed var(--bd);padding-bottom:.4rem}.st-cl li span{flex:1}
 .st-cl .x{border:0;background:transparent;cursor:pointer;font-size:1.1rem;color:var(--mut-fg)}
@@ -1544,10 +1549,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <div class="hdr-r">
         <button class="srch" id="srchBtn" type="button" aria-label="بحث"><i data-i="search"></i><span>ابحث عن ملف…</span><kbd><span>⌘</span>K</kbd></button>
         <button class="btn ghost icon round" id="themeBtn" type="button" data-dd aria-label="المظهر" title="المظهر"><i data-i="sun" class="sun-i"></i></button>
+        <button class="btn ghost icon round cartb" id="cartBtn" type="button" aria-label="السلة" title="السلة" hidden><i data-i="cart"></i><span class="cbdg" id="cartBadge" hidden></span></button>
         <button class="btn ghost icon round" id="cfgBtn" type="button" aria-label="إعدادات العرض" title="إعدادات العرض"><i data-i="cog"></i></button>
         <button class="avbtn" id="hdrAv" type="button" data-dd aria-label="الحساب"></button>
       </div>
     </header>
+    <aside class="card st-cart cart-pop" id="stCart" hidden></aside>
 
     <main class="mn" id="main">
       <!-- لوحة التحكم -->
@@ -1627,7 +1634,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
             <div class="st-sale" id="stSale" hidden></div><div class="st-cats" id="stCats"></div>
             <div class="st-grid" id="stGrid"></div>
           </div>
-          <aside class="card st-cart" id="stCart"></aside>
         </div>
       </section>
       <section class="view" data-v="product" id="vProd" hidden>
@@ -5623,6 +5629,8 @@ function renderList(){
     return `<li class="sb-li${op?" open":""}"><button class="sb-b" type="button" data-cat="${esc(g.c)}" data-active="${act&&(!op||collapsedDesk())}" aria-expanded="${op}" title="${esc(g.c)}">${ico(CAT_IC(g.c))}<span class="tx">${esc(g.c)}</span><span class="cnt">${g.f.length}</span>${ico("chevl","chev")}</button>
     <ul class="sb-sub">${g.f.map(f=>`<li><a class="sb-sb" href="#/f/${f.id}" data-active="${CURV==="file"&&f.id===S.file}" title="${esc(f.name())}"><span>${esc(f.name())}</span></a></li>`).join("")}</ul></li>`}).join("");
   const tools=(typeof TOOLS!=="undefined"?TOOLS:[]).filter(t=>!t.bundle).map(t=>{const own=typeof owns==="function"&&owns(t.id);return `<li><a class="sb-b" href="${t.url}" title="${esc(t.name())}">${ico(t.ic)}<span class="tx">${esc(t.name())}</span>${own?"":`<span class="cnt">تجربة</span>`}</a></li>`}).join("");
+  {const cb=$("#cartBtn");if(cb)cb.hidden=!STORE;const cbd=$("#cartBadge");if(cbd){const k=cartGet().length;cbd.hidden=!k;cbd.textContent=k}}
+  if(!isAdmin()){$("#list").innerHTML=`<div class="sb-g"><div class="sb-gl">عام</div><ul class="sb-m">${gen.join("")}</ul></div>`;$("#sbSub").textContent=FILES.length+" ملفًا · "+S.year;return}
   $("#list").innerHTML=`<div class="sb-g"><div class="sb-gl">عام</div><ul class="sb-m">${gen.join("")}</ul></div>${tools?`<div class="sb-g"><div class="sb-gl">الأدوات</div><ul class="sb-m">${tools}</ul></div>`:""}<div class="sb-g"><div class="sb-gl">الملفات</div><ul class="sb-m">${files}</ul></div>`;
   $("#sbSub").textContent=FILES.length+" ملفًا · "+S.year;
 }
@@ -6120,7 +6128,7 @@ const money=n=>(Math.round(n*100)/100).toLocaleString("ar-SA-u-nu-latn")+" "+CUR
 async function loadShop(){const be=await BEP;if(!be||!be.getShop)return;try{SHOP=await be.getShop();SHOP_OK=true}catch(e){console.error(e)}
   try{if(CURV==="file")applyAccess();renderList();if(CURV==="store")renderStore();if(CURV==="orders")renderOrdersAdmin()}catch(e){}}
 const cartGet=()=>{const c=store.get("hq:cart",[]);return Array.isArray(c)?c.filter(id=>PRODS().some(f=>f.id===id)):[]};
-function cartSet(c){store.set("hq:cart",[...new Set(c)]);renderList();if(CURV==="store")renderStore()}
+function cartSet(c){store.set("hq:cart",[...new Set(c)]);renderList();if(CURV==="store"||!$("#stCart").hidden)renderStore()}
 function cartAdd(fid,quiet){if(owns(fid))return toast(toolOf(fid)?"لديك ترخيص فعّال لهذه الأداة":"هذا الملف متاح لك بالفعل");if(shopP(fid).free)return toast("هذا الملف مجاني، سجّل الدخول وابدأ مباشرة");const c=cartGet();if(!c.includes(fid)){c.push(fid);cartSet(c)}if(!quiet)toast("أُضيف «"+fileName(fid)+"» إلى السلة")}
 const cartTotal=c=>c.reduce((a,f)=>a+(shopP(f).free||owns(f)?0:shopP(f).price),0);
 let STF={q:"",cat:"",show:"all"};
@@ -6213,6 +6221,10 @@ async function shopInit(){
   $("#stSearch").addEventListener("input",e=>{STF.q=e.target.value;renderStore()});
   $("#stCats").addEventListener("click",e=>{const b=e.target.closest("[data-scat]");if(b){STF.cat=b.dataset.scat;renderStore()}});
   $("#stShow").addEventListener("click",e=>{const b=e.target.closest("[data-show]");if(b){STF.show=b.dataset.show;renderStore()}});
+  $("#stCart").addEventListener("click",e=>{const r=e.target.closest("[data-srm]");if(r){e.stopPropagation();return cartSet(cartGet().filter(f=>f!==r.dataset.srm))}if(e.target.closest("#stCheckout")){$("#stCart").hidden=true;return openCheckout()}});
+  $("#cartBtn").addEventListener("click",e=>{e.stopPropagation();const p=$("#stCart");if(p.hidden){renderStore();p.hidden=false}else p.hidden=true});
+  document.addEventListener("click",e=>{const p=$("#stCart");if(p&&!p.hidden&&!e.target.closest("#stCart,#cartBtn"))p.hidden=true});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){const p=$("#stCart");if(p)p.hidden=true}});
   $("#vStore").addEventListener("click",e=>{const a=e.target.closest("[data-sadd]");if(a)return cartAdd(a.dataset.sadd);const r=e.target.closest("[data-srm]");if(r)return cartSet(cartGet().filter(f=>f!==r.dataset.srm));
     if(e.target.closest("[data-sauth]"))return openAuth(ME?"in":"up");if(e.target.closest("#stCheckout"))return openCheckout()});
   $("#vProd").addEventListener("click",e=>{const b=e.target.closest("[data-pbuy]");if(b){cartAdd(b.dataset.pbuy);return renderProduct(b.dataset.pbuy)}
@@ -7664,7 +7676,7 @@ function grdOpen(){const d=grdGet();let m=document.getElementById("grdDlg");if(!
     if(b.dataset.g==="go"){if(grdApply(read(),m.querySelector("#gO").checked)){m.classList.remove("open");toast("✅ تم التحليل وتعبئة الجداول")}}}}
 
 $("#grdBtn").addEventListener("click",()=>grdOpen());
-function reqAuto(){reqBtnSync();if(EMBED||VIEW||!S.file||!REQ[S.file])return;const k="hq3:reqseen:"+S.file,fid=S.file;if(store.get(k,null))return;let tries=0;const go=()=>{if(S.file!==fid||store.get(k,null))return;if(document.querySelector(".modal.open")){if(++tries<20)setTimeout(go,1500);return}store.set(k,1);reqOpen()};setTimeout(go,700)}
+function reqAuto(){reqBtnSync();if(EMBED||VIEW||!S.file||!REQ[S.file]||(typeof CURV!=="undefined"&&CURV!=="file"))return;const k="hq3:reqseen:"+S.file,fid=S.file;if(store.get(k,null))return;let tries=0;const go=()=>{if(S.file!==fid||store.get(k,null))return;if(document.querySelector(".modal.open")){if(++tries<20)setTimeout(go,1500);return}store.set(k,1);reqOpen()};setTimeout(go,700)}
 /* ===== النسخة الجاهزة: محتوى معدّ مسبقًا (خطط وتحليل ونصوص) يُعبّأ تلقائيًا، ويضيف المستخدم بياناته وشواهده فقط =====
    المصدر: نسخة يعتمدها المشرف (Supabase: ready_templates) وإلا القالب المرفق مع التطبيق (ready/<fid>.json) */
 function uiChoice(title,msg,opts){return new Promise(res=>{let m=document.getElementById("chDlg");if(!m){m=document.createElement("div");m.className="modal";m.id="chDlg";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");document.body.appendChild(m)}
