@@ -5074,7 +5074,7 @@ function paintSlot(el){{const w=el&&el.closest&&el.closest(".pwrap.evx");if(w&&s
   if(hasQ&&(m==="qr"||!img)){el.classList.add("has","isqr");el.insertAdjacentHTML("beforeend",`<div class="qrv">${qrSvg(q.url)}<small>امسح الرمز لعرض الشاهد</small></div>`);return}
   if(img){setImg(el,img);
     if(m==="both"&&hasQ){el.classList.add("both");el.insertAdjacentHTML("beforeend",`<div class="qrc">${qrSvg(q.url)}</div>`)}
-    else if(m!=="img")el.classList.add("pend");}
+    else if(m!=="img"&&!VIEW)el.classList.add("pend");}
 }
 function shrinkImg(src){return new Promise((ok,no)=>{const im=new Image();im.onload=()=>{let max=1200,q=.72,out="";
   for(let i=0;i<6;i++){const sc=Math.min(1,max/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);out=cv.toDataURL("image/jpeg",q);if(out.length<700000)break;max*=.8;q=Math.max(.5,q-.06)}
@@ -7785,7 +7785,7 @@ async function viewBoot(){
   const ld=document.createElement("div");ld.id="vwLoad";ld.innerHTML=`<div class="sp"></div><span>جارٍ فتح الملف…</span>`;document.body.appendChild(ld);
   let r=null;try{const be=await BEP;if(be&&be.pubRead)r=await be.pubRead(VIEW)}catch(e){console.error(e)}
   if(!r||!r.payload||!FILES.some(f=>f.id===r.file_id)){ld.innerHTML=`<span>هذا الرابط غير متاح، أو أوقفه صاحب الملف.</span>`;return}
-  const P=r.payload;Object.assign(S,P.set||{},{file:r.file_id,evmode:"img"});
+  const P=r.payload;Object.assign(S,P.set||{},{file:r.file_id,evmode:(P.set&&P.set.evmode)||"qr"});
   for(const [k,v] of Object.entries(P.data||{}))MEMST[k.replace("{g}",S.gender)]=v;
   skip.clear();(P.skip||[]).forEach(k=>skip.add(k));OPTDONE=S.file;
   document.title=(r.title||"ملف")+(r.owner?" — "+r.owner:"")+" | نَسَق";
